@@ -1,0 +1,1 @@
+This is a command-line chess game written in Ruby as part of The Odin Project.
