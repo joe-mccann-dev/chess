@@ -13,8 +13,8 @@ class Board
   W_KING = "\u2654".colorize(:black)
   W_PAWN = "\u2659".colorize(:black)
 
-  W_SQUARE = "  ".on_yellow
-  B_SQUARE = "  ".on_green
+  W_SQUARE = " ".on_yellow
+  B_SQUARE = " ".on_green
 
   B_ROOK = "\u265C".colorize(:black)
   B_KNIGHT = "\u265E".colorize(:black)
@@ -37,20 +37,26 @@ class Board
   end
 
   def display
-    8.times do |i|
-      if i.even?
-        4.times do |n| 
-          print W_SQUARE
-          print B_SQUARE
+    @squares.each_with_index do |row, index|
+      if index.even?
+        row.each_with_index do |square, i|
+          i.even? ? " #{square} ".on_yellow : " #{square} ".on_green
+          if i.even?
+            print " #{square} ".on_yellow
+          else
+            print " #{square} ".on_green
+          end
         end
-        puts "\n"
       else
-        4.times do |n|
-          print B_SQUARE
-          print W_SQUARE
+        row.each_with_index do |square, i|
+          if i.even?
+            print " #{square} ".on_green
+          else
+            print " #{square} ".on_yellow
+          end
         end
-        puts "\n"
       end
+      puts "\n"
     end
   end
 end
