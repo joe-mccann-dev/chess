@@ -7,19 +7,19 @@ class Board
     @squares = squares
   end
 
-  W_ROOK = "\u2656".colorize(:black)
-  W_KNIGHT = "\u2658".colorize(:black)
-  W_BISHOP = "\u2657".colorize(:black)
-  W_QUEEN = "\u2655".colorize(:black)
-  W_KING = "\u2654".colorize(:black)
-  W_PAWN = "\u2659".colorize(:black)
+  W_ROOK = "\u265C".colorize(:light_yellow)
+  W_KNIGHT = "\u265E".colorize(:light_yellow)
+  W_BISHOP = "\u265D".colorize(:light_yellow)
+  W_QUEEN = "\u265B".colorize(:light_yellow)
+  W_KING = "\u265A".colorize(:light_yellow)
+  W_PAWN = "\u265F".colorize(:light_yellow)
   EMPTY = ' '
-  B_ROOK = "\u265C".colorize(:black)
-  B_KNIGHT = "\u265E".colorize(:black)
-  B_BISHOP = "\u265D".colorize(:black)
-  B_QUEEN = "\u265B".colorize(:black)
-  B_KING = "\u265A".colorize(:black)
-  B_PAWN = "\u265F".colorize(:black)
+  B_ROOK = "\u265C".colorize(:cyan)
+  B_KNIGHT = "\u265E".colorize(:cyan)
+  B_BISHOP = "\u265D".colorize(:cyan)
+  B_QUEEN = "\u265B".colorize(:cyan)
+  B_KING = "\u265A".colorize(:cyan)
+  B_PAWN = "\u265F".colorize(:cyan)
 
   def make_initial_board
     @squares = [
@@ -35,29 +35,32 @@ class Board
   end
 
   def display
+    starting_row = 8
     @squares.each_with_index do |row, index|
+      print "#{starting_row} "
       index.even? ? print_even_row(row) : print_odd_row(row)
+      starting_row -= 1
       puts "\n"
     end
     nil
   end
 
   def print_even_row(row)
-    row.each_with_index do |square, i|
-      if i.even?
-        print " #{square} ".on_white
+    row.each_with_index do |square, row_index|
+      if row_index.even?
+        print " #{square} ".on_black
       else
-        print " #{square} ".on_blue
+        print " #{square} ".on_light_black
       end
     end
   end
 
   def print_odd_row(row)
-    row.each_with_index do |square, i|
-      if i.even?
-        print " #{square} ".on_blue
+    row.each_with_index do |square, row_index|
+      if row_index.even?
+        print " #{square} ".on_light_black
       else
-        print " #{square} ".on_white
+        print " #{square} ".on_black
       end
     end
   end
