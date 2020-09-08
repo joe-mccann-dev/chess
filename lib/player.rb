@@ -10,8 +10,8 @@ class Player
     @winner = false
   end
   
-  WHITE = "\u2659".colorize(:black)
-  BLACK = "\u265F".colorize(:black)
+  WHITE = "\u265F".colorize(:light_yellow)
+  BLACK = "\u265F".colorize(:cyan)
 
   def request_info
     request_name
@@ -38,25 +38,18 @@ class Player
       print 'please enter 1 or 2: '
       choice = gets.chomp.to_i
     end
-      assign_color(choice)
+    assign_color(choice)
   end
   
   def show_color_choices
     puts 'Player 1 will now choose a color. Player 2 will be the opposite color.'
-    sleep(1)
     puts "#{@name}, would you like to be White or Black?"
     print "Enter 1 for #{"\u265F".colorize(:light_yellow)}, 2 for #{"\u265F".colorize(:cyan)}: "
   end
 
   def assign_color(choice)
-    if choice == 1
-      puts "#{@name} is #{"\u265F".colorize(:light_yellow)}"
-      @color = WHITE
-    else
-      puts "#{@name} is #{"\u265F".colorize(:cyan)}"
-      @color = BLACK
-    end
-    @color = choice
+    choice == 1 ? @color = WHITE : @color = BLACK
+    puts "#{@name} is #{@color}"
   end
 
   def valid_name?(input)
