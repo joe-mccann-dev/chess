@@ -8,19 +8,29 @@ class Game
   def start_game
     show_welcome_message
     print "Player 1, please enter your name: "
-    @player1.request_info
-    puts
+    @player1.request_name
     print "Player 2, please enter your name: "
-    @player2.request_info
-    assign_player2_opposite_color
+    @player2.request_name
+    @player1.request_color
+    puts
+    @player1.color == "\u2659".colorize(:black) ? @player2.assign_color(2) : @player2.assign_color(1)
+  end
+
+  def play_game
+    @board.display
+
+    # white enters algebraic notation such as "e4"
+    # a method splits that entry, translates "e" to column, "4" to row
+    # in this case, "e" is the 5th column, "4" is the row @squares[3]
+    # black goes
   end
 
   def show_welcome_message
     puts <<-HEREDOC
 
-      "Welcome to Chess"
+      Welcome to Chess
 
-      "Win by placing your opponent's King in checkmate!"
+      Win by placing your opponent's King in checkmate!
 
       Let's get started
 

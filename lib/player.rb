@@ -1,6 +1,8 @@
 require 'colorize'
 
 class Player
+  attr_reader :color
+  attr_accessor :winner
 
   def initialize
     @name = ''
@@ -40,15 +42,19 @@ class Player
   end
   
   def show_color_choices
+    puts 'Player 1 will now choose a color. Player 2 will be the opposite color.'
+    sleep(1)
     puts "#{@name}, would you like to be White or Black?"
     print "Enter 1 for #{"\u265F".colorize(:light_yellow)}, 2 for #{"\u265F".colorize(:cyan)}: "
   end
 
   def assign_color(choice)
     if choice == 1
-      puts "#{@name} chooses #{"\u265F".colorize(:light_yellow)}"
+      puts "#{@name} is #{"\u265F".colorize(:light_yellow)}"
+      @color = WHITE
     else
-      puts "#{@name} chooses #{"\u265F".colorize(:cyan)}"
+      puts "#{@name} is #{"\u265F".colorize(:cyan)}"
+      @color = BLACK
     end
     @color = choice
   end
@@ -60,5 +66,4 @@ class Player
   def valid_color?(choice)
     choice == 1 || choice == 2
   end
-
 end
