@@ -34,6 +34,18 @@ class Board
     ]
   end
 
+  def update_board(move)
+    move = move.split('')
+    column = letter_index(move[0])
+    row = move[1].to_i
+    @squares.reverse[row - 1][column] = W_PAWN
+    @squares.reverse[1][column] = ' '
+  end
+
+  def letter_index(letter)
+    ("a".."h").select.each_with_index { |letter, index| index }.index(letter)
+  end
+
   def display(starting_row = 8)
     puts
     @squares.each_with_index do |row, index|

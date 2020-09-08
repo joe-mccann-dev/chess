@@ -19,6 +19,7 @@ class Game
     end
   end
 
+
   def show_welcome_message
     puts <<-HEREDOC
 
