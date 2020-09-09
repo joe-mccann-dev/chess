@@ -1,5 +1,5 @@
 class Pawn
-  attr_reader :color, :captured
+  attr_reader :color, :unicode, :captured
 
   def initialize(color, unicode = "\u265F")
     color == 1 ? @color = unicode.colorize(:light_yellow) : @color = unicode.colorize(:cyan)

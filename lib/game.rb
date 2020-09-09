@@ -17,8 +17,25 @@ class Game
     else
       @player2.assign_color(1)
     end
+    # player1_turn
+    @board.display
   end
 
+  def player1_turn
+    player1_move = request_player1_move
+    loop do
+      break if @board.valid_move?(player1_move)
+
+      puts 'column unavailable. please select again...'
+      player1_move = request_player1_move
+    end
+    @board.update_board(player1_move)
+  end
+  
+  def request_player1_move
+    print "#{@player1.name}, please enter a move in algebraic notation: "
+    gets.chomp
+  end
 
   def show_welcome_message
     puts <<-HEREDOC
