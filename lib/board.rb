@@ -13,39 +13,40 @@ class Board
   def make_initial_board
     @squares = [
       black_row,
-      Array.new(8) { Pawn.new(2, "\u265F") },
+      Array.new(8) { Pawn.new(2) },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
-      Array.new(8) { Pawn.new(1, "\u265F") },
+      Array.new(8) { Pawn.new(1) },
       white_row
     ]
   end
 
   def white_row
     [
-      Rook.new(1, "\u265C"), Knight.new(1, "\u265E"), Bishop.new(1, "\u265D"),
-      Queen.new(1, "\u265B"), King.new(1, "\u265A"),
-      Bishop.new(1, "\u265D"), Knight.new(1, "\u265E"), Rook.new(1, "\u265C")
+      Rook.new(1), Knight.new(1), Bishop.new(1),
+      Queen.new(1), King.new(1),
+      Bishop.new(1), Knight.new(1), Rook.new(1)
     ]
   end
 
   def black_row
     [
-      Rook.new(2, "\u265C"), Knight.new(2, "\u265E"), Bishop.new(2, "\u265D"),
-      Queen.new(2, "\u265B"), King.new(2, "\u265A"),
-      Bishop.new(2, "\u265D"), Knight.new(2, "\u265E"), Rook.new(2, "\u265C")
+      Rook.new(2), Knight.new(2), Bishop.new(2),
+      Queen.new(2), King.new(2),
+      Bishop.new(2), Knight.new(2), Rook.new(2)
     ]
   end
 
-  def update_board(move)
-    # if piece is a pawn
+  def update_board(piece, move)
     move = move.split('')
-    column = letter_index(move[0])
-    row = move[1].to_i
-    @squares.reverse[row - 1][column] = "\u265F".colorize(:light_yellow)
-    @squares.reverse[1][column] = ' '
+    if piece.is_a?(Pawn)
+      column = letter_index(move[0])
+      row = move[1].to_i
+      @squares.reverse[row - 1][column] = "\u265F".colorize(:light_yellow)
+      @squares.reverse[1][column] = ' '
+    end
   end
 
   def letter_index(letter)
