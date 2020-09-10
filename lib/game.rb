@@ -17,8 +17,10 @@ class Game
     else
       @player2.assign_color(1)
     end
-    # player1_turn
     @board.display
+    player1_turn
+    @board.display 
+    
   end
 
   def player1_turn
@@ -29,7 +31,7 @@ class Game
       puts 'column unavailable. please select again...'
       player1_move = request_player1_move
     end
-    @board.update_board(player1_move)
+    @board.update_board(player1_move, @player1.color)
   end
   
   def request_player1_move

@@ -23,12 +23,12 @@ module Display
   end
 
   def print_on_light_black(square)
-    print " #{square} ".on_light_black if square.is_a?(String)
+    print " #{square} ".on_light_black       if     square.is_a?(String)
     print " #{square.color} ".on_light_black unless square.is_a?(String)
   end
 
   def print_on_black(square)
-    print " #{square} ".on_black if square.is_a?(String)
+    print " #{square} ".on_black       if     square.is_a?(String)
     print " #{square.color} ".on_black unless square.is_a?(String)
   end
 end

@@ -61,22 +61,36 @@ class Board
     pieces
   end
 
-  def update_board(move)
-    move = move.split('')
-    # if piece.is_a?(Pawn)
+  def update_board(move, player_color, piece = nil)
+    if piece.nil?
       column = letter_index(move[0])
-      row = move[1].to_i
+      origin_row_index = find_starting_index(column, player_color)
+      puts origin_row_index
+      # dest_row_index = move[1].to_i - 1
+      dest_row_index = find_destination_index(move)
+      puts dest_row_index
+      # if statement only works for white (prevents going backwards)
+      if (origin_row_index - dest_row_index).abs.between?(1, 2) && dest_row_index < origin_row_index
+        @squares[dest_row_index][column] = @squares[origin_row_index][column]
+        @squares[origin_row_index][column] = ' '
+      else
+        puts 'wrong'
+      end
       
-      @squares.reverse[row - 1][column] = "\u265F".colorize(:light_yellow)
-      @squares.reverse[1][column] = ' '
-      piece_in_column?(column)
-    # end
+    end
   end
 
-  def piece_in_column?(column)
-    col_members = []
-    0.upto(7) { |row| col_members << @squares[row][column] }
-    col_members
+  def find_starting_index(column, player_color)
+    0.upto(7) do |row|
+      if @squares[row][column].is_a?(Pawn) && @squares[row][column].color == player_color
+        return row
+      end
+    end
+  end
+
+  def find_destination_index(move)
+    chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
+    chess_rows.index(move[1].to_i)
   end
 
   def letter_index(letter)
