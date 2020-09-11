@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'colorize'
-require './modules/display.rb'
+require_relative './modules/display.rb'
 
 class Board
   include Display

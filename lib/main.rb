@@ -1,12 +1,12 @@
-require './game.rb'
-require './board.rb'
-require './player.rb'
-require './rook.rb'
-require './knight.rb'
-require './bishop.rb'
-require './king.rb'
-require './queen.rb'
-require './pawn.rb'
+require_relative'./game.rb'
+require_relative './board.rb'
+require_relative './player.rb'
+require_relative './rook.rb'
+require_relative './knight.rb'
+require_relative './bishop.rb'
+require_relative './king.rb'
+require_relative './queen.rb'
+require_relative './pawn.rb'
 
 game = Game.new
 game.start_game
