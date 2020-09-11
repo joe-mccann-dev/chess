@@ -20,7 +20,8 @@ class Game
     @board.display
     player1_turn
     @board.display 
-    
+    player2_turn
+    @board.display
   end
 
   def player1_turn
@@ -33,9 +34,25 @@ class Game
     end
     @board.update_board(player1_move, @player1.color)
   end
+
+  def player2_turn
+    player2_move = request_player2_move
+    loop do
+      break if @board.valid_move?(player2_move)
+
+      puts 'column unavailable. please select again...'
+      player2_move = request_player2_move
+    end
+    @board.update_board(player2_move, @player2.color)
+  end
   
   def request_player1_move
     print "#{@player1.name}, please enter a move in algebraic notation: "
+    gets.chomp
+  end
+
+  def request_player2_move
+    print "#{@player2.name}, please enter a move in algebraic notation: "
     gets.chomp
   end
 

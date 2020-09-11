@@ -62,22 +62,11 @@ class Board
   end
 
   def update_board(move, player_color, piece = nil)
-    if piece.nil?
-      column = letter_index(move[0])
-      origin_row_index = find_starting_index(column, player_color)
-      puts origin_row_index
-      # dest_row_index = move[1].to_i - 1
-      dest_row_index = find_destination_index(move)
-      puts dest_row_index
-      # if statement only works for white (prevents going backwards)
-      if (origin_row_index - dest_row_index).abs.between?(1, 2) && dest_row_index < origin_row_index
-        @squares[dest_row_index][column] = @squares[origin_row_index][column]
-        @squares[origin_row_index][column] = ' '
-      else
-        puts 'wrong'
-      end
-      
-    end
+    column = letter_index(move[0])
+    origin_row_index = find_starting_index(column, player_color)
+    dest_row_index = find_destination_index(move)
+    pawn = @squares[origin_row_index][column]
+    pawn.move(@squares, player_color, origin_row_index, dest_row_index, column)
   end
 
   def find_starting_index(column, player_color)
