@@ -22,6 +22,8 @@ class Game
     @board.display 
     player2_turn
     @board.display
+    player1_turn
+    @board.display
   end
 
   def player1_turn
@@ -29,7 +31,7 @@ class Game
     loop do
       break if @board.valid_move?(player1_move)
 
-      puts 'column unavailable. please select again...'
+      puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
     @board.update_board(player1_move, @player1.color)
