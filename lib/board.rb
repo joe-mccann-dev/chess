@@ -63,10 +63,10 @@ class Board
 
   def update_board(move, player_color, piece = nil)
     column = letter_index(move[0])
-    origin_row_index = find_starting_index(column, player_color)
-    dest_row_index = find_destination_index(move)
-    pawn = @squares[origin_row_index][column]
-    pawn.move(@squares, player_color, origin_row_index, dest_row_index, column)
+    start_row = find_starting_index(column, player_color)
+    dest_row = find_destination_index(move)
+    pawn = @squares[start_row][column]
+    pawn.move(@squares, player_color, start_row, dest_row, column)
   end
 
   def find_starting_index(column, player_color)
@@ -87,7 +87,14 @@ class Board
   end
 
   def valid_move?(input)
-    input = input.split('')
-    input[0].downcase.match?(/[a-h]/) && input[1].match?(/[1-8]/)
+    dest_row = find_destination_index(input)
+    column = letter_index(input[0])
+    input[0].downcase.match?(/[a-h]/) && 
+      input[1].match?(/[1-8]/) &&
+      available_location?(dest_row, column)
+  end
+
+  def available_location?(dest_row, column)
+    @squares[dest_row][column] == ' '
   end
 end

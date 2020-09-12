@@ -7,20 +7,20 @@ class Pawn
     @captured = false
   end
 
-  def move(board, player_color, start_index, dest_index, column)
-    if valid?(start_index, dest_index, player_color)
-      board[dest_index][column] = board[start_index][column]
-      board[start_index][column] = ' '
+  def move(board, player_color, start_row, dest_row, column)
+    if valid?(start_row, dest_row, player_color)
+      board[dest_row][column] = board[start_row][column]
+      board[start_row][column] = ' '
     else
       puts 'wrong'
     end
   end
 
-  def valid?(start_index, dest_index, player_color)
+  def valid?(start_row, dest_row, player_color)
     if player_color == unicode.colorize(:light_yellow)
-      (start_index - dest_index).abs.between?(1, 2) && dest_index < start_index
+      (start_row - dest_row).abs.between?(1, 2) && dest_row < start_row
     else
-      (start_index - dest_index).abs.between?(1, 2) && dest_index > start_index
+      (start_row - dest_row).abs.between?(1, 2) && dest_row > start_row
     end
   end
 end
