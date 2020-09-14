@@ -1,4 +1,16 @@
 module Display
+  def show_welcome_message
+    puts <<-HEREDOC
+
+      Welcome to Chess
+
+      Win by placing your opponent's King in checkmate!
+
+      Let's get started
+
+    HEREDOC
+  end
+  
   def display(starting_row = 8)
     puts
     @squares.each_with_index do |row, index|

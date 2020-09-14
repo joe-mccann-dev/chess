@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'colorize'
-require_relative './modules/display.rb'
-
 class Board
   include Display
+  attr_reader :squares
 
   def initialize(squares = make_initial_board)
     @squares = squares
@@ -61,17 +59,13 @@ class Board
     pieces
   end
 
-  def update_board(move, player_color, piece = nil)
-    column = letter_index(move[0])
-    start_row = find_starting_index(column, player_color)
-    dest_row = find_destination_index(move)
-    pawn = @squares[start_row][column]
-    pawn.move(@squares, player_color, start_row, dest_row, column)
+  def update_board(start_row, dest_row, column, player_color, piece = nil)
+    piece.move(@squares, player_color, start_row, dest_row, column)
   end
 
-  def find_starting_index(column, player_color)
+  def find_starting_index(column, player_color, piece)
     0.upto(7) do |row|
-      if @squares[row][column].is_a?(Pawn) && @squares[row][column].color == player_color
+      if @squares[row][column] != ' ' && @squares[row][column].color == player_color
         return row
       end
     end
@@ -82,16 +76,14 @@ class Board
     chess_rows.index(move[1].to_i)
   end
 
-  def letter_index(letter)
+  def find_letter_index(letter)
     ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
   end
 
-  def valid_move?(input)
-    dest_row = find_destination_index(input)
-    column = letter_index(input[0])
-    input[0].downcase.match?(/[a-h]/) && 
-      input[1].match?(/[1-8]/) &&
-      available_location?(dest_row, column)
+  def valid_move?(start_row, dest_row, column, player_color, piece)
+    column.between?(0, 7) && dest_row.between?(0, 7) &&
+      available_location?(dest_row, column)          &&
+      piece.allowed_move?(start_row, dest_row, player_color)
   end
 
   def available_location?(dest_row, column)

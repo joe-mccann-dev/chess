@@ -1,3 +1,5 @@
+require 'colorize'
+require_relative './modules/display.rb'
 require_relative'./game.rb'
 require_relative './board.rb'
 require_relative './player.rb'
@@ -8,6 +10,7 @@ require_relative './king.rb'
 require_relative './queen.rb'
 require_relative './pawn.rb'
 
+
 game = Game.new
 game.start_game
-# game.play_game
+game.play_game
