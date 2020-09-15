@@ -50,6 +50,7 @@ class Game
 
   def player1_turn
     player1_move = request_player1_move
+    p player1_move
     loop do
       @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.color)
@@ -85,7 +86,7 @@ class Game
   end
 
   def set_index_variables(move, player_color)
-    @column = @board.find_letter_index(move[0])
+    @column = set_column(move)
     piece_type = @board.determine_piece_class(@prefix)
     @start_row = @board.find_starting_index(@column, player_color, piece_type)
     @piece = @board.squares[@start_row][@column]
@@ -97,6 +98,14 @@ class Game
       @prefix = ''
     else
       @prefix = move[0].upcase
+    end
+  end
+
+  def set_column(move)
+    if move.length == 2
+      @board.find_letter_index(move[0])
+    else
+      @board.find_letter_index(move[1])
     end
   end
 end

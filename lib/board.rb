@@ -66,7 +66,7 @@ class Board
   def find_starting_index(column, player_color, piece_type)
     0.upto(7) do |row|
       if @squares[row][column] != ' ' && @squares[row][column].color == player_color
-        puts 'HEY ITS A PAWN' if piece_type == Pawn
+        p piece_type
         return row if @squares[row][column].is_a?(piece_type)
       end
     end
@@ -74,7 +74,7 @@ class Board
 
   def find_destination_index(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
-    chess_rows.index(move[1].to_i)
+    move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
   end
 
   def find_letter_index(letter)
@@ -83,7 +83,8 @@ class Board
 
   def valid_move?(start_row, dest_row, column, player_color, piece)
     column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(dest_row, column)          
+      available_location?(dest_row, column)
+      p start_row          
       piece.allowed_move?(start_row, dest_row, player_color)
   end
 
@@ -94,7 +95,7 @@ class Board
   def determine_piece_class(prefix)
     return Pawn   if prefix == ''
     return Rook   if prefix == 'R'
-    return Knight if prefix == 'K'
+    return Knight if prefix == 'N'
     return Bishop if prefix == 'B'
     return Queen  if prefix == 'Q'
     return King   if prefix == 'K'
