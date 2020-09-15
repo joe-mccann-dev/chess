@@ -27,15 +27,21 @@ class Game
 
   def play_game
     @board.display
-    if @player1.color == WHITE
+    # if @player1.color == WHITE
+    #   player1_turn
+    #   @board.display
+    #   player2_turn
+    #   @board.display
+    # else
+    #   player2_turn
+    #   @board.display
+    #   player1_turn
+    #   @board.display
+    # end
+    loop do
       player1_turn
       @board.display
       player2_turn
-      @board.display
-    else
-      player2_turn
-      @board.display
-      player1_turn
       @board.display
     end
   end

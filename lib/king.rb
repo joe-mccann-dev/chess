@@ -1,10 +1,9 @@
 class King
-  attr_reader :color, :unicode, :captured
+  attr_reader :color, :captured
   UNICODE = "\u265A"
 
-  def initialize(color, unicode = "\u265A")
-    color == 1 ? @color = unicode.colorize(:light_yellow) : @color = unicode.colorize(:cyan)
-    @unicode = unicode
+  def initialize(color)
+    color == 1 ? @color = UNICODE.colorize(:light_yellow) : @color = UNICODE.colorize(:cyan)
     @captured = false
   end
 

@@ -37,28 +37,6 @@ class Board
     ]
   end
 
-  def white_pieces(pieces = [])
-    @squares.each do |row|
-      row.each do |square|
-        unless square == ' '
-          pieces << square if square.color == square.unicode.colorize(:light_yellow)
-        end
-      end
-    end
-    pieces
-  end
-
-  def black_pieces(pieces = [])
-    @squares.each do |row|
-      row.each do |square|
-        unless square == ' '
-          pieces << square if square.color == square.unicode.colorize(:cyan)
-        end
-      end
-    end
-    pieces
-  end
-
   def update_board(start_row, dest_row, column, player_color, piece)
     piece.move(@squares, player_color, start_row, dest_row, column)
   end
@@ -84,7 +62,7 @@ class Board
   def valid_move?(start_row, dest_row, column, player_color, piece)
     column.between?(0, 7) && dest_row.between?(0, 7) &&
       available_location?(dest_row, column)
-      p start_row          
+      p "starting_row: #{start_row}"
       piece.allowed_move?(start_row, dest_row, player_color)
   end
 
