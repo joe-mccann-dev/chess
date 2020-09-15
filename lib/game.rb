@@ -51,8 +51,8 @@ class Game
   def player1_turn
     player1_move = request_player1_move
     loop do
+      @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.color)
-      @piece = determine_piece_type(@start_row, @column)
       break if @board.valid_move?(@start_row, @dest_row, @column, @player1.color, @piece)
 
       puts 'move invalid. please select again...'
@@ -64,8 +64,8 @@ class Game
   def player2_turn
     player2_move = request_player2_move
     loop do
+      @prefix = set_prefix(player2_move)
       set_index_variables(player2_move, @player2.color)
-      @piece = determine_piece_type(@start_row, @column)
       break if @board.valid_move?(@start_row, @dest_row, @column, @player2.color, @piece)
 
       puts 'move invalid. please select again...'
@@ -86,12 +86,17 @@ class Game
 
   def set_index_variables(move, player_color)
     @column = @board.find_letter_index(move[0])
-    @start_row = @board.find_starting_index(@column, player_color, @piece)
+    piece_type = @board.determine_piece_class(@prefix)
+    @start_row = @board.find_starting_index(@column, player_color, piece_type)
+    @piece = @board.squares[@start_row][@column]
     @dest_row = @board.find_destination_index(move)
-    @prefix = move[0] if move.length > 2
   end
 
-  def determine_piece_type(start_row, column, prefix = nil)
-    @board.squares[@start_row][@column]
+  def set_prefix(move)
+    if move.length == 2
+      @prefix = ''
+    else
+      @prefix = move[0].upcase
+    end
   end
 end

@@ -59,14 +59,15 @@ class Board
     pieces
   end
 
-  def update_board(start_row, dest_row, column, player_color, piece = nil)
+  def update_board(start_row, dest_row, column, player_color, piece)
     piece.move(@squares, player_color, start_row, dest_row, column)
   end
 
-  def find_starting_index(column, player_color, piece)
+  def find_starting_index(column, player_color, piece_type)
     0.upto(7) do |row|
       if @squares[row][column] != ' ' && @squares[row][column].color == player_color
-        return row
+        puts 'HEY ITS A PAWN' if piece_type == Pawn
+        return row if @squares[row][column].is_a?(piece_type)
       end
     end
   end
@@ -82,11 +83,20 @@ class Board
 
   def valid_move?(start_row, dest_row, column, player_color, piece)
     column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(dest_row, column)          &&
+      available_location?(dest_row, column)          
       piece.allowed_move?(start_row, dest_row, player_color)
   end
 
   def available_location?(dest_row, column)
     @squares[dest_row][column] == ' '
+  end
+
+  def determine_piece_class(prefix)
+    return Pawn   if prefix == ''
+    return Rook   if prefix == 'R'
+    return Knight if prefix == 'K'
+    return Bishop if prefix == 'B'
+    return Queen  if prefix == 'Q'
+    return King   if prefix == 'K'
   end
 end
