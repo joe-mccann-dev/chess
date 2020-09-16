@@ -5,7 +5,8 @@ class Game
     @player1 = player1
     @player2 = player2
     @board = board
-    @column = nil
+    @start_column = nil
+    @dest_column = nil
     @start_row = nil
     @dest_row = nil
     @piece = nil
@@ -48,12 +49,12 @@ class Game
     loop do
       @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @column, @player1.symbolic_color, @piece)
+      break if @board.valid_move?(@start_row, @dest_row, @dest_column, @player1.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
-    @board.update_board(@start_row, @dest_row, @column, @piece)
+    @board.update_board(@start_row, @dest_row, @dest_column, @piece)
   end
 
   def player2_turn
@@ -61,12 +62,12 @@ class Game
     loop do
       @prefix = set_prefix(player2_move)
       set_index_variables(player2_move, @player2.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @column, @player2.symbolic_color, @piece)
+      break if @board.valid_move?(@start_row, @dest_row, @dest_column, @player2.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @column, @piece)
+    @board.update_board(@start_row, @dest_row, @dest_column, @piece)
   end
   
   def request_player1_move
@@ -80,12 +81,13 @@ class Game
   end
 
   def set_index_variables(move, player_color)
-    @column = set_column(move)
+    @dest_column = set_dest_column(move)
     piece_type = @board.determine_piece_class(@prefix)
-    @start_row = @board.find_starting_row(@column, player_color, piece_type)
-    @piece = @board.assign_piece(@column, player_color, piece_type)
+    @start_row = @board.find_start_row(@dest_column, player_color, piece_type)
+    @piece = @board.assign_piece(@dest_column, player_color, piece_type)
+    @start_column = set_start_column(move, @piece)
     p @piece
-    @dest_row = @board.find_destination_row(move)
+    @dest_row = @board.find_dest_row(move)
   end
 
   def set_prefix(move)
@@ -96,11 +98,19 @@ class Game
     end
   end
 
-  def set_column(move)
+  def set_start_column(move, piece)
     if move.length == 2
-      @board.find_letter_index(move[0])
+      @board.find_start_column(move[0].downcase, piece)
     else
-      @board.find_letter_index(move[1])
+      @board.find_start_column(move[1].downcase, piece)
+    end
+  end
+
+  def set_dest_column(move)
+    if move.length == 2
+      @board.find_dest_column(move[0].downcase)
+    else
+      @board.find_dest_column(move[1].downcase)
     end
   end
 end

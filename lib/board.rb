@@ -42,31 +42,36 @@ class Board
     piece.update_num_moves if piece.is_a?(Pawn)
   end
 
-  def find_starting_row(column, player_color, piece_type)
-    0.upto(7) do |row|
-      piece = @squares[row][column]
-      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
-        return row if piece.is_a?(piece_type)
+  def find_start_row(column, player_color, piece_type)
+    @squares.each_with_index do |row, row_index|
+      row.each do |square|
+        if square != ' ' && square.symbolic_color == player_color
+          return row_index if square.is_a?(piece_type)
+        end
       end
     end
   end
 
   def assign_piece(column, player_color, piece_type)
-    0.upto(7) do |row|
-      piece = @squares[row][column]
-      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
-        puts "piece_type: #{piece_type}"
-        return piece if piece.is_a?(piece_type)
+    @squares.each_with_index do |row, row_index|
+      row.each do |square|
+        if square != ' ' && square.symbolic_color == player_color
+          return square if square.is_a?(piece_type)
+        end
       end
     end
   end
 
-  def find_destination_row(move)
+  def find_dest_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
     move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
   end
 
-  def find_letter_index(letter)
+  def find_start_column(letter, piece)
+    ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
+  end
+
+  def find_dest_column(letter)
     ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
   end
 
