@@ -22,22 +22,10 @@ class Game
     print "Player 2, please enter your name: "
     @player2.request_name
     @player1.request_color
-    assign_color(@player1.color)
+    assign_color(@player1.displayed_color)
   end
 
   def play_game
-    @board.display
-    # if @player1.color == WHITE
-    #   player1_turn
-    #   @board.display
-    #   player2_turn
-    #   @board.display
-    # else
-    #   player2_turn
-    #   @board.display
-    #   player1_turn
-    #   @board.display
-    # end
     loop do
       player1_turn
       @board.display
@@ -56,29 +44,28 @@ class Game
 
   def player1_turn
     player1_move = request_player1_move
-    p player1_move
     loop do
       @prefix = set_prefix(player1_move)
-      set_index_variables(player1_move, @player1.color)
-      break if @board.valid_move?(@start_row, @dest_row, @column, @player1.color, @piece)
+      set_index_variables(player1_move, @player1.symbolic_color)
+      break if @board.valid_move?(@start_row, @dest_row, @column, @player1.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
-    @board.update_board(@start_row, @dest_row, @column, @player1.color, @piece)
+    @board.update_board(@start_row, @dest_row, @column)
   end
 
   def player2_turn
     player2_move = request_player2_move
     loop do
       @prefix = set_prefix(player2_move)
-      set_index_variables(player2_move, @player2.color)
-      break if @board.valid_move?(@start_row, @dest_row, @column, @player2.color, @piece)
+      set_index_variables(player2_move, @player2.symbolic_color)
+      break if @board.valid_move?(@start_row, @dest_row, @column, @player2.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @column, @player2.color, @piece)
+    @board.update_board(@start_row, @dest_row, @column)
   end
   
   def request_player1_move
@@ -95,7 +82,8 @@ class Game
     @column = set_column(move)
     piece_type = @board.determine_piece_class(@prefix)
     @start_row = @board.find_starting_index(@column, player_color, piece_type)
-    @piece = @board.squares[@start_row][@column]
+    @piece = @board.assign_piece(@column, player_color, piece_type)
+    p @piece
     @dest_row = @board.find_destination_index(move)
   end
 

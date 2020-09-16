@@ -1,12 +1,13 @@
 require 'colorize'
 
 class Player
-  attr_reader :color, :name
+  attr_reader :displayed_color, :symbolic_color, :name
   attr_accessor :winner
 
   def initialize
     @name = ''
-    @color = ''
+    @displayed_color = ''
+    @symbolic_color = nil
     @winner = false
   end
   
@@ -48,7 +49,13 @@ class Player
   end
 
   def assign_color(choice)
-    choice == 1 ? @color = WHITE : @color = BLACK
+    if choice == 1
+      @displayed_color = WHITE
+      @symbolic_color = :white
+    else
+      @displayed_color = BLACK
+      @symbolic_color = :black
+    end 
     puts "#{@name} is #{@color}"
   end
 

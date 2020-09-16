@@ -37,15 +37,26 @@ class Board
     ]
   end
 
-  def update_board(start_row, dest_row, column, player_color, piece)
-    piece.move(@squares, player_color, start_row, dest_row, column)
+  def update_board(start_row, dest_row, column)
+    @squares[dest_row][column] = @squares[start_row][column]
+    @squares[start_row][column] = ' '
   end
 
   def find_starting_index(column, player_color, piece_type)
     0.upto(7) do |row|
-      if @squares[row][column] != ' ' && @squares[row][column].color == player_color
-        p piece_type
-        return row if @squares[row][column].is_a?(piece_type)
+      piece = @squares[row][column]
+      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
+        return row if piece.is_a?(piece_type)
+      end
+    end
+  end
+
+  def assign_piece(column, player_color, piece_type)
+    0.upto(7) do |row|
+      piece = @squares[row][column]
+      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
+        puts "piece_type: #{piece_type}"
+        return piece if piece.is_a?(piece_type)
       end
     end
   end
@@ -60,9 +71,9 @@ class Board
   end
 
   def valid_move?(start_row, dest_row, column, player_color, piece)
+    p "starting_row: #{start_row}"
     column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(dest_row, column)
-      p "starting_row: #{start_row}"
+      available_location?(dest_row, column) &&
       piece.allowed_move?(start_row, dest_row, player_color)
   end
 
