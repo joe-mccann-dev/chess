@@ -74,12 +74,30 @@ class Board
   def valid_move?(start_row, dest_row, column, player_color, piece)
     p "starting_row: #{start_row}"
     column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(dest_row, column) &&
+      available_location?(start_row, dest_row, column) &&
       piece.allowed_move?(start_row, dest_row, player_color)
   end
 
-  def available_location?(dest_row, column)
-    @squares[dest_row][column] == ' '
+  def available_location?(start_row, dest_row, column)
+    @squares[dest_row][column] == ' ' && 
+      column_has_space_for_move?(start_row, dest_row, column)
+  end
+
+  def column_has_space_for_move?(start_row, dest_row, column)
+    if start_row < dest_row
+      start = start_row + 1
+      column_check_helper(start, dest_row, column)
+    else
+      start = start_row - 1
+      column_check_helper(dest_row, start, column)
+    end
+  end
+
+  def column_check_helper(start, dest_row, column)
+    start.upto(dest_row) do |row|
+      return false if @squares[row][column] != ' '
+    end
+    true
   end
 
   def determine_piece_class(prefix)
