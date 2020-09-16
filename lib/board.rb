@@ -37,9 +37,10 @@ class Board
     ]
   end
 
-  def update_board(start_row, dest_row, column)
+  def update_board(start_row, dest_row, column, piece)
     @squares[dest_row][column] = @squares[start_row][column]
     @squares[start_row][column] = ' '
+    piece.update_num_moves if piece.is_a?(Pawn)
   end
 
   def find_starting_index(column, player_color, piece_type)

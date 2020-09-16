@@ -53,7 +53,7 @@ class Game
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
-    @board.update_board(@start_row, @dest_row, @column)
+    @board.update_board(@start_row, @dest_row, @column, @piece)
   end
 
   def player2_turn
@@ -66,7 +66,7 @@ class Game
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @column)
+    @board.update_board(@start_row, @dest_row, @column, @piece)
   end
   
   def request_player1_move
@@ -75,7 +75,7 @@ class Game
   end
 
   def request_player2_move
-    print "#{@player2.name} (#{@player1.symbolic_color.to_s}), please enter a move in algebraic notation: "
+    print "#{@player2.name} (#{@player2.symbolic_color.to_s}), please enter a move in algebraic notation: "
     gets.chomp
   end
 
