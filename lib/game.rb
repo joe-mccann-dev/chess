@@ -82,10 +82,10 @@ class Game
   def set_index_variables(move, player_color)
     @column = set_column(move)
     piece_type = @board.determine_piece_class(@prefix)
-    @start_row = @board.find_starting_index(@column, player_color, piece_type)
+    @start_row = @board.find_starting_row(@column, player_color, piece_type)
     @piece = @board.assign_piece(@column, player_color, piece_type)
     p @piece
-    @dest_row = @board.find_destination_index(move)
+    @dest_row = @board.find_destination_row(move)
   end
 
   def set_prefix(move)

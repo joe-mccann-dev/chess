@@ -2,7 +2,6 @@
 
 class Board
   include Display
-  attr_reader :squares
 
   def initialize(squares = make_initial_board)
     @squares = squares
@@ -43,7 +42,7 @@ class Board
     piece.update_num_moves if piece.is_a?(Pawn)
   end
 
-  def find_starting_index(column, player_color, piece_type)
+  def find_starting_row(column, player_color, piece_type)
     0.upto(7) do |row|
       piece = @squares[row][column]
       if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
@@ -62,7 +61,7 @@ class Board
     end
   end
 
-  def find_destination_index(move)
+  def find_destination_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
     move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
   end
@@ -75,7 +74,7 @@ class Board
     p "starting_row: #{start_row}"
     column.between?(0, 7) && dest_row.between?(0, 7) &&
       available_location?(start_row, dest_row, column) &&
-      piece.allowed_move?(start_row, dest_row, player_color)
+      piece.allowed_move?(start_row, dest_row, column, player_color)
   end
 
   def available_location?(start_row, dest_row, column)

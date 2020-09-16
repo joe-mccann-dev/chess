@@ -13,7 +13,7 @@ class Pawn
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, player_color)
+  def allowed_move?(start_row, dest_row, column, player_color)
     return allowed_initial_move?(start_row, dest_row, player_color) if @num_moves == 0
 
     if player_color == :white
