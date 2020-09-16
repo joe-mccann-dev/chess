@@ -26,6 +26,7 @@ class Game
   end
 
   def play_game
+    @board.display
     loop do
       player1_turn
       @board.display
@@ -69,12 +70,12 @@ class Game
   end
   
   def request_player1_move
-    print "#{@player1.name}, please enter a move in algebraic notation: "
+    print "#{@player1.name} (#{@player1.symbolic_color.to_s}), please enter a move in algebraic notation: "
     gets.chomp
   end
 
   def request_player2_move
-    print "#{@player2.name}, please enter a move in algebraic notation: "
+    print "#{@player2.name} (#{@player1.symbolic_color.to_s}), please enter a move in algebraic notation: "
     gets.chomp
   end
 

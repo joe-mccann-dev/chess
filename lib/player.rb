@@ -56,7 +56,7 @@ class Player
       @displayed_color = BLACK
       @symbolic_color = :black
     end 
-    puts "#{@name} is #{@color}"
+    puts "#{@name} is #{@displayed_color}"
   end
 
   def valid_name?(input)
