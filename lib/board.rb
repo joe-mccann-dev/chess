@@ -43,21 +43,20 @@ class Board
   end
 
   def find_start_row(column, player_color, piece_type)
-    @squares.each_with_index do |row, row_index|
-      row.each do |square|
-        if square != ' ' && square.symbolic_color == player_color
-          return row_index if square.is_a?(piece_type)
-        end
+    0.upto(7) do |row|
+      piece = @squares[row][column]
+      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
+        return row if piece.is_a?(piece_type)
       end
     end
   end
 
   def assign_piece(column, player_color, piece_type)
-    @squares.each_with_index do |row, row_index|
-      row.each do |square|
-        if square != ' ' && square.symbolic_color == player_color
-          return square if square.is_a?(piece_type)
-        end
+    0.upto(7) do |row|
+      piece = @squares[row][column]
+      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
+        puts "piece_type: #{piece_type}"
+        return piece if piece.is_a?(piece_type)
       end
     end
   end
