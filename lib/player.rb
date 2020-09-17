@@ -55,7 +55,7 @@ class Player
     else
       @displayed_color = BLACK
       @symbolic_color = :black
-    end 
+    end
     puts "#{@name} is #{@displayed_color}"
   end
 

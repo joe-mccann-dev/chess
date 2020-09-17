@@ -85,7 +85,7 @@ class Game
     piece_type = @board.determine_piece_class(@prefix)
     @start_row = @board.find_start_row(@dest_column, player_color, piece_type)
     @piece = @board.assign_piece(@dest_column, player_color, piece_type)
-    @start_column = set_start_column(move, @piece)
+    @start_column = set_start_column(@piece)
     p @piece
     @dest_row = @board.find_dest_row(move)
   end
@@ -98,12 +98,8 @@ class Game
     end
   end
 
-  def set_start_column(move, piece)
-    if move.length == 2
-      @board.find_start_column(move[0].downcase, piece)
-    else
-      @board.find_start_column(move[1].downcase, piece)
-    end
+  def set_start_column(piece)
+    @board.find_start_column(piece)
   end
 
   def set_dest_column(move)

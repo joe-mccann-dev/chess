@@ -1,8 +1,9 @@
 class Pawn
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
 
-  def initialize(color, unicode = "\u265F")
+  def initialize(color, location, unicode = "\u265F")
     @num_moves = 0
+    @location = location
     @captured = false
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
@@ -13,7 +14,7 @@ class Pawn
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, column, player_color)
+  def allowed_move?(start_row, dest_row, player_color)
     return allowed_initial_move?(start_row, dest_row, player_color) if @num_moves == 0
 
     if player_color == :white
@@ -33,5 +34,10 @@ class Pawn
 
   def update_num_moves
     @num_moves += 1
+  end
+
+  def update_location(dest_row, column)
+    @location = [dest_row, column]
+    puts "new location: #{@location}"
   end
 end
