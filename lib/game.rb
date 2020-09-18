@@ -54,7 +54,7 @@ class Game
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
-    @board.update_board(@start_row, @dest_row, @dest_column, @piece)
+    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
 
   def player2_turn
@@ -67,7 +67,7 @@ class Game
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @dest_column, @piece)
+    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
   
   def request_player1_move
@@ -84,10 +84,10 @@ class Game
     @dest_column = set_dest_column(move)
     piece_type = @board.determine_piece_class(@prefix)
     @start_row = @board.find_start_row(@dest_column, player_color, piece_type)
-    @piece = @board.assign_piece(@dest_column, player_color, piece_type)
+    @piece = @board.find_piece(@start_row, @dest_column, player_color, piece_type)
     @start_column = set_start_column(@piece)
-    p @piece
     @dest_row = @board.find_dest_row(move)
+    # p @piece
   end
 
   def set_prefix(move)

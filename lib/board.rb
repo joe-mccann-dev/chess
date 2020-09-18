@@ -58,30 +58,75 @@ class Board
     black_pieces
   end
 
-  def update_board(start_row, dest_row, column, piece)
-    @squares[dest_row][column] = @squares[start_row][column]
-    @squares[start_row][column] = ' '
+  def update_board(start_row, dest_row, start_column, dest_column, piece)
+    @squares[dest_row][dest_column] = @squares[start_row][start_column]
+    @squares[start_row][dest_column] = ' ' if start_column == dest_column
+    @squares[start_row][start_column] = ' ' if start_column != dest_column
     piece.update_num_moves if piece.is_a?(Pawn)
-    piece.update_location(dest_row, column)
+    piece.update_location(dest_row, dest_column)
   end
 
   # will return zero if piece is not in column argument
-  # 
-  def find_start_row(column, player_color, piece_type)
-    0.upto(7) do |row|
-      piece = @squares[row][column]
-      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
-        return row if piece.is_a?(piece_type)
+  def find_start_row(dest_column, player_color, piece_type)
+    @squares.each_with_index do |row, row_index|
+      row.each_with_index do |square, col_index|
+        piece = row[dest_column]
+
+        unless piece == ' '
+          if piece.location[1] == dest_column
+            0.upto(7) do |s|
+              piece = @squares[s][dest_column]
+              if @squares[s][dest_column] != ' ' && @squares[s][dest_column].symbolic_color == player_color
+                puts "piece_type: #{piece_type}"
+                return s if piece.is_a?(piece_type)
+              end
+            end
+          end
+        end
+
+        if piece != ' ' && piece.symbolic_color == player_color
+          puts "(piece = row[dest_column]) row_index: #{row_index}"
+          return row_index if piece.is_a?(piece_type)
+        else
+          piece = row[col_index]
+          if piece != ' ' && piece.symbolic_color == player_color
+            puts "(piece = row[col_index]) row_index: #{row_index}"
+            puts col_index if piece.is_a?(King)
+            return row_index if piece.is_a?(piece_type)
+          end
+        end
       end
     end
   end
 
-  def assign_piece(column, player_color, piece_type)
-    0.upto(7) do |row|
-      piece = @squares[row][column]
-      if @squares[row][column] != ' ' && @squares[row][column].symbolic_color == player_color
-        puts "piece_type: #{piece_type}"
-        return piece if piece.is_a?(piece_type)
+  def find_piece(start_row, dest_column, player_color, piece_type)
+
+    @squares.each_with_index do |row, row_index|
+      row.each_with_index do |square, col_index|
+        piece = row[dest_column]
+        
+        unless piece == ' '
+          if piece.location[1] == dest_column
+            0.upto(7) do |s|
+              piece = @squares[s][dest_column]
+              if @squares[s][dest_column] != ' ' && @squares[s][dest_column].symbolic_color == player_color
+                puts "piece_type: #{piece_type}"
+                return piece if piece.is_a?(piece_type)
+              end
+            end
+          end
+        end
+
+        if piece != ' ' && piece.symbolic_color == player_color
+          puts "(piece = row[dest_column]) piece: #{piece}"
+          return piece if piece.is_a?(piece_type)
+        else
+          piece = row[col_index]
+          if piece != ' ' && piece.symbolic_color == player_color
+            puts "(piece = row[col_index]) piece: #{piece}"
+            return piece if piece.is_a?(piece_type)
+          end
+        end
       end
     end
   end
@@ -105,6 +150,7 @@ class Board
     column.between?(0, 7) && dest_row.between?(0, 7) &&
       available_location?(start_row, dest_row, column) &&
       piece.allowed_move?(start_row, dest_row, player_color)
+    # true
   end
 
   def available_location?(start_row, dest_row, column)

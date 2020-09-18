@@ -14,11 +14,7 @@ class Queen
   end
 
   def allowed_move?(start_row, dest_row, player_color)
-    if player_color == :white
-      (start_row - dest_row).abs.between?(1, 2) && dest_row < start_row
-    else
-      (start_row - dest_row).abs.between?(1, 2) && dest_row > start_row
-    end
+    (start_row - dest_row).abs <= 1
   end
 
   def update_location(dest_row, column)
