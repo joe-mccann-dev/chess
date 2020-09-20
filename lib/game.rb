@@ -49,7 +49,7 @@ class Game
     loop do
       @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @dest_column, @player1.symbolic_color, @piece)
+      break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player1.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
@@ -62,7 +62,7 @@ class Game
     loop do
       @prefix = set_prefix(player2_move)
       set_index_variables(player2_move, @player2.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @dest_column, @player2.symbolic_color, @piece)
+      break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player2.symbolic_color, @piece)
 
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
@@ -81,12 +81,12 @@ class Game
   end
 
   def set_index_variables(move, player_color)
-    @dest_column = set_dest_column(move)
     piece_type = @board.determine_piece_class(@prefix)
     @start_row = @board.find_start_row(@dest_column, player_color, piece_type)
-    @piece = @board.find_piece(@start_row, @dest_column, player_color, piece_type)
-    @start_column = set_start_column(@piece)
     @dest_row = @board.find_dest_row(move)
+    @dest_column = set_dest_column(move)
+    @piece = @board.find_piece(@dest_row, @dest_column, player_color, piece_type)
+    @start_column = set_start_column(@piece)
     # p @piece
   end
 

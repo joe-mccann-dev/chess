@@ -23,7 +23,9 @@ class Pawn
       (start_column - dest_column).abs == 0 && 
       dest_row < start_row
     else
-      (start_row - dest_row).abs == 1 && dest_row > start_row
+      (start_row - dest_row).abs == 1 && 
+        dest_row > start_row &&
+        (start_column - dest_column).abs == 0
     end
   end
 
@@ -34,7 +36,9 @@ class Pawn
         (start_column - dest_column).abs == 0 &&
         dest_row < start_row
     else
-      (start_row - dest_row).abs.between?(1, 2) && dest_row > start_row
+      (start_row - dest_row).abs.between?(1, 2) && 
+        dest_row > start_row &&
+        (start_column - dest_column).abs == 0
     end
   end
 

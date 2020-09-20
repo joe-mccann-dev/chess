@@ -59,23 +59,19 @@ class Board
   end
 
   def white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-    pieces = []
-    white_pieces.each do |piece|
-      start_row = piece.location[0]
+    white_pieces.select do |piece|
+      start_row    = piece.location[0]
       start_column = piece.location[1]
-      pieces << piece if valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
+      valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
     end
-    pieces
   end
 
   def black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-    pieces = []
-    black_pieces.each do |piece|
-      start_row = piece.location[0]
+    black_pieces.select do |piece|
+      start_row    = piece.location[0]
       start_column = piece.location[1]
-      pieces << piece if valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
+      valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
     end
-    pieces
   end
 
   def update_board(start_row, dest_row, start_column, dest_column, piece)
@@ -84,6 +80,20 @@ class Board
     @squares[start_row][start_column] = ' ' if start_column != dest_column
     piece.update_num_moves if piece.is_a?(Pawn)
     piece.update_location(dest_row, dest_column)
+  end
+
+  def find_piece(dest_row, dest_column, player_color, piece_type)
+    if player_color == :white
+      pieces = white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
+      pieces.each do |piece|
+        return piece if piece.is_a?(piece_type)
+      end
+    else
+      pieces = black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
+      pieces.each do |piece|
+        return piece if piece.is_a?(piece_type)
+      end
+    end
   end
 
   def find_start_row(dest_column, player_color, piece_type)
