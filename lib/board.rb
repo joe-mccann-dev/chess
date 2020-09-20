@@ -58,78 +58,55 @@ class Board
     black_pieces
   end
 
+  def white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
+    pieces = []
+    white_pieces.each do |piece|
+      start_row = piece.location[0]
+      start_column = piece.location[1]
+      pieces << piece if valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
+    end
+    pieces
+  end
+
+  def black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
+    pieces = []
+    black_pieces.each do |piece|
+      start_row = piece.location[0]
+      start_column = piece.location[1]
+      pieces << piece if valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
+    end
+    pieces
+  end
+
   def update_board(start_row, dest_row, start_column, dest_column, piece)
     @squares[dest_row][dest_column] = @squares[start_row][start_column]
-    @squares[start_row][dest_column] = ' ' if start_column == dest_column
+    @squares[start_row][dest_column]  = ' ' if start_column == dest_column
     @squares[start_row][start_column] = ' ' if start_column != dest_column
     piece.update_num_moves if piece.is_a?(Pawn)
     piece.update_location(dest_row, dest_column)
   end
 
-  # will return zero if piece is not in column argument
   def find_start_row(dest_column, player_color, piece_type)
     @squares.each_with_index do |row, row_index|
-      row.each_with_index do |square, col_index|
-        piece = row[dest_column]
-
-        unless piece == ' '
-          if piece.location[1] == dest_column
-            0.upto(7) do |s|
-              piece = @squares[s][dest_column]
-              if @squares[s][dest_column] != ' ' && @squares[s][dest_column].symbolic_color == player_color
-                puts "piece_type: #{piece_type}"
-                return s if piece.is_a?(piece_type)
-              end
-            end
-          end
-        end
-
-        if piece != ' ' && piece.symbolic_color == player_color
-          puts "(piece = row[dest_column]) row_index: #{row_index}"
-          return row_index if piece.is_a?(piece_type)
-        else
-          piece = row[col_index]
-          if piece != ' ' && piece.symbolic_color == player_color
-            puts "(piece = row[col_index]) row_index: #{row_index}"
-            puts col_index if piece.is_a?(King)
-            return row_index if piece.is_a?(piece_type)
+      row.each do |square|
+        if square != ' ' && square.symbolic_color == player_color
+          if square.location[1] == dest_column
+            return search_dest_column(piece_type, player_color, dest_column)
+          else
+            return row_index if square.is_a?(piece_type)
           end
         end
       end
     end
   end
 
-  def find_piece(start_row, dest_column, player_color, piece_type)
-
-    @squares.each_with_index do |row, row_index|
-      row.each_with_index do |square, col_index|
-        piece = row[dest_column]
-        
-        unless piece == ' '
-          if piece.location[1] == dest_column
-            0.upto(7) do |s|
-              piece = @squares[s][dest_column]
-              if @squares[s][dest_column] != ' ' && @squares[s][dest_column].symbolic_color == player_color
-                puts "piece_type: #{piece_type}"
-                return piece if piece.is_a?(piece_type)
-              end
-            end
-          end
-        end
-
-        if piece != ' ' && piece.symbolic_color == player_color
-          puts "(piece = row[dest_column]) piece: #{piece}"
-          return piece if piece.is_a?(piece_type)
-        else
-          piece = row[col_index]
-          if piece != ' ' && piece.symbolic_color == player_color
-            puts "(piece = row[col_index]) piece: #{piece}"
-            return piece if piece.is_a?(piece_type)
-          end
-        end
-      end
+  def search_dest_column(piece_type, player_color, dest_column)
+    0.upto(7) do |row_index|
+      piece = @squares[row_index][dest_column]
+      return row_index if piece.is_a?(piece_type) && piece.symbolic_color == player_color
     end
   end
+
 
   def find_dest_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
@@ -145,11 +122,11 @@ class Board
     ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
   end
 
-  def valid_move?(start_row, dest_row, column, player_color, piece)
+  def valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
     puts "starting_row: #{start_row}"
-    column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(start_row, dest_row, column) &&
-      piece.allowed_move?(start_row, dest_row, player_color)
+    dest_column.between?(0, 7) && dest_row.between?(0, 7) &&
+      available_location?(start_row, dest_row, dest_column) &&
+      piece.allowed_move?(start_row, dest_row, player_color, start_column, dest_column)
     # true
   end
 
