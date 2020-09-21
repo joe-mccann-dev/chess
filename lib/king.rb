@@ -13,7 +13,7 @@ class King
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, player_color)
+  def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
     (start_row - dest_row).abs <= 1
   end
 

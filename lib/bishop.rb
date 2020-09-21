@@ -13,11 +13,16 @@ class Bishop
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, player_color)
+  def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
     if player_color == :white
-      (start_row - dest_row).abs.between?(1, 2) && dest_row < start_row
+      (start_row - dest_row).abs == 1 &&
+      # change once you incorporate ability for pawns to attack (column abs diff can be 1)
+      (start_column - dest_column).abs == 0 && 
+      dest_row < start_row
     else
-      (start_row - dest_row).abs.between?(1, 2) && dest_row > start_row
+      (start_row - dest_row).abs == 1 && 
+        dest_row > start_row &&
+        (start_column - dest_column).abs == 0
     end
   end
 

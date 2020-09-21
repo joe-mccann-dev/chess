@@ -10,6 +10,7 @@ class Game
     @start_row = nil
     @dest_row = nil
     @piece = nil
+    @piece_type = nil
     @prefix = nil
   end
 
@@ -49,7 +50,8 @@ class Game
     loop do
       @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player1.symbolic_color, @piece)
+      # break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player1.symbolic_color, @piece)
+      break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type)
 
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
@@ -62,7 +64,8 @@ class Game
     loop do
       @prefix = set_prefix(player2_move)
       set_index_variables(player2_move, @player2.symbolic_color)
-      break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player2.symbolic_color, @piece)
+      # break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player2.symbolic_color, @piece)
+      break if @board.find_piece(@dest_row, @dest_column, @player2.symbolic_color, @piece_type)
 
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
@@ -81,13 +84,13 @@ class Game
   end
 
   def set_index_variables(move, player_color)
-    piece_type = @board.determine_piece_class(@prefix)
-    @start_row = @board.find_start_row(@dest_column, player_color, piece_type)
+    @piece_type = @board.determine_piece_class(@prefix)
     @dest_row = @board.find_dest_row(move)
     @dest_column = set_dest_column(move)
-    @piece = @board.find_piece(@dest_row, @dest_column, player_color, piece_type)
-    @start_column = set_start_column(@piece)
-    # p @piece
+    @piece = @board.find_piece(@dest_row, @dest_column, player_color, @piece_type)
+    p @piece
+    @start_row    = @piece.location[0] if @piece
+    @start_column = @piece.location[1] if @piece
   end
 
   def set_prefix(move)
@@ -96,10 +99,6 @@ class Game
     else
       @prefix = move[0].upcase
     end
-  end
-
-  def set_start_column(piece)
-    @board.find_start_column(piece)
   end
 
   def set_dest_column(move)

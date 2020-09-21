@@ -86,37 +86,16 @@ class Board
     if player_color == :white
       pieces = white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
       pieces.each do |piece|
-        return piece if piece.is_a?(piece_type)
+        return piece if piece.is_a?(piece_type) && valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
       end
     else
       pieces = black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
       pieces.each do |piece|
-        return piece if piece.is_a?(piece_type)
+        return piece if piece.is_a?(piece_type) && valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
       end
     end
+    nil
   end
-
-  def find_start_row(dest_column, player_color, piece_type)
-    @squares.each_with_index do |row, row_index|
-      row.each do |square|
-        if square != ' ' && square.symbolic_color == player_color
-          if square.location[1] == dest_column
-            return search_dest_column(piece_type, player_color, dest_column)
-          else
-            return row_index if square.is_a?(piece_type)
-          end
-        end
-      end
-    end
-  end
-
-  def search_dest_column(piece_type, player_color, dest_column)
-    0.upto(7) do |row_index|
-      piece = @squares[row_index][dest_column]
-      return row_index if piece.is_a?(piece_type) && piece.symbolic_color == player_color
-    end
-  end
-
 
   def find_dest_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
@@ -133,11 +112,9 @@ class Board
   end
 
   def valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
-    puts "starting_row: #{start_row}"
     dest_column.between?(0, 7) && dest_row.between?(0, 7) &&
       available_location?(start_row, dest_row, dest_column) &&
       piece.allowed_move?(start_row, dest_row, player_color, start_column, dest_column)
-    # true
   end
 
   def available_location?(start_row, dest_row, column)
