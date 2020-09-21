@@ -86,12 +86,14 @@ class Board
     if player_color == :white
       pieces = white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
       pieces.each do |piece|
-        return piece if piece.is_a?(piece_type) && valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
+        return piece if piece.is_a?(piece_type) && 
+          valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
       end
     else
       pieces = black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
       pieces.each do |piece|
-        return piece if piece.is_a?(piece_type) && valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
+        return piece if piece.is_a?(piece_type) && 
+          valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
       end
     end
     nil
