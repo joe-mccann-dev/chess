@@ -30,6 +30,7 @@ class Game
   def play_game
     @board.display
     loop do
+      get_player1_move
       player1_turn
       @board.display
       player2_turn
@@ -45,8 +46,19 @@ class Game
     end
   end
 
-  def player1_turn
+  def get_player1_move
     player1_move = request_player1_move
+    loop do
+      break if valid_move?(player1_move)
+      
+      puts 'move invalid. please select again...'
+      player1_move = request_player1_move
+    end
+    player1_move
+  end
+
+  def player1_turn
+    player1_move = get_player1_move
     loop do
       @prefix = set_prefix(player1_move)
       set_index_variables(player1_move, @player1.symbolic_color)
