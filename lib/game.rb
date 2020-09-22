@@ -30,7 +30,6 @@ class Game
   def play_game
     @board.display
     loop do
-      get_player1_move
       player1_turn
       @board.display
       player2_turn
@@ -46,6 +45,18 @@ class Game
     end
   end
 
+  def player1_turn
+    player1_move = get_player1_move
+    set_index_variables(player1_move, @player1.symbolic_color)
+    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
+  end
+
+  def player2_turn
+    player2_move = request_player2_move
+    set_index_variables(player2_move, @player2.symbolic_color)
+    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
+  end
+
   def get_player1_move
     player1_move = request_player1_move
     loop do
@@ -54,35 +65,35 @@ class Game
       puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
+    @prefix = set_prefix(player1_move)
+    @piece_type = @board.determine_piece_class(@prefix)
     player1_move
   end
 
-  def player1_turn
-    player1_move = get_player1_move
-    loop do
-      @prefix = set_prefix(player1_move)
-      set_index_variables(player1_move, @player1.symbolic_color)
-      # break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player1.symbolic_color, @piece)
-      break if break_possible?(player1_move, @dest_row, @dest_column, @player1.symbolic_color, @piece_type)
-
-      puts 'move invalid. please select again...'
-      player1_move = request_player1_move
-    end
-    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
-  end
-
-  def player2_turn
+  def get_player2_move
     player2_move = request_player2_move
     loop do
-      @prefix = set_prefix(player2_move)
-      set_index_variables(player2_move, @player2.symbolic_color)
-      # break if @board.valid_move?(@start_row, @dest_row, @start_column, @dest_column, @player2.symbolic_color, @piece)
-      break if break_possible?(player2_move, @dest_row, @dest_column, @player2.symbolic_color, @piece_type)
-
+      break if valid_move?(player2_move)
+      
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
+    @prefix = set_prefix(player2_move)
+    @piece_type = @board.determine_piece_class(@prefix)
+    player2_move
+  end
+
+  def valid_move?(move)
+    return false unless move.length.between?(2, 3)
+
+    if move.length == 2
+      move[0].downcase.match?(/[a-h]/) &&
+        move[1].match?(/[1-8]/)
+    else
+      move[0].upcase.match?(/R|N|B|Q|K/) &&
+        move[1].downcase.match?(/[a-h]/) &&
+        move[2].match?(/[1-8]/)
+    end
   end
 
   def break_possible?(move, dest_row, dest_column, player_color, piece_type)
@@ -101,7 +112,6 @@ class Game
   end
 
   def set_index_variables(move, player_color)
-    @piece_type = @board.determine_piece_class(@prefix)
     @dest_row = @board.find_dest_row(move)
     @dest_column = set_dest_column(move)
     @piece = @board.find_piece(@dest_row, @dest_column, player_color, @piece_type)
