@@ -52,7 +52,7 @@ class Game
   end
 
   def player2_turn
-    player2_move = request_player2_move
+    player2_move = get_player2_move
     set_index_variables(player2_move, @player2.symbolic_color)
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
