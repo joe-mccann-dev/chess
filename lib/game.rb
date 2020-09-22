@@ -47,13 +47,14 @@ class Game
 
   def player1_turn
     player1_move = get_player1_move
-    set_index_variables(player1_move, @player1.symbolic_color)
-    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
-  end
+    loop do
+      set_index_variables(player1_move, @player1.symbolic_color)
+      break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
+        @board.available_location?(@start_row, @dest_row, @dest_column)
 
-  def player2_turn
-    player2_move = get_player2_move
-    set_index_variables(player2_move, @player2.symbolic_color)
+      puts 'move invalid. please select again... (in player1_turn method)'
+      player1_move = get_player1_move
+    end
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
 
@@ -62,12 +63,25 @@ class Game
     loop do
       break if valid_move?(player1_move)
       
-      puts 'move invalid. please select again...'
+      puts 'move invalid. please select again... (in get_player1_move method)'
       player1_move = request_player1_move
     end
     @prefix = set_prefix(player1_move)
     @piece_type = @board.determine_piece_class(@prefix)
     player1_move
+  end
+
+  def player2_turn
+    player2_move = get_player2_move
+    loop do
+      set_index_variables(player2_move, @player2.symbolic_color)
+      break if @board.find_piece(@dest_row, @dest_column, @player2.symbolic_color, @piece_type) &&
+        @board.available_location?(@start_row, @dest_row, @dest_column)
+
+      puts 'move invalid. please select again...'
+      player2_move = get_player2_move
+    end
+    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
 
   def get_player2_move
@@ -94,11 +108,6 @@ class Game
         move[1].downcase.match?(/[a-h]/) &&
         move[2].match?(/[1-8]/)
     end
-  end
-
-  def break_possible?(move, dest_row, dest_column, player_color, piece_type)
-    move.length.between?(2, 3) &&
-      @board.find_piece(@dest_row, @dest_column, player_color, @piece_type)
   end
   
   def request_player1_move
