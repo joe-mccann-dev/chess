@@ -29,10 +29,32 @@ class Game
 
   def play_game
     @board.display
+    white = who_goes_first(@player1.symbolic_color, @player2.symbolic_color)
+    white == :player1 ? player1_goes_first : player2_goes_first
+  end
+
+  def who_goes_first(player1_color, player2_color)
+    player1_color == :white ? :player1 : :player2
+  end
+
+  def player1_goes_first
     loop do
+      # break if @board.checkmate?
+
       player1_turn
       @board.display
       player2_turn
+      @board.display
+    end
+  end
+
+  def player2_goes_first
+    loop do
+      # break if @board.checkmate?
+
+      player2_turn
+      @board.display
+      player1_turn
       @board.display
     end
   end
@@ -45,6 +67,7 @@ class Game
     end
   end
 
+  # loop breaks if piece is found and square is available
   def player1_turn
     player1_move = get_player1_move
     loop do
@@ -58,19 +81,7 @@ class Game
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
 
-  def get_player1_move
-    player1_move = request_player1_move
-    loop do
-      break if valid_move?(player1_move)
-      
-      puts 'move invalid. please select again... (in get_player1_move method)'
-      player1_move = request_player1_move
-    end
-    @prefix = set_prefix(player1_move)
-    @piece_type = @board.determine_piece_class(@prefix)
-    player1_move
-  end
-
+  # loop breaks if piece is found and square is available
   def player2_turn
     player2_move = get_player2_move
     loop do
@@ -84,6 +95,20 @@ class Game
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
   end
 
+  # loop breaks if input string is valid algebraic notation
+  def get_player1_move
+    player1_move = request_player1_move
+    loop do
+      break if valid_move?(player1_move)
+      
+      puts 'move invalid. please select again... (in get_player1_move method)'
+      player1_move = request_player1_move
+    end
+    set_piece_type(player1_move)
+    player1_move
+  end
+
+  # loop breaks if input string is valid algebraic notation
   def get_player2_move
     player2_move = request_player2_move
     loop do
@@ -92,9 +117,13 @@ class Game
       puts 'move invalid. please select again...'
       player2_move = request_player2_move
     end
-    @prefix = set_prefix(player2_move)
-    @piece_type = @board.determine_piece_class(@prefix)
+    set_piece_type(player2_move)
     player2_move
+  end
+
+  def set_piece_type(move)
+    @prefix = set_prefix(move)
+    @piece_type = @board.determine_piece_class(@prefix)
   end
 
   def valid_move?(move)
