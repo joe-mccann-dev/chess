@@ -75,7 +75,8 @@ class Game
       break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
         @board.available_location?(@start_row, @dest_row, @dest_column)
 
-      puts 'move invalid. please select again... (in player1_turn method)'
+      puts 'move invalid. please select again...
+      '
       player1_move = get_player1_move
     end
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
@@ -101,7 +102,7 @@ class Game
     loop do
       break if valid_move?(player1_move)
       
-      puts 'move invalid. please select again... (in get_player1_move method)'
+      puts 'move invalid. please select again...'
       player1_move = request_player1_move
     end
     set_piece_type(player1_move)

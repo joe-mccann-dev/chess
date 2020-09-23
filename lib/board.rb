@@ -74,29 +74,36 @@ class Board
     end
   end
 
+  def find_piece(dest_row, dest_column, player_color, piece_type)
+    if player_color == :white
+      find_white_piece(dest_row, dest_column, player_color, piece_type)
+    else
+      find_black_piece(dest_row, dest_column, player_color, piece_type)
+    end
+  end
+
+  def find_white_piece(dest_row, dest_column, player_color, piece_type)
+    white_pieces_that_go_to_dest(dest_row, dest_column, player_color).each do |piece|
+      return piece if piece.is_a?(piece_type) &&
+        valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
+    end
+    nil
+  end
+
+  def find_black_piece(dest_row, dest_column, player_color, piece_type)
+    black_pieces_that_go_to_dest(dest_row, dest_column, player_color).each do |piece|
+      return piece if piece.is_a?(piece_type) &&
+        valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
+    end
+    nil
+  end
+
   def update_board(start_row, dest_row, start_column, dest_column, piece)
     @squares[dest_row][dest_column] = @squares[start_row][start_column]
     @squares[start_row][dest_column]  = ' ' if start_column == dest_column
     @squares[start_row][start_column] = ' ' if start_column != dest_column
     piece.update_num_moves if piece.is_a?(Pawn)
     piece.update_location(dest_row, dest_column)
-  end
-
-  def find_piece(dest_row, dest_column, player_color, piece_type)
-    if player_color == :white
-      pieces = white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-      pieces.each do |piece|
-        return piece if piece.is_a?(piece_type) && 
-          valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
-      end
-    else
-      pieces = black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-      pieces.each do |piece|
-        return piece if piece.is_a?(piece_type) && 
-          valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
-      end
-    end
-    nil
   end
 
   def find_dest_row(move)
@@ -119,24 +126,24 @@ class Board
       piece.allowed_move?(start_row, dest_row, player_color, start_column, dest_column)
   end
 
-  def available_location?(start_row, dest_row, column)
-    @squares[dest_row][column] == ' ' && 
-      column_has_space_for_move?(start_row, dest_row, column)
+  def available_location?(start_row, dest_row, dest_column)
+    @squares[dest_row][dest_column] == ' ' && 
+      column_has_space_for_move?(start_row, dest_row, dest_column)
   end
 
-  def column_has_space_for_move?(start_row, dest_row, column)
+  def column_has_space_for_move?(start_row, dest_row, dest_column)
     if start_row < dest_row
       start = start_row + 1
-      column_check_helper(start, dest_row, column)
+      column_check_helper(start, dest_row, dest_column)
     else
       start = start_row - 1
-      column_check_helper(dest_row, start, column)
+      column_check_helper(dest_row, start, dest_column)
     end
   end
 
-  def column_check_helper(start, dest_row, column)
+  def column_check_helper(start, dest_row, dest_column)
     start.upto(dest_row) do |row|
-      return false if @squares[row][column] != ' '
+      return false if @squares[row][dest_column] != ' '
     end
     true
   end
