@@ -167,11 +167,10 @@ class Board
   end
 
   def determine_piece_class(prefix)
-    return Pawn   if prefix == ''
-    return Rook   if prefix == 'R'
-    return Knight if prefix == 'N'
-    return Bishop if prefix == 'B'
-    return Queen  if prefix == 'Q'
-    return King   if prefix == 'K'
+    piece_objects = [Pawn, Rook, Knight, Bishop, Queen, King]
+    prefixes = ['', 'R', 'N', 'B', 'Q', 'K']
+    prefixes.each_with_index do |p, index|
+      return piece_objects[index] if p == prefix
+    end
   end
 end
