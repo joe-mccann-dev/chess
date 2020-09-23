@@ -75,8 +75,7 @@ class Game
       break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
         @board.available_location?(@start_row, @dest_row, @dest_column)
 
-      puts 'move invalid. please select again...
-      '
+      puts 'move invalid. please select again...'
       player1_move = get_player1_move
     end
     @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
@@ -131,13 +130,21 @@ class Game
     return false unless move.length.between?(2, 3)
 
     if move.length == 2
-      move[0].downcase.match?(/[a-h]/) &&
-        move[1].match?(/[1-8]/)
+      valid_pawn_move?(move)
     else
-      move[0].upcase.match?(/R|N|B|Q|K/) &&
-        move[1].downcase.match?(/[a-h]/) &&
-        move[2].match?(/[1-8]/)
+      valid_character_move?(move)
     end
+  end
+
+  def valid_pawn_move?(move)
+    move[0].downcase.match?(/[a-h]/) &&
+      move[1].match?(/[1-8]/)
+  end
+
+  def valid_character_move?(move)
+    move[0].upcase.match?(/R|N|B|Q|K/) &&
+      move[1].downcase.match?(/[a-h]/) &&
+      move[2].match?(/[1-8]/)
   end
   
   def request_player1_move
