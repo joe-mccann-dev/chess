@@ -158,6 +158,10 @@ class Board
               (start_column + 1).upto(dest_column) do |col_index|
                 return false if @squares[row_index][col_index] != ' '
               end
+            else
+              (dest_column).upto(start_column - 1) do |col_index|
+                return false if @squares[row_index][col_index] != ' '
+              end
             end
           end
         end
