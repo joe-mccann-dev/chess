@@ -73,7 +73,7 @@ class Game
     loop do
       set_index_variables(player1_move, @player1.symbolic_color)
       break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
-        @board.available_location?(@start_row, @dest_row, @dest_column)
+        @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
 
       puts 'move invalid. please select again...'
       player1_move = get_player1_move
@@ -87,7 +87,7 @@ class Game
     loop do
       set_index_variables(player2_move, @player2.symbolic_color)
       break if @board.find_piece(@dest_row, @dest_column, @player2.symbolic_color, @piece_type) &&
-        @board.available_location?(@start_row, @dest_row, @dest_column)
+        @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
 
       puts 'move invalid. please select again...'
       player2_move = get_player2_move

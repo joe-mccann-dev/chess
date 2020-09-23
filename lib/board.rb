@@ -122,13 +122,14 @@ class Board
 
   def valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
     dest_column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(start_row, dest_row, dest_column) &&
+      available_location?(start_row, dest_row, start_column, dest_column) &&
       piece.allowed_move?(start_row, dest_row, player_color, start_column, dest_column)
   end
 
-  def available_location?(start_row, dest_row, dest_column)
+  def available_location?(start_row, dest_row, start_column, dest_column)
     @squares[dest_row][dest_column] == ' ' && 
-      column_has_space_for_move?(start_row, dest_row, dest_column)
+      column_has_space_for_move?(start_row, dest_row, dest_column) &&
+      row_has_space_for_move?(start_row, start_column, dest_row, dest_column)
   end
 
   def column_has_space_for_move?(start_row, dest_row, dest_column)
@@ -144,6 +145,23 @@ class Board
   def column_check_helper(start, dest_row, dest_column)
     start.upto(dest_row) do |row|
       return false if @squares[row][dest_column] != ' '
+    end
+    true
+  end
+
+  def row_has_space_for_move?(start_row, start_column, dest_row, dest_column)
+    @squares.each_with_index do |row, row_index|
+      row.each do |square|
+        unless square == ' '
+          if square.location == [start_row, start_column]
+            if dest_column > start_column
+              (start_column + 1).upto(dest_column) do |col_index|
+                return false if @squares[row_index][col_index] != ' '
+              end
+            end
+          end
+        end
+      end
     end
     true
   end
