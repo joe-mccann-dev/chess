@@ -29,7 +29,7 @@ class Pawn
     else
       (start_row - dest_row).abs == 1 &&
         (start_column - dest_column).abs.zero? &&
-        dest_row > start_row &&
+        dest_row > start_row
     end
   end
 
