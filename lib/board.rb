@@ -111,41 +111,48 @@ class Board
     move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
   end
 
-  def find_start_column(piece)
-    puts "start_column: #{piece.location[1]}"
-    piece.location[1]
-  end
-
   def find_dest_column(letter)
     ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
   end
 
   def valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
     dest_column.between?(0, 7) && dest_row.between?(0, 7) &&
-      available_location?(start_row, dest_row, dest_column) &&
+      available_location?(start_row, dest_row, start_column, dest_column) &&
       piece.allowed_move?(start_row, dest_row, player_color, start_column, dest_column)
   end
 
-  def available_location?(start_row, dest_row, dest_column)
-    @squares[dest_row][dest_column] == ' ' && 
-      column_has_space_for_move?(start_row, dest_row, dest_column)
+  def available_location?(start_row, dest_row, start_column, dest_column)
+    @squares[dest_row][dest_column] == ' ' &&
+      column_has_space_for_move?(start_row, dest_row, dest_column) &&
+      row_has_space_for_move?(start_row, dest_row, start_column, dest_column)
   end
 
   def column_has_space_for_move?(start_row, dest_row, dest_column)
     if start_row < dest_row
-      start = start_row + 1
-      column_check_helper(start, dest_row, dest_column)
+      check_space_between_rows(start_row + 1, dest_row, dest_column)
     else
-      start = start_row - 1
-      column_check_helper(dest_row, start, dest_column)
+      check_space_between_rows(dest_row, start_row - 1, dest_column)
     end
   end
 
-  def column_check_helper(start, dest_row, dest_column)
-    start.upto(dest_row) do |row|
-      return false if @squares[row][dest_column] != ' '
+  def check_space_between_rows(starting_place, destination, dest_column)
+    starting_place.upto(destination) do |r|
+      return false if @squares[r][dest_column] != ' '
     end
-    true
+  end
+
+  def row_has_space_for_move?(start_row, dest_row, start_column, dest_column)
+    if dest_column > start_column
+      check_space_between_columns(start_row, dest_row, start_column + 1, dest_column)
+    else
+      check_space_between_columns(start_row, dest_row, dest_column, start_column - 1)
+    end
+  end
+
+  def check_space_between_columns(start_row, _dest_row, starting_place, destination)
+    starting_place.upto(destination) do |c|
+      return false if @squares[start_row][c] != ' '
+    end
   end
 
   def determine_piece_class(prefix)

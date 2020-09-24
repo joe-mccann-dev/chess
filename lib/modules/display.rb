@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Display
   def show_welcome_message
     puts <<-HEREDOC
@@ -10,7 +12,7 @@ module Display
 
     HEREDOC
   end
-  
+
   def display(starting_row = 8)
     puts
     @squares.each_with_index do |row, index|
@@ -35,12 +37,14 @@ module Display
   end
 
   def print_on_light_black(square)
-    print " #{square} ".on_light_black       if     square.is_a?(String)
-    print " #{square.displayed_color} ".on_light_black unless square.is_a?(String)
+    print " #{square} ".on_light_black if square.is_a?(String)
+    unless square.is_a?(String)
+      print " #{square.displayed_color} ".on_light_black
+    end
   end
 
   def print_on_black(square)
-    print " #{square} ".on_black       if     square.is_a?(String)
+    print " #{square} ".on_black if square.is_a?(String)
     print " #{square.displayed_color} ".on_black unless square.is_a?(String)
   end
 end
