@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colorize'
 
 class Player
@@ -10,7 +12,7 @@ class Player
     @symbolic_color = nil
     @winner = false
   end
-  
+
   WHITE = "\u265F".colorize(:light_yellow)
   BLACK = "\u265F".colorize(:cyan)
 
@@ -35,13 +37,13 @@ class Player
     choice = gets.chomp.to_i
     loop do
       break if valid_color?(choice)
-  
+
       print 'please enter 1 or 2: '
       choice = gets.chomp.to_i
     end
     assign_color(choice)
   end
-  
+
   def show_color_choices
     puts 'Player 1 will now choose a color. Player 2 will be the opposite color.'
     puts "#{@name}, would you like to be White or Black?"
