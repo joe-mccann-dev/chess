@@ -10,12 +10,12 @@ class Board
   def make_initial_board
     @squares = [
       black_row,
-      Array.new(8) { |i| Pawn.new(2, [1, i]) },
+      Array.new(8) { |c| Pawn.new(2, [1, c]) },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
-      Array.new(8) { |i| Pawn.new(1, [6, i]) },
+      Array.new(8) { |c| Pawn.new(1, [6, c]) },
       white_row
     ]
   end
@@ -104,15 +104,7 @@ class Board
     @squares[start_row][start_column] = ' ' if start_column != dest_column
     piece.update_num_moves if piece.is_a?(Pawn)
     piece.update_location(dest_row, dest_column)
-  end
-
-  def find_dest_row(move)
-    chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
-    move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
-  end
-
-  def find_dest_column(letter)
-    ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
+    display
   end
 
   def valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
@@ -151,14 +143,6 @@ class Board
   def check_space_between_columns(start_row, _dest_row, starting_place, destination)
     starting_place.upto(destination) do |c|
       return false if @squares[start_row][c] != ' '
-    end
-  end
-
-  def determine_piece_class(prefix)
-    piece_objects = [Pawn, Rook, Knight, Bishop, Queen, King]
-    prefixes = ['', 'R', 'N', 'B', 'Q', 'K']
-    prefixes.each_with_index do |p, index|
-      return piece_objects[index] if p == prefix
     end
   end
 end

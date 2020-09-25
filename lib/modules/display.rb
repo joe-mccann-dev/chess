@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module Display
+  
+  WHITE = "\u265F".colorize(:light_yellow).freeze
+  BLACK = "\u265F".colorize(:cyan).freeze
+
   def show_welcome_message
     puts <<-HEREDOC
 

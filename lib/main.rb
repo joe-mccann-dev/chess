@@ -2,6 +2,7 @@
 
 require 'colorize'
 require_relative './modules/display.rb'
+require_relative './modules/setup_game_variables.rb'
 require_relative './game.rb'
 require_relative './board.rb'
 require_relative './player.rb'

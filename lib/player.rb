@@ -3,6 +3,7 @@
 require 'colorize'
 
 class Player
+  include Display
   attr_reader :displayed_color, :symbolic_color, :name
   attr_accessor :winner
 
@@ -12,9 +13,6 @@ class Player
     @symbolic_color = nil
     @winner = false
   end
-
-  WHITE = "\u265F".colorize(:light_yellow)
-  BLACK = "\u265F".colorize(:cyan)
 
   def request_info
     request_name
