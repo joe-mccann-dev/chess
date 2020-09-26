@@ -45,7 +45,7 @@ class Player
   def show_color_choices
     puts 'Player 1 will now choose a color. Player 2 will be the opposite color.'
     puts "#{@name}, would you like to be White or Black?"
-    print "Enter 1 for #{"\u265F".colorize(:light_yellow)}, 2 for #{"\u265F".colorize(:cyan)}: "
+    print "Enter 1 for #{WHITE}, 2 for #{BLACK}: "
   end
 
   def assign_color(choice)

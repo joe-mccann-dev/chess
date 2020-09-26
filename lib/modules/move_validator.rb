@@ -48,18 +48,27 @@ module MoveValidator
     end
   end
 
+
   def row_has_space_for_move?(start_row, dest_row, start_column, dest_column)
     if dest_column > start_column
       check_space_between_columns(start_row, dest_row, start_column + 1, dest_column)
     else
       check_space_between_columns(start_row, dest_row, dest_column, start_column - 1)
     end
-  end
+  endq
 
   def check_space_between_columns(start_row, dest_row, starting_place, destination)
     starting_place.upto(destination) do |c|
+      return true if simple_diagonal_movemment?(start_row, dest_row, starting_place, destination)
+  
       return false if @squares[start_row][c] != ' '
     end
+  end
+  
+  def simple_diagonal_movemment?(start_row, dest_row, starting_place, destination)
+    (dest_row - start_row).abs <= 1 &&
+      (starting_place - destination).abs <= 1 &&
+      @squares[dest_row][destination] == ' '
   end
 
 end
