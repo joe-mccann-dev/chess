@@ -55,7 +55,7 @@ module MoveValidator
     else
       check_space_between_columns(start_row, dest_row, dest_column, start_column - 1)
     end
-  endq
+  end
 
   def check_space_between_columns(start_row, dest_row, starting_place, destination)
     starting_place.upto(destination) do |c|
