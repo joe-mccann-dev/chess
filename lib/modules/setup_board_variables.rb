@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module SetupBoardVariables
-  def set_piece_type(move)
-    @prefix = set_prefix(move)
-    @piece_type = determine_piece_class(@prefix)
+  def assign_piece_type(move)
+    @piece_prefix = assign_prefix(move)
+    @piece_type = determine_piece_class(@piece_prefix)
   end
 
-  def set_prefix(move)
-    @prefix = move.length == 2 ? '' : move[0].upcase
+  def assign_prefix(move)
+    move.length == 2 ? '' : move[0].upcase
   end
 
   def determine_piece_class(prefix)
@@ -18,12 +18,10 @@ module SetupBoardVariables
     end
   end
 
-  def set_index_variables(move, player_color)
+  def assign_target_variables(move, player_color)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
-    @piece = find_piece(@dest_row, @dest_column, player_color, @piece_type)
-    @start_row = @piece.location[0] if @piece
-    @start_column = @piece.location[1] if @piece
+    @piece = find_piece(player_color, @piece_type)
   end
 
   def find_dest_row(move)

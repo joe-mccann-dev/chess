@@ -53,28 +53,28 @@ class Game
   def player1_turn
     player1_move = validate_player1_move
     loop do
-      @board.set_index_variables(player1_move, @player1.symbolic_color)
-      break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
-               @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
+      @board.assign_target_variables(player1_move, @player1.symbolic_color)
+      break if @board.find_piece(@player1.symbolic_color, @board.piece_type) &&
+               @board.available_location?(@board.start_row, @board.start_column)
 
       puts 'move not allowed. please try again...'
       player1_move = validate_player1_move
     end
-    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
+    @board.update_board
   end
 
   # loop breaks if piece is found and square is available
   def player2_turn
     player2_move = validate_player2_move
     loop do
-      @board.set_index_variables(player2_move, @player2.symbolic_color)
-      break if @board.find_piece(@dest_row, @dest_column, @player2.symbolic_color, @piece_type) &&
-               @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
+      @board.assign_target_variables(player2_move, @player2.symbolic_color)
+      break if @board.find_piece(@player2.symbolic_color, @board.piece_type) &&
+               @board.available_location?(@board.start_row, @board.start_column)
 
       puts 'move not allowed. please try again...'
       player2_move = validate_player2_move
     end
-    @board.update_board(@start_row, @dest_row, @start_column, @dest_column, @piece)
+    @board.update_board
   end
 
   # loop breaks if input string is valid algebraic notation
@@ -86,7 +86,7 @@ class Game
       puts 'invalid input. please try again...'
       player1_move = request_player1_move
     end
-    @board.set_piece_type(player1_move)
+    @board.assign_piece_type(player1_move)
     player1_move
   end
 
@@ -99,7 +99,7 @@ class Game
       puts 'invalid input. please try again...'
       player2_move = request_player2_move
     end
-    @board.set_piece_type(player2_move)
+    @board.assign_piece_type(player2_move)
     player2_move
   end
 

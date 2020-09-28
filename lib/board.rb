@@ -4,6 +4,8 @@ class Board
   include Display
   include MoveValidator
   include SetupBoardVariables
+  attr_reader :start_row, :start_column, :piece_type
+  
   def initialize(squares = make_initial_board)
     @squares = squares
     @start_column = nil
@@ -12,7 +14,7 @@ class Board
     @dest_row = nil
     @piece = nil
     @piece_type = nil
-    @prefix = nil
+    @piece_prefix = nil
   end
 
   def make_initial_board
@@ -66,52 +68,55 @@ class Board
     black_pieces
   end
 
-  def white_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-    white_pieces.select do |piece|
-      start_row    = piece.location[0]
-      start_column = piece.location[1]
-      valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
-    end
-  end
-
-  def black_pieces_that_go_to_dest(dest_row, dest_column, player_color)
-    black_pieces.select do |piece|
-      start_row    = piece.location[0]
-      start_column = piece.location[1]
-      valid_move?(start_row, dest_row, start_column, dest_column, player_color, piece)
-    end
-  end
-
-  def find_piece(dest_row, dest_column, player_color, piece_type)
+  def find_piece(player_color, piece_type)
     if player_color == :white
-      find_white_piece(dest_row, dest_column, player_color, piece_type)
+      find_white_piece(player_color, piece_type)
     else
-      find_black_piece(dest_row, dest_column, player_color, piece_type)
+      find_black_piece(player_color, piece_type)
     end
   end
 
-  def find_white_piece(dest_row, dest_column, player_color, piece_type)
-    white_pieces_that_go_to_dest(dest_row, dest_column, player_color).each do |piece|
-      return piece if piece.is_a?(piece_type) &&
-        valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
-    end
-    nil
-  end
-
-  def find_black_piece(dest_row, dest_column, player_color, piece_type)
-    black_pieces_that_go_to_dest(dest_row, dest_column, player_color).each do |piece|
-      return piece if piece.is_a?(piece_type) &&
-        valid_move?(piece.location[0], dest_row, piece.location[1], dest_column, player_color, piece)
+  def find_white_piece(player_color, piece_type)
+    white_pieces_that_go_to_dest.each do |piece|
+      assign_start_location(piece)
+      return piece if piece.instance_of?(piece_type) &&
+        valid_move?(@start_row, @start_column, player_color, piece)
     end
     nil
   end
 
-  def update_board(start_row, dest_row, start_column, dest_column, piece)
-    @squares[dest_row][dest_column] = @squares[start_row][start_column]
-    @squares[start_row][dest_column]  = ' ' if start_column == dest_column
-    @squares[start_row][start_column] = ' ' if start_column != dest_column
-    piece.update_num_moves if piece.is_a?(Pawn)
-    piece.update_location(dest_row, dest_column)
+  def find_black_piece(player_color, piece_type)
+    black_pieces_that_go_to_dest.each do |piece|
+      assign_start_location(piece)
+      return piece if piece.instance_of?(piece_type) &&
+        valid_move?(@start_row, @start_column, player_color, piece)
+    end
+    nil
+  end
+
+  def assign_start_location(piece)
+    @start_row = piece.location[0]
+    @start_column = piece.location[1]
+  end
+
+  def white_pieces_that_go_to_dest
+    white_pieces.select do |piece|
+      valid_move?(piece.location[0], piece.location[1], :white, piece)
+    end
+  end
+
+  def black_pieces_that_go_to_dest
+    black_pieces.select do |piece|
+      valid_move?(piece.location[0], piece.location[1], :black, piece)
+    end
+  end
+
+  def update_board
+    @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
+    @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
+    @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
+    @piece.update_num_moves if @piece.is_a?(Pawn)
+    @piece.update_location(@dest_row, @dest_column)
     display
   end
 end
