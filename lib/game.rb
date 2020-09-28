@@ -4,7 +4,6 @@ class Game
   include Display
   include SetupGameVariables
   include InputValidator
-  include MoveValidator
 
   def initialize(player1 = Player.new, player2 = Player.new, board = Board.new)
     @player1 = player1
