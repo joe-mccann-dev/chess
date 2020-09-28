@@ -24,6 +24,11 @@ module SetupBoardVariables
     @piece = find_piece(player_color, @piece_type)
   end
 
+  def assign_start_location(piece)
+    @start_row = piece.location[0]
+    @start_column = piece.location[1]
+  end
+
   def find_dest_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
     move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)

@@ -94,11 +94,6 @@ class Board
     nil
   end
 
-  def assign_start_location(piece)
-    @start_row = piece.location[0]
-    @start_column = piece.location[1]
-  end
-
   def white_pieces_that_go_to_dest
     white_pieces.select do |piece|
       valid_move?(piece.location[0], piece.location[1], :white, piece)
