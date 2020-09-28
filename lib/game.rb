@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Game
-  include Displa
+  include Display
   include InputValidator
 
   def initialize(player1 = Player.new, player2 = Player.new, board = Board.new)
@@ -53,7 +53,7 @@ class Game
   def player1_turn
     player1_move = validate_player1_move
     loop do
-      set_index_variables(player1_move, @player1.symbolic_color)
+      @board.set_index_variables(player1_move, @player1.symbolic_color)
       break if @board.find_piece(@dest_row, @dest_column, @player1.symbolic_color, @piece_type) &&
                @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
 
@@ -67,7 +67,7 @@ class Game
   def player2_turn
     player2_move = validate_player2_move
     loop do
-      set_index_variables(player2_move, @player2.symbolic_color)
+      @board.set_index_variables(player2_move, @player2.symbolic_color)
       break if @board.find_piece(@dest_row, @dest_column, @player2.symbolic_color, @piece_type) &&
                @board.available_location?(@start_row, @dest_row, @start_column, @dest_column)
 
@@ -86,7 +86,7 @@ class Game
       puts 'invalid input. please try again...'
       player1_move = request_player1_move
     end
-    set_piece_type(player1_move)
+    @board.set_piece_type(player1_move)
     player1_move
   end
 
@@ -99,7 +99,7 @@ class Game
       puts 'invalid input. please try again...'
       player2_move = request_player2_move
     end
-    set_piece_type(player2_move)
+    @board.set_piece_type(player2_move)
     player2_move
   end
 

@@ -21,7 +21,7 @@ module SetupBoardVariables
   def set_index_variables(move, player_color)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
-    @piece = @board.find_piece(@dest_row, @dest_column, player_color, @piece_type)
+    @piece = find_piece(@dest_row, @dest_column, player_color, @piece_type)
     @start_row = @piece.location[0] if @piece
     @start_column = @piece.location[1] if @piece
   end
