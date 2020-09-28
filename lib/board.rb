@@ -3,8 +3,16 @@
 class Board
   include Display
   include MoveValidator
+  include SetupBoardVariables
   def initialize(squares = make_initial_board)
     @squares = squares
+    @start_column = nil
+    @dest_column = nil
+    @start_row = nil
+    @dest_row = nil
+    @piece = nil
+    @piece_type = nil
+    @prefix = nil
   end
 
   def make_initial_board

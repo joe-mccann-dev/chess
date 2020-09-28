@@ -1,21 +1,13 @@
 # frozen_string_literal: true
 
 class Game
-  include Display
-  include SetupGameVariables
+  include Displa
   include InputValidator
 
   def initialize(player1 = Player.new, player2 = Player.new, board = Board.new)
     @player1 = player1
     @player2 = player2
     @board = board
-    @start_column = nil
-    @dest_column = nil
-    @start_row = nil
-    @dest_row = nil
-    @piece = nil
-    @piece_type = nil
-    @prefix = nil
   end
 
   def start_game

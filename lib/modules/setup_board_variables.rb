@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SetupGameVariables
+module SetupBoardVariables
   def set_piece_type(move)
     @prefix = set_prefix(move)
     @piece_type = determine_piece_class(@prefix)
