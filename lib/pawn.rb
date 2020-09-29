@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Pawn
+  include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
 
   def initialize(color, location, unicode = "\u265F")
@@ -12,32 +13,19 @@ class Pawn
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
   end
 
-  def available_squares
-    row = @location[0]
-    col = @location[1]
-    available_squares = adj_squares(row, col)
-  end
-
-  def adj_squares(row, col)
-    adj_list = []
+  def row_moves
     if @symbolic_color == :white
-      dy = @num_moves == 0 ? [-1, -2] : [-1, 0]
-      dx = @num_moves == 0 ? [0, 0] : [0, 0]
+      @num_moves == 0 ? [-1, -2] : [-1, 0]
     else
-      dy = @num_moves == 0 ? [1, 2] : [1, 0]
-      dx = @num_moves == 0 ? [0, 0] : [0, 0]
+      @num_moves == 0 ? [1, 2] : [1, 0]
     end
-    2.times do |n|
-      adj_list << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
-    end
-    adj_list
   end
 
   # TODO - add column restrictions once ability to attack is created
-  def on_board?(row, row_diff, col, col_diff)
-    (row + row_diff).between?(0, 7) && (col + col_diff).between?(0, 7)
+  def col_moves
+    [0, 0]
   end
-
+  
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end

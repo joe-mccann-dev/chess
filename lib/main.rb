@@ -3,6 +3,7 @@
 require 'colorize'
 require_relative './modules/display.rb'
 require_relative './modules/setup_board_variables.rb'
+require_relative './modules/adjacency_list_generator.rb'
 require_relative './modules/input_validator.rb'
 require_relative './modules/move_validator.rb'
 require_relative './game.rb'

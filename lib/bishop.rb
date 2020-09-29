@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Bishop
+  include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
 
   def initialize(color, location, unicode = "\u265D")
@@ -15,21 +16,18 @@ class Bishop
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  # def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
-  #   if player_color == :white
-  #     (start_row - dest_row).abs == 1 &&
-  #       # change once you incorporate ability for pawns to attack (column abs diff can be 1)
-  #       (start_column - dest_column).abs.zero? &&
-  #       dest_row < start_row
-  #   else
-  #     (start_row - dest_row).abs == 1 &&
-  #       dest_row > start_row &&
-  #       (start_column - dest_column).abs.zero? == 0
-  #   end
-  # end
+  def row_moves
+    # [1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7,  1,  2,  3,  4,  5,  6,  7, -1, -2, -3, -4, -5, -6, -7]
+    (1..7).to_a + (-7..-1).to_a.reverse + (1..7).to_a + (-7..-1).to_a.reverse
+  end
+
+  def col_moves
+    # [1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7, -1, -2, -3, -4, -5, -6, -7,  1,  2,  3,  4,  5,  6,  7]
+    (1..7).to_a + (-7..-1).to_a.reverse + (-7..-1).to_a.reverse + (1..7).to_a
+  end
 
   def allowed_move?(dest_row, dest_column)
-    
+    available_squares.include?([dest_row, dest_column])
   end
 
   def update_location(dest_row, column)

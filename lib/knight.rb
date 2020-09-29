@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Knight
+  include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
 
   def initialize(color, location, unicode = "\u265E")
@@ -11,24 +12,12 @@ class Knight
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
   end
 
-  def available_squares
-    row = @location[0]
-    col = @location[1]
-    available_squares = adj_squares(row, col)
+  def row_moves
+    [1, -1, 1, -1, 2, -2, 2, -2]
   end
 
-  def adj_squares(row, col)
-    adj_list = []
-    dy = [1, -1, 1, -1, 2, -2, 2, -2]
-    dx = [2, 2, -2, -2, 1, 1, -1, -1]
-    8.times do |n|
-      adj_list << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
-    end
-    adj_list
-  end
-
-  def on_board?(row, row_diff, col, col_diff)
-    (row + row_diff).between?(0, 7) && (col + col_diff).between?(0, 7)
+  def col_moves
+    [2, 2, -2, -2, 1, 1, -1, -1]
   end
 
   def assign_symbolic_color(displayed_color, unicode)

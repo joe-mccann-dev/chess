@@ -22,6 +22,7 @@ module SetupBoardVariables
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
     @piece = find_piece(player_color, @piece_type)
+    p @piece
   end
 
   def assign_start_location(piece)
