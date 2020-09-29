@@ -4,7 +4,7 @@ class Board
   include Display
   include MoveValidator
   include SetupBoardVariables
-  attr_reader :start_row, :start_column, :piece_type
+  attr_reader :start_row, :start_column, :piece, :piece_type
   
   def initialize(squares = make_initial_board)
     @squares = squares

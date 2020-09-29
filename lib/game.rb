@@ -55,7 +55,7 @@ class Game
     loop do
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if @board.find_piece(@player1.symbolic_color, @board.piece_type) &&
-               @board.available_location?(@board.start_row, @board.start_column)
+               @board.available_location?(@board.start_row, @board.start_column, @board.piece)
 
       puts 'move not allowed. please try again...'
       player1_move = validate_player1_move
@@ -69,7 +69,7 @@ class Game
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if @board.find_piece(@player2.symbolic_color, @board.piece_type) &&
-               @board.available_location?(@board.start_row, @board.start_column)
+               @board.available_location?(@board.start_row, @board.start_column, @board.piece)
 
       puts 'move not allowed. please try again...'
       player2_move = validate_player2_move
