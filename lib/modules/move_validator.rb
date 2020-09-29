@@ -8,9 +8,15 @@ module MoveValidator
 
   def available_location?(start_row, start_column)
     # if move is diagonal, do a different set of conditionals??
-    @squares[@dest_row][@dest_column] == ' ' &&
-      column_has_space_for_move?(start_row, start_column) &&
-      row_has_space_for_move?(start_row, start_column)
+    if start_row == @dest_row || start_column == @dest_column
+      @squares[@dest_row][@dest_column] == ' ' &&
+        column_has_space_for_move?(start_row, start_column) &&
+        row_has_space_for_move?(start_row, start_column)
+    else
+      (@dest_row - start_row).abs <= 1 &&
+      (start_column - @dest_column).abs <= 1 &&
+      @squares[@dest_row][@dest_column] == ' '
+    end
   end
 
   def column_has_space_for_move?(start_row, start_column)
@@ -36,16 +42,8 @@ module MoveValidator
   end
 
   def check_space_between_columns(start_row, starting_place, destination)
-    starting_place.upto(destination) do |c|
-      return true if simple_diagonal_movemment?(start_row, starting_place, destination)
-  
+    starting_place.upto(destination) do |c|  
       return false if @squares[start_row][c] != ' '
     end
-  end
-  
-  def simple_diagonal_movemment?(start_row, starting_place, destination)
-    (@dest_row - start_row).abs <= 1 &&
-      (starting_place - destination).abs <= 1 &&
-      @squares[@dest_row][destination] == ' '
   end
 end
