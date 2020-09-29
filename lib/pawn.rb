@@ -19,7 +19,7 @@ class Pawn
   end
 
   def adj_squares(row, col)
-    squares = []
+    adj_list = []
     if @symbolic_color == :white
       dy = @num_moves == 0 ? [-1, -2] : [-1, 0]
       dx = @num_moves == 0 ? [0, 0] : [0, 0]
@@ -28,9 +28,9 @@ class Pawn
       dx = @num_moves == 0 ? [0, 0] : [0, 0]
     end
     2.times do |n|
-      squares << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
+      adj_list << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
     end
-    squares
+    adj_list
   end
 
   # TODO - add column restrictions once ability to attack is created
