@@ -15,17 +15,21 @@ class Bishop
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
-    if player_color == :white
-      (start_row - dest_row).abs == 1 &&
-        # change once you incorporate ability for pawns to attack (column abs diff can be 1)
-        (start_column - dest_column).abs.zero? &&
-        dest_row < start_row
-    else
-      (start_row - dest_row).abs == 1 &&
-        dest_row > start_row &&
-        (start_column - dest_column).abs.zero? == 0
-    end
+  # def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
+  #   if player_color == :white
+  #     (start_row - dest_row).abs == 1 &&
+  #       # change once you incorporate ability for pawns to attack (column abs diff can be 1)
+  #       (start_column - dest_column).abs.zero? &&
+  #       dest_row < start_row
+  #   else
+  #     (start_row - dest_row).abs == 1 &&
+  #       dest_row > start_row &&
+  #       (start_column - dest_column).abs.zero? == 0
+  #   end
+  # end
+
+  def allowed_move?(dest_row, dest_column)
+    
   end
 
   def update_location(dest_row, column)

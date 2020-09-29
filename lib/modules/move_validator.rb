@@ -3,20 +3,22 @@
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     available_location?(start_row, start_column) &&
-      piece.allowed_move?(start_row, @dest_row, player_color, start_column, @dest_column)
+      # piece.allowed_move?(start_row, @dest_row, player_color, start_column, @dest_column)
+      piece.allowed_move?(@dest_row, @dest_column)
   end
 
   def available_location?(start_row, start_column)
     # if move is diagonal, do a different set of conditionals??
-    if start_row == @dest_row || start_column == @dest_column
-      @squares[@dest_row][@dest_column] == ' ' &&
-        column_has_space_for_move?(start_row, start_column) &&
-        row_has_space_for_move?(start_row, start_column)
-    else
-      (@dest_row - start_row).abs <= 1 &&
-      (start_column - @dest_column).abs <= 1 &&
-      @squares[@dest_row][@dest_column] == ' '
-    end
+    # if start_row == @dest_row || start_column == @dest_column
+    #   @squares[@dest_row][@dest_column] == ' ' &&
+    #     column_has_space_for_move?(start_row, start_column) &&
+    #     row_has_space_for_move?(start_row, start_column)
+    # else
+    #   (@dest_row - start_row).abs <= 1 &&
+    #     (start_column - @dest_column).abs <= 1 &&
+    #     @squares[@dest_row][@dest_column] == ' '
+    # end
+    @squares[@dest_row][@dest_column] == ' '
   end
 
   def column_has_space_for_move?(start_row, start_column)

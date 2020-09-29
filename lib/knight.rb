@@ -11,21 +11,32 @@ class Knight
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
   end
 
+  def available_squares
+    row = @location[0]
+    col = @location[1]
+    available_squares = adj_squares(row, col)
+  end
+
+  def adj_squares(row, col)
+    squares = []
+    dy = [1, -1, 1, -1, 2, -2, 2, -2]
+    dx = [2, 2, -2, -2, 1, 1, -1, -1]
+    8.times do |n|
+      squares << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
+    end
+    squares
+  end
+
+  def on_board?(row, row_diff, col, col_diff)
+    (row + row_diff).between?(0, 7) && (col + col_diff).between?(0, 7)
+  end
+
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
-    if player_color == :white
-      (start_row - dest_row).abs == 1 &&
-        # change once you incorporate ability for pawns to attack (column abs diff can be 1)
-        (start_column - dest_column).abs.zero? &&
-        dest_row < start_row
-    else
-      (start_row - dest_row).abs == 1 &&
-        dest_row > start_row &&
-        (start_column - dest_column).abs.zero?
-    end
+  def allowed_move?(dest_row, dest_column)
+    available_squares.include?([dest_row, dest_column])
   end
 
   def update_location(dest_row, column)
