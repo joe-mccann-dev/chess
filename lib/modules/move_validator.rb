@@ -3,7 +3,6 @@
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     available_location?(start_row, start_column) &&
-      # piece.allowed_move?(start_row, @dest_row, player_color, start_column, @dest_column)
       piece.allowed_move?(@dest_row, @dest_column)
   end
 

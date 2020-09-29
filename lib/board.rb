@@ -80,6 +80,7 @@ class Board
     white_pieces_that_go_to_dest.each do |piece|
       assign_start_location(piece)
       return piece if piece.instance_of?(piece_type) &&
+        # (piece.location[1] - @dest_column).abs <= 2 if piece.is_a?(Knight) &&
         valid_move?(@start_row, @start_column, player_color, piece)
     end
     nil
@@ -89,6 +90,7 @@ class Board
     black_pieces_that_go_to_dest.each do |piece|
       assign_start_location(piece)
       return piece if piece.instance_of?(piece_type) &&
+        # (piece.location[1] - @dest_column).abs <= 2 if piece.is_a?(Knight) &&
         valid_move?(@start_row, @start_column, player_color, piece)
     end
     nil
@@ -110,6 +112,7 @@ class Board
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
+    p @piece.available_squares
     @piece.update_num_moves if @piece.is_a?(Pawn)
     @piece.update_location(@dest_row, @dest_column)
     display

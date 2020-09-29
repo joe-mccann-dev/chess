@@ -18,13 +18,13 @@ class Knight
   end
 
   def adj_squares(row, col)
-    squares = []
+    adj_list = []
     dy = [1, -1, 1, -1, 2, -2, 2, -2]
     dx = [2, 2, -2, -2, 1, 1, -1, -1]
     8.times do |n|
-      squares << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
+      adj_list << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
     end
-    squares
+    adj_list
   end
 
   def on_board?(row, row_diff, col, col_diff)

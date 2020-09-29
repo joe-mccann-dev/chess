@@ -12,42 +12,38 @@ class Pawn
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
   end
 
+  def available_squares
+    row = @location[0]
+    col = @location[1]
+    available_squares = adj_squares(row, col)
+  end
+
+  def adj_squares(row, col)
+    squares = []
+    if @symbolic_color == :white
+      dy = @num_moves == 0 ? [-1, -2] : [-1, 0]
+      dx = @num_moves == 0 ? [0, 0] : [0, 0]
+    else
+      dy = @num_moves == 0 ? [1, 2] : [1, 0]
+      dx = @num_moves == 0 ? [0, 0] : [0, 0]
+    end
+    2.times do |n|
+      squares << [row + dy[n], col + dx[n]] if on_board?(row, dy[n], col, dx[n])
+    end
+    squares
+  end
+
+  # TODO - add column restrictions once ability to attack is created
+  def on_board?(row, row_diff, col, col_diff)
+    (row + row_diff).between?(0, 7) && (col + col_diff).between?(0, 7)
+  end
+
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
 
-  # def allowed_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
-  #   if @num_moves.zero?
-  #     return allowed_initial_move?(start_row, dest_row, player_color, start_column, dest_column)
-  #   end
-
-  #   if player_color == :white
-  #     (start_row - dest_row).abs == 1 &&
-  #       # change once you incorporate ability for pawns to attack (column abs diff can be 1)
-  #       (start_column - dest_column).abs.zero? &&
-  #       dest_row < start_row
-  #   else
-  #     (start_row - dest_row).abs == 1 &&
-  #       (start_column - dest_column).abs.zero? &&
-  #       dest_row > start_row
-  #   end
-  # end
-
   def allowed_move?(dest_row, dest_column)
-    
-  end
-
-  def allowed_initial_move?(start_row, dest_row, player_color, start_column = nil, dest_column = nil)
-    if player_color == :white
-      (start_row - dest_row).abs.between?(1, 2) &&
-        # change once you incorporate ability for pawns to attack (column abs diff can be 1)
-        (start_column - dest_column).abs.zero? &&
-        dest_row < start_row
-    else
-      (start_row - dest_row).abs.between?(1, 2) &&
-        dest_row > start_row &&
-        (start_column - dest_column).abs.zero?
-    end
+    available_squares.include?([dest_row, dest_column])
   end
 
   def update_num_moves
