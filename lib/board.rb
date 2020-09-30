@@ -80,7 +80,6 @@ class Board
     white_pieces_that_go_to_dest.each do |piece|
       assign_start_location(piece)
       return piece if piece.instance_of?(piece_type) &&
-        # (piece.location[1] - @dest_column).abs <= 2 if piece.is_a?(Knight) &&
         valid_move?(@start_row, @start_column, player_color, piece)
     end
     nil
@@ -90,7 +89,6 @@ class Board
     black_pieces_that_go_to_dest.each do |piece|
       assign_start_location(piece)
       return piece if piece.instance_of?(piece_type) &&
-        # (piece.location[1] - @dest_column).abs <= 2 if piece.is_a?(Knight) &&
         valid_move?(@start_row, @start_column, player_color, piece)
     end
     nil

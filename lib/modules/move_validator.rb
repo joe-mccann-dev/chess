@@ -8,17 +8,23 @@ module MoveValidator
 
   def available_location?(start_row, start_column, piece)
     return allowed_knight_move?(piece) if piece.is_a?(Knight)
+    return piece_in_diagonal_path?(start_row, start_column) if piece.is_a?(Bishop) && piece.location[0] == 7
+    @squares[@dest_row][@dest_column] == ' ' &&
+      column_has_space_for_move?(start_row, start_column) &&
+      row_has_space_for_move?(start_row, start_column)
+  end
 
-    # if move is diagonal, do a different set of conditionals??
-    if start_row == @dest_row || start_column == @dest_column
-      @squares[@dest_row][@dest_column] == ' ' &&
-        column_has_space_for_move?(start_row, start_column) &&
-        row_has_space_for_move?(start_row, start_column)
-    else
-      (@dest_row - start_row).abs <= 1 &&
-        (start_column - @dest_column).abs <= 1 &&
-        @squares[@dest_row][@dest_column] == ' '
+  def diagonal_move?(start_row, start_column)
+    start_row != @dest_row && start_column != @dest_column
+  end
+
+  # do variations of start_row - n and dest_column + n depending on move direction
+  def piece_in_diagonal_path?(start_row, start_column)
+    diagonal = []
+    (@dest_column - start_column) + 1.times do |n|
+      diagonal << @squares[start_row - n][@dest_column + n]
     end
+    diagonal.any? { |s| s != ' ' } && @squares[@dest_row][@dest_column] == ' '
   end
 
   def allowed_knight_move?(piece)
