@@ -8,23 +8,52 @@ module MoveValidator
 
   def available_location?(start_row, start_column, piece)
     return allowed_knight_move?(piece) if piece.is_a?(Knight)
-    return piece_in_diagonal_path?(start_row, start_column) if piece.is_a?(Bishop) && piece.location[0] == 7
+    return diagonal_path_unobstructed?(start_row, start_column) if piece.is_a?(Queen)
     @squares[@dest_row][@dest_column] == ' ' &&
       column_has_space_for_move?(start_row, start_column) &&
       row_has_space_for_move?(start_row, start_column)
   end
 
-  def diagonal_move?(start_row, start_column)
-    start_row != @dest_row && start_column != @dest_column
+  def diagonal_path_unobstructed?(start_row, start_column)
+    move_distance = (@dest_column - start_column).abs
+    if start_row > @dest_row
+      objects_in_path = ne_nw_diagonal_objects(start_row, start_column, move_distance)
+    else
+      objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
+    end
+    puts "objects_in_path: #{objects_in_path}"
+    if objects_in_path.any? { |s| s != ' ' }
+      return false
+    end
+    true
   end
 
-  # do variations of start_row - n and dest_column + n depending on move direction
-  def piece_in_diagonal_path?(start_row, start_column)
+  def ne_nw_diagonal_objects(start_row, start_column, move_distance)
     diagonal = []
-    (@dest_column - start_column) + 1.times do |n|
-      diagonal << @squares[start_row - n][@dest_column + n]
+    (move_distance).times do |n|
+      if @dest_column > start_column
+        puts 'start_row > @dest_row | @dest_column > start_column (ne)'
+        diagonal << @squares[@dest_row + n][@dest_column - n]
+      else
+        puts 'start_row > @dest_row | @ dest_column < start_column (nw)'
+        diagonal << @squares[@dest_row + n][@dest_column + n]
+      end
     end
-    diagonal.any? { |s| s != ' ' } && @squares[@dest_row][@dest_column] == ' '
+    diagonal
+  end
+
+  def se_sw_diagonal_objects(start_row, start_column, move_distance)
+    diagonal = []
+    (move_distance).times do |n|
+      if @dest_column > start_column
+        puts '@dest_row > start_row | @dest_column > start_column (se)'
+        diagonal << @squares[@dest_row - n][@dest_column - n]
+      else
+        puts '@dest_row > start_row | @dest_column < start_column (sw)'
+        diagonal << @squares[@dest_row - n][@dest_column + n]
+      end
+    end
+    diagonal
   end
 
   def allowed_knight_move?(piece)
