@@ -25,7 +25,7 @@ module Display
       starting_row -= 1
       puts "\n"
     end
-    print "   a  b  c  d  e  f  g  h\n\n"
+    print "   a   b   c   d   e   f   g   h\n\n"
   end
 
   def print_even_row(row)
@@ -41,14 +41,16 @@ module Display
   end
 
   def print_on_light_black(square)
-    print " #{square} ".on_light_black if square.is_a?(String)
+    print " #{square}  ".on_light_black if square == ' '
     unless square.is_a?(String)
-      print " #{square.displayed_color} ".on_light_black
+      print " #{square.displayed_color}  ".on_light_black
     end
   end
 
   def print_on_black(square)
-    print " #{square} ".on_black if square.is_a?(String)
-    print " #{square.displayed_color} ".on_black unless square.is_a?(String)
+    print " #{square}  ".on_black if square == ' '
+    unless square.is_a?(String)
+      print " #{square.displayed_color}  ".on_black
+    end
   end
 end
