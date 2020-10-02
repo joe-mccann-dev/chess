@@ -38,32 +38,41 @@ module MoveValidator
   end
 
   def ne_nw_diagonal_objects(start_row, start_column, move_distance)
-    diagonal = []
+    objects = []
     (move_distance).times do |n|
       if @squares[@dest_row + n]
-        if @dest_column > start_column # (ne)
-          # start at destination location and work backwards towards start piece
-          diagonal << @squares[@dest_row + n][@dest_column - n]
-        else # (nw)
-          diagonal << @squares[@dest_row + n][@dest_column + n]
-        end
+        objects = push_north_objects(n, start_column)
       end
+    end
+    objects
+  end
+
+  def se_sw_diagonal_objects(start_row, start_column, move_distance)
+    objects = []
+    (move_distance).times do |n|
+      if @squares[@dest_row - n]
+        objects = push_south_objects(n, start_column)
+      end
+    end
+    objects
+  end
+
+  def push_north_objects(n, start_column, diagonal = [])
+    if @dest_column > start_column # (ne)
+      # start at destination location and work backwards towards start piece
+      diagonal << @squares[@dest_row + n][@dest_column - n]
+    else # (nw)
+      diagonal << @squares[@dest_row + n][@dest_column + n]
     end
     diagonal
   end
 
-  def se_sw_diagonal_objects(start_row, start_column, move_distance)
-    diagonal = []
-    (move_distance).times do |n|
-      if @squares[@dest_row - n]
-        if @dest_column > start_column # (se)
-          diagonal << @squares[@dest_row - n][@dest_column - n]
-        else # (sw)
-          diagonal << @squares[@dest_row - n][@dest_column + n]
-        end
-      end
+  def push_south_objects(n, start_column, diagonal = [])
+    if @dest_column > start_column # (se)
+      diagonal << @squares[@dest_row - n][@dest_column - n]
+    else # (sw)
+      diagonal << @squares[@dest_row - n][@dest_column + n]
     end
-    diagonal
   end
 
   def allowed_knight_move?(piece)

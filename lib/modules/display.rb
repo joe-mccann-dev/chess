@@ -42,14 +42,14 @@ module Display
 
   def print_on_light_black(square)
     print " #{square}  ".on_light_black if square == ' '
-    unless square.is_a?(String)
+    unless square == ' '
       print " #{square.displayed_color}  ".on_light_black
     end
   end
 
   def print_on_black(square)
     print " #{square}  ".on_black if square == ' '
-    unless square.is_a?(String)
+    unless square == ' '
       print " #{square.displayed_color}  ".on_black
     end
   end
