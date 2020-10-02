@@ -34,19 +34,19 @@ module MoveValidator
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    return false if objects_in_path.any? { |s| s != ' ' }
-      
-    true
+    objects_in_path.any? { |s| s != ' ' } ? false : true
   end
 
   def ne_nw_diagonal_objects(start_row, start_column, move_distance)
     diagonal = []
     (move_distance).times do |n|
-      if @dest_column > start_column # (ne)
-        # start at destination location and work backwards towards start piece
-        diagonal << @squares[@dest_row + n][@dest_column - n]
-      else # (nw)
-        diagonal << @squares[@dest_row + n][@dest_column + n]
+      if @squares[@dest_row + n]
+        if @dest_column > start_column # (ne)
+          # start at destination location and work backwards towards start piece
+          diagonal << @squares[@dest_row + n][@dest_column - n]
+        else # (nw)
+          diagonal << @squares[@dest_row + n][@dest_column + n]
+        end
       end
     end
     diagonal
@@ -55,10 +55,12 @@ module MoveValidator
   def se_sw_diagonal_objects(start_row, start_column, move_distance)
     diagonal = []
     (move_distance).times do |n|
-      if @dest_column > start_column # (se)
-        diagonal << @squares[@dest_row - n][@dest_column - n]
-      else # (sw)
-        diagonal << @squares[@dest_row - n][@dest_column + n]
+      if @squares[@dest_row - n]
+        if @dest_column > start_column # (se)
+          diagonal << @squares[@dest_row - n][@dest_column - n]
+        else # (sw)
+          diagonal << @squares[@dest_row - n][@dest_column + n]
+        end
       end
     end
     diagonal
