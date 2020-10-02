@@ -7,35 +7,45 @@ module MoveValidator
   end
 
   def available_location?(start_row, start_column, piece)
-    return allowed_knight_move?(piece) if piece.is_a?(Knight)
-    return diagonal_path_unobstructed?(start_row, start_column) if piece.is_a?(Queen)
+    if piece.is_a?(Knight)
+      allowed_knight_move?(piece)
+    elsif diagonal_mover?(piece)
+      diagonal_path_unobstructed?(start_row, start_column)
+    else
+      horizontal_vertical_unobstructed?(start_row, start_column)
+    end
+  end
+
+  def horizontal_vertical_unobstructed?(start_row, start_column)
     @squares[@dest_row][@dest_column] == ' ' &&
-      column_has_space_for_move?(start_row, start_column) &&
-      row_has_space_for_move?(start_row, start_column)
+    column_has_space_for_move?(start_row, start_column) &&
+    row_has_space_for_move?(start_row, start_column)
+  end
+
+  def diagonal_mover?(piece)
+    piece.is_a?(Queen) || piece.is_a?(King) || piece.is_a?(Bishop)
   end
 
   def diagonal_path_unobstructed?(start_row, start_column)
     move_distance = (@dest_column - start_column).abs
+    # pieces at bottom have a larger start_row value d/t array index
     if start_row > @dest_row
       objects_in_path = ne_nw_diagonal_objects(start_row, start_column, move_distance)
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    puts "objects_in_path: #{objects_in_path}"
-    if objects_in_path.any? { |s| s != ' ' }
-      return false
-    end
+    return false if objects_in_path.any? { |s| s != ' ' }
+      
     true
   end
 
   def ne_nw_diagonal_objects(start_row, start_column, move_distance)
     diagonal = []
     (move_distance).times do |n|
-      if @dest_column > start_column
-        puts 'start_row > @dest_row | @dest_column > start_column (ne)'
+      if @dest_column > start_column # (ne)
+        # start at destination location and work backwards towards start piece
         diagonal << @squares[@dest_row + n][@dest_column - n]
-      else
-        puts 'start_row > @dest_row | @ dest_column < start_column (nw)'
+      else # (nw)
         diagonal << @squares[@dest_row + n][@dest_column + n]
       end
     end
@@ -45,11 +55,9 @@ module MoveValidator
   def se_sw_diagonal_objects(start_row, start_column, move_distance)
     diagonal = []
     (move_distance).times do |n|
-      if @dest_column > start_column
-        puts '@dest_row > start_row | @dest_column > start_column (se)'
+      if @dest_column > start_column # (se)
         diagonal << @squares[@dest_row - n][@dest_column - n]
-      else
-        puts '@dest_row > start_row | @dest_column < start_column (sw)'
+      else # (sw)
         diagonal << @squares[@dest_row - n][@dest_column + n]
       end
     end

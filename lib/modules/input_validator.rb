@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InputValidator
   def valid_input?(move)
     return false unless move.length.between?(2, 3)

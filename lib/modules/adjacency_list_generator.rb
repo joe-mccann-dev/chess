@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdjacencyListGenerator
   def available_squares
     row = @location[0]
