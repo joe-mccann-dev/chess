@@ -34,7 +34,7 @@ module MoveValidator
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    # puts "objects_in_path: #{objects_in_path}"
+    puts "objects_in_path: #{objects_in_path}"
     objects_in_path.any? { |s| s != ' ' } ? false : true
   end
 
@@ -59,9 +59,7 @@ module MoveValidator
     else # (nw)
       diagonal << @squares[@dest_row + n][@dest_column + n]
     end
-    diagonal
   end
-
 
   def push_south_diagonal(start_column, n, diagonal)
     if @dest_column > start_column # (se)
@@ -69,7 +67,6 @@ module MoveValidator
     else # (sw)
       diagonal << @squares[@dest_row - n][@dest_column + n]
     end
-    diagonal
   end
 
   def column_has_space_for_move?(start_row, start_column)
