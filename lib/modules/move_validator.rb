@@ -34,35 +34,40 @@ module MoveValidator
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    puts "objects_in_path: #{objects_in_path}"
+    # puts "objects_in_path: #{objects_in_path}"
     objects_in_path.any? { |s| s != ' ' } ? false : true
   end
 
-  def ne_nw_diagonal_objects(start_row, start_column, move_distance)
-    diagonal = []
-    (move_distance).times do |n|
-      if @squares[@dest_row + n]
-        if @dest_column > start_column # (ne)
-          # start at destination location and work backwards towards start piece
-          diagonal << @squares[@dest_row + n][@dest_column - n]
-        else # (nw)
-          diagonal << @squares[@dest_row + n][@dest_column + n]
-        end
-      end
+  def ne_nw_diagonal_objects(start_row, start_column, move_distance, diagonal = [])
+    move_distance.times do |n|
+      push_north_diagonal(start_column, n, diagonal) if @squares[@dest_row + n]
     end
     diagonal
   end
 
-  def se_sw_diagonal_objects(start_row, start_column, move_distance)
-    diagonal = []
-    (move_distance).times do |n|
-      if @squares[@dest_row - n]
-        if @dest_column > start_column # (se)
-          diagonal << @squares[@dest_row - n][@dest_column - n]
-        else # (sw)
-          diagonal << @squares[@dest_row - n][@dest_column + n]
-        end
-      end
+  def se_sw_diagonal_objects(start_row, start_column, move_distance, diagonal = [])
+    move_distance.times do |n|
+      push_south_diagonal(start_column, n, diagonal) if @squares[@dest_row - n]
+    end
+    diagonal
+  end
+
+  def push_north_diagonal(start_column, n, diagonal)
+    if @dest_column > start_column # (ne)
+      # start at destination location and work backwards towards start piece
+      diagonal << @squares[@dest_row + n][@dest_column - n]
+    else # (nw)
+      diagonal << @squares[@dest_row + n][@dest_column + n]
+    end
+    diagonal
+  end
+
+
+  def push_south_diagonal(start_column, n, diagonal)
+    if @dest_column > start_column # (se)
+      diagonal << @squares[@dest_row - n][@dest_column - n]
+    else # (sw)
+      diagonal << @squares[@dest_row - n][@dest_column + n]
     end
     diagonal
   end
