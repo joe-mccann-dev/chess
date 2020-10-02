@@ -34,7 +34,7 @@ module MoveValidator
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    puts "objects_in_path: #{objects_in_path}"
+    # puts "objects_in_path: #{objects_in_path}"
     objects_in_path.any? { |s| s != ' ' } ? false : true
   end
 
