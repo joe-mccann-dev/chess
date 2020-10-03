@@ -87,16 +87,30 @@ class Board
     puts "start_row: #{@start_row}"
     puts "start_column: #{@start_column}"
     p pieces
+    # if pieces.length > 1
+    #   assign_start_location(pieces[1])
+    #   pieces[1]
+    # else
+    #   assign_start_location(pieces[0])
+    #   pieces[0]
+    # end
+    decide_which_piece_to_move(pieces)
+  end
+
+  def decide_which_piece_to_move(pieces)
     if pieces.length > 1
-      assign_start_location(pieces[1])
-      pieces[1]
+      puts 'two pieces can go to that location'
+      puts "which piece would you like to move, #{pieces[0].location} or #{pieces[1].location}?"
+      puts "enter 0 for #{pieces[0]} or enter 1 for #{pieces[1]}."
+      response = gets.chomp.to_i
+      if response == 0
+        assign_start_location(pieces[0])
+        pieces[0]
+      else
+        assign_start_location(pieces[1])
+        pieces[1]
+      end
     else
-      # ask player which piece they want to move, a or b. 
-      # going to need the location, maybe use the column?
-      # puts 'two pieces can move to that location'
-      # puts' 
-      # selection = gets.chomp
-      # if selection matches column, move the piece in that column.
       assign_start_location(pieces[0])
       pieces[0]
     end
