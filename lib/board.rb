@@ -4,7 +4,7 @@ class Board
   include Display
   include MoveValidator
   include SetupBoardVariables
-  attr_reader :start_row, :start_column, :piece, :piece_type
+  attr_reader :start_row, :start_column, :piece, :piece_type, :disambiguated
   
   def initialize(squares = make_initial_board)
     @squares = squares
@@ -15,6 +15,7 @@ class Board
     @piece = nil
     @piece_type = nil
     @piece_prefix = nil
+    @disambiguated = false
   end
 
   def make_initial_board
@@ -71,6 +72,7 @@ class Board
   end
 
   def find_piece(player_color, piece_type)
+    @disambiguated = false
     if player_color == :white
       find_white_piece(piece_type)
     else
@@ -83,32 +85,22 @@ class Board
       piece.instance_of?(piece_type) &&
         valid_move?(piece.location[0], piece.location[1], :white, piece)
     end
-    
-    puts "start_row: #{@start_row}"
-    puts "start_column: #{@start_column}"
-    # binding.pry
-    p pieces
-    
     if pieces.length > 1
-      decide_which_piece_to_move(pieces)
+      decide_which_piece_to_move(pieces, piece_type)
     else
       assign_start_location(pieces[0]) unless pieces.empty?
       pieces[0]
     end
   end
 
-  def decide_which_piece_to_move(pieces)
-    puts 'two pieces can go to that location'
-    puts "which piece would you like to move, #{pieces[0].location} or #{pieces[1].location}?"
+  def decide_which_piece_to_move(pieces, piece_type)
+    puts "Both #{piece_type.to_s}s can go to that location"
+    puts "which #{piece_type.to_s} would you like to move, #{pieces[0].location} or #{pieces[1].location}?"
     puts "enter 0 for #{pieces[0]} or enter 1 for #{pieces[1]}."
     response = gets.chomp.to_i
-    if response == 0
-      assign_start_location(pieces[0])
-      pieces[0]
-    else
-      assign_start_location(pieces[1])
-      pieces[1]
-    end
+    assign_start_location(pieces[response])
+    @disambiguated = true
+    pieces[response]
   end
 
   def find_black_piece(piece_type)
