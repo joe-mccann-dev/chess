@@ -80,39 +80,34 @@ class Board
 
   def find_white_piece(piece_type)
     pieces = white_pieces_that_go_to_dest.select do |piece|
-      # assign_start_location(piece)
       piece.instance_of?(piece_type) &&
         valid_move?(piece.location[0], piece.location[1], :white, piece)
     end
+    
     puts "start_row: #{@start_row}"
     puts "start_column: #{@start_column}"
+    # binding.pry
     p pieces
-    # if pieces.length > 1
-    #   assign_start_location(pieces[1])
-    #   pieces[1]
-    # else
-    #   assign_start_location(pieces[0])
-    #   pieces[0]
-    # end
-    decide_which_piece_to_move(pieces)
+    
+    if pieces.length > 1
+      decide_which_piece_to_move(pieces)
+    else
+      assign_start_location(pieces[0]) unless pieces.empty?
+      pieces[0]
+    end
   end
 
   def decide_which_piece_to_move(pieces)
-    if pieces.length > 1
-      puts 'two pieces can go to that location'
-      puts "which piece would you like to move, #{pieces[0].location} or #{pieces[1].location}?"
-      puts "enter 0 for #{pieces[0]} or enter 1 for #{pieces[1]}."
-      response = gets.chomp.to_i
-      if response == 0
-        assign_start_location(pieces[0])
-        pieces[0]
-      else
-        assign_start_location(pieces[1])
-        pieces[1]
-      end
-    else
+    puts 'two pieces can go to that location'
+    puts "which piece would you like to move, #{pieces[0].location} or #{pieces[1].location}?"
+    puts "enter 0 for #{pieces[0]} or enter 1 for #{pieces[1]}."
+    response = gets.chomp.to_i
+    if response == 0
       assign_start_location(pieces[0])
       pieces[0]
+    else
+      assign_start_location(pieces[1])
+      pieces[1]
     end
   end
 
