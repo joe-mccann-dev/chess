@@ -37,7 +37,7 @@ class Game
     loop do
       # break if @board.checkmate?
       player1_turn
-      # player2_turn
+      player2_turn
     end
   end
 
