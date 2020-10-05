@@ -1,4 +1,4 @@
-module MoveDisambiguator
+ module MoveDisambiguator
   def count_pieces(pieces, piece_type)
     if pieces.length > 1
       decide_which_piece_to_move(pieces, piece_type)
@@ -28,7 +28,7 @@ module MoveDisambiguator
     puts "which piece would you like to move," +
     " the #{piece_type} at column #{piece_one_col}" + 
     " or the #{piece_type} at column #{piece_two_col}?"
-    puts "enter 1 for #{piece_one_col} or enter 2 for #{piece_two_col}."
+    print "enter 1 for #{piece_one_col} or enter 2 for #{piece_two_col}: "
   end
 
   def translate_column_index(column_index, pieces)

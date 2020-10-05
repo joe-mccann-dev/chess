@@ -9,7 +9,7 @@ module MoveValidator
   def available_location?(start_row, start_column, piece)
     if piece.is_a?(Knight)
       @squares[@dest_row][@dest_column] == ' '
-    elsif diagonal_mover?(piece)
+    elsif diagonal_mover?(start_column, piece)
       diagonal_path_unobstructed?(start_row, start_column)
     else
       horizontal_vertical_unobstructed?(start_row, start_column)
@@ -22,8 +22,9 @@ module MoveValidator
     row_has_space_for_move?(start_row, start_column)
   end
 
-  def diagonal_mover?(piece)
-    piece.is_a?(Queen) || piece.is_a?(King) || piece.is_a?(Bishop)
+  def diagonal_mover?(start_column, piece)
+    start_column != @dest_column &&
+    (piece.is_a?(Queen) || piece.is_a?(King) || piece.is_a?(Bishop) )
   end
 
   def diagonal_path_unobstructed?(start_row, start_column)
@@ -70,6 +71,7 @@ module MoveValidator
   end
 
   def column_has_space_for_move?(start_row, start_column)
+   
     if start_row < @dest_row
       check_space_between_rows(start_row + 1, @dest_row)
     else
