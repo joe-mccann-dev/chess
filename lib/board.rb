@@ -22,14 +22,12 @@ class Board
   def make_initial_board
     @squares = [
       black_row,
-      # Array.new(8) { |c| Pawn.new(2, [1, c]) },
+      Array.new(8) { |c| Pawn.new(2, [1, c]) },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
       Array.new(8) { ' ' },
-      Array.new(8) { ' ' },
-      Array.new(8) { ' ' },
-      # Array.new(8) { |c| Pawn.new(1, [6, c]) },
+      Array.new(8) { |c| Pawn.new(1, [6, c]) },
       white_row
     ]
   end
@@ -74,11 +72,7 @@ class Board
 
   def find_piece(player_color, piece_type)
     @disambiguated = false
-    if player_color == :white
-      find_white_piece(piece_type)
-    else
-      find_black_piece(piece_type)
-    end
+    player_color == :white ? find_white_piece(piece_type) : find_black_piece(piece_type)
   end
 
   def find_white_piece(piece_type)
