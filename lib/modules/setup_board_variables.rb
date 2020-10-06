@@ -32,14 +32,25 @@ module SetupBoardVariables
 
   def find_dest_row(move)
     chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
-    move.length == 2 ? chess_rows.index(move[1].to_i) : chess_rows.index(move[2].to_i)
+    # regular pawn move
+    if move.length == 2
+      chess_rows.index(move[1].to_i)
+    # regular character move
+    elsif move.length == 3
+      chess_rows.index(move[2].to_i)
+    # attack move (character = Bxe5, pawn = exd5)
+    else
+      chess_rows.index(move[3].to_i)
+    end
   end
 
   def determine_dest_column(move)
     if move.length == 2
       find_dest_column(move[0].downcase)
-    else
+    elsif move.length == 3
       find_dest_column(move[1].downcase)
+    else 
+      find_dest_column(move[2].downcase)
     end
   end
 
