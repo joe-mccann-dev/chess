@@ -36,6 +36,7 @@ class Game
   def player1_goes_first
     loop do
       # break if @board.checkmate?
+      
       player1_turn
       player2_turn
     end
@@ -54,9 +55,7 @@ class Game
     player1_move = validate_player1_move
     loop do
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
-      break if @board.disambiguated || 
-               @board.find_piece(@player1.symbolic_color, @board.piece_type) &&
-               @board.available_location?(@board.start_row, @board.start_column, @board.piece)
+      break if move_follows_rules?(@player1.symbolic_color)
 
       puts 'move not allowed. please try again...'
       player1_move = validate_player1_move
@@ -69,14 +68,18 @@ class Game
     player2_move = validate_player2_move
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
-      break if @board.disambiguated || 
-               @board.find_piece(@player2.symbolic_color, @board.piece_type) &&
-               @board.available_location?(@board.start_row, @board.start_column, @board.piece)
+      break if move_follows_rules?(@player2.symbolic_color)
 
       puts 'move not allowed. please try again...'
       player2_move = validate_player2_move
     end
     @board.update_board
+  end
+
+  def move_follows_rules?(player_color)
+    @board.disambiguated || 
+      @board.find_piece(player_color, @board.piece_type) &&
+      @board.valid_move?(@board.start_row, @board.start_column, player_color, @board.piece)
   end
 
   # loop breaks if input string is valid algebraic notation

@@ -19,6 +19,8 @@ module SetupBoardVariables
   end
 
   def assign_target_variables(move, player_color)
+    enable_or_disable_attack_rules(move)
+    p @attack_move
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
     @piece = find_piece(player_color, @piece_type)

@@ -17,6 +17,7 @@ class Board
     @piece_type = nil
     @piece_prefix = nil
     @disambiguated = false
+    @attack_move = false
   end
 
   def make_initial_board
