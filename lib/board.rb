@@ -108,6 +108,6 @@ class Board
     @piece.update_num_moves if @piece.is_a?(Pawn)
     @piece.update_location(@dest_row, @dest_column)
     display
-    display_captured
+    display_captured if @captured_by_black.any? || @captured_by_white.any?
   end
 end
