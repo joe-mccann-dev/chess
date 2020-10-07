@@ -28,6 +28,15 @@ module Display
     print "   a   b   c   d   e   f   g   h\n\n"
   end
 
+  def display_captured
+    print "captured by white: "
+    @captured_by_white.each { |piece| print "#{piece.displayed_color} "}
+    print "\ncaptured by black: "
+    @captured_by_black.each { |piece| print "#{piece.displayed_color} "}
+    puts
+    puts
+  end
+
   def print_even_row(row)
     row.each_with_index do |square, col_index|
       col_index.even? ? print_on_light_black(square) : print_on_black(square)

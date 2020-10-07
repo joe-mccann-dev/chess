@@ -9,15 +9,10 @@ class Board
 
   def initialize(squares = make_initial_board)
     @squares = squares
-    @start_column = nil
-    @dest_column = nil
-    @start_row = nil
-    @dest_row = nil
-    @piece = nil
-    @piece_type = nil
-    @piece_prefix = nil
     @disambiguated = false
     @attack_move = false
+    @captured_by_white = []
+    @captured_by_black = []
   end
 
   def make_initial_board
@@ -53,6 +48,7 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
+          @captured_by_white << square if square.captured
           white_pieces << square if square.symbolic_color == :white
         end
       end
@@ -64,6 +60,7 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
+          @captured_by_black << square if square.captured
           black_pieces << square if square.symbolic_color == :black
         end
       end
@@ -108,9 +105,9 @@ class Board
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
-    # p @piece.available_squares
     @piece.update_num_moves if @piece.is_a?(Pawn)
     @piece.update_location(@dest_row, @dest_column)
     display
+    display_captured
   end
 end

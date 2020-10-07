@@ -31,4 +31,8 @@ class King
   def update_location(dest_row, column)
     @location = [dest_row, column]
   end
+
+  def mark_as_captured
+    @captured = true
+  end
 end

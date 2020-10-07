@@ -27,8 +27,11 @@ module MoveValidator
 
   def attack_available?(start_row, start_column, player_color, piece)
     captured_piece = @squares[@dest_row][@dest_column]
-    if piece.is_a?(Knight)
-      captured_piece.mark_as_captured if captured_piece.symbolic_color != player_color
+    unless captured_piece == ' '
+      if piece.is_a?(Knight)
+        captured_piece.mark_as_captured if captured_piece.symbolic_color != player_color
+        captured_piece.symbolic_color != player_color
+      end
     end
   end
 
