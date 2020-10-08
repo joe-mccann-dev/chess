@@ -114,12 +114,12 @@ class Board
   end
 
   def update_board
+    display_captured if @captured_by_white.any? || @captured_by_black.any?
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
     @piece.update_num_moves if @piece.is_a?(Pawn)
     @piece.update_location(@dest_row, @dest_column)
     display
-    display_captured if @captured_by_white.any? || @captured_by_black.any?
   end
 end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'colorize'
-
 class Player
   include Display
   attr_reader :displayed_color, :symbolic_color, :name
@@ -24,7 +22,7 @@ class Player
     loop do
       break if valid_name?(name)
 
-      print 'please enter a valid name: '
+      print ' please enter a valid name: '
       name = gets.chomp
     end
     @name = name
@@ -36,16 +34,18 @@ class Player
     loop do
       break if valid_color?(choice)
 
-      print 'please enter 1 or 2: '
+      print ' please enter 1 or 2: '
       choice = gets.chomp.to_i
     end
     assign_color(choice)
   end
 
   def show_color_choices
-    puts 'Player 1 will now choose a color. Player 2 will be the opposite color.'
-    puts "#{@name}, would you like to be White or Black?"
-    print "Enter 1 for #{WHITE}, 2 for #{BLACK}: "
+    puts
+    puts ' Player 1 will now choose a color. Player 2 will be the opposite color.'
+    puts
+    puts " #{@name}, would you like to be White or Black?"
+    print " Enter 1 for #{WHITE}  (white), or 2 for #{BLACK}  (black): "
   end
 
   def assign_color(choice)
@@ -56,7 +56,8 @@ class Player
       @displayed_color = BLACK
       @symbolic_color = :black
     end
-    puts "#{@name} is #{@displayed_color}"
+    puts
+    puts " #{@name} is #{@displayed_color}"
   end
 
   def valid_name?(input)

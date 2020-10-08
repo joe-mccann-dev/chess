@@ -12,9 +12,10 @@ class Game
 
   def start_game
     show_welcome_message
-    print 'Player 1, please enter your name: '
+    @board.display
+    print ' Player 1, please enter your name: '
     @player1.request_name
-    print 'Player 2, please enter your name: '
+    print "\n Player 2, please enter your name: "
     @player2.request_name
     @player1.request_color
     assign_color(@player1.displayed_color)
@@ -57,7 +58,7 @@ class Game
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if move_follows_rules?(@player1.symbolic_color)
 
-      puts 'move not allowed. please try again...'
+      puts ' move not allowed. please try again...'
       player1_move = validate_player1_move
     end
     @board.update_board
@@ -70,7 +71,7 @@ class Game
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(@player2.symbolic_color)
 
-      puts 'move not allowed. please try again...'
+      puts ' move not allowed. please try again...'
       player2_move = validate_player2_move
     end
     @board.update_board
@@ -88,7 +89,7 @@ class Game
     loop do
       break if valid_input?(player1_move)
 
-      puts 'invalid input. please try again...'
+      puts ' invalid input. please try again...'
       player1_move = request_player1_move
     end
     @board.assign_piece_type(player1_move)
@@ -101,7 +102,7 @@ class Game
     loop do
       break if valid_input?(player2_move)
 
-      puts 'invalid input. please try again...'
+      puts ' invalid input. please try again...'
       player2_move = request_player2_move
     end
     @board.assign_piece_type(player2_move)
@@ -109,12 +110,12 @@ class Game
   end
 
   def request_player1_move
-    print "#{@player1.name} (#{@player1.symbolic_color}), please enter a move in algebraic notation: "
+    print " #{@player1.name} (#{@player1.symbolic_color}), please enter a move: "
     gets.chomp
   end
 
   def request_player2_move
-    print "#{@player2.name} (#{@player2.symbolic_color}), please enter a move in algebraic notation: "
+    print " #{@player2.name} (#{@player2.symbolic_color}), please enter a move: "
     gets.chomp
   end
 end

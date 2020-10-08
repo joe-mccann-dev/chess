@@ -20,20 +20,19 @@ module Display
   def display(starting_row = 8)
     puts
     @squares.each_with_index do |row, index|
-      print "#{starting_row} "
+      print "\t#{starting_row} "
       index.even? ? print_even_row(row) : print_odd_row(row)
       starting_row -= 1
       puts "\n"
     end
-    print "   a   b   c   d   e   f   g   h\n\n"
+    print "\t   a   b   c   d   e   f   g   h\n\n"
   end
 
   def display_captured
-    print "captured by white: "
+    print "\n captured by white: "
     @captured_by_white.each { |piece| print "#{piece.displayed_color} "}
-    print "\ncaptured by black: "
+    print "\n captured by black: "
     @captured_by_black.each { |piece| print "#{piece.displayed_color} "}
-    puts
     puts
   end
 
