@@ -7,7 +7,11 @@ module SetupBoardVariables
   end
 
   def assign_prefix(move)
-    move.length == 2 ? '' : move[0].upcase
+    if move.length == 2 || valid_pawn_attack?(move)
+      ''
+    else
+      move[0].upcase
+    end
   end
 
   def determine_piece_class(prefix)
@@ -23,6 +27,10 @@ module SetupBoardVariables
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
     @piece = find_piece(player_color, @piece_type)
+  end
+
+  def enable_or_disable_attack_rules(move)
+    @attack_move = move.length == 4
   end
 
   def assign_start_location(piece)

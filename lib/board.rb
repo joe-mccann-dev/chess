@@ -3,6 +3,7 @@
 class Board
   include Display
   include MoveValidator
+  include InputValidator
   include SetupBoardVariables
   include MoveDisambiguator
   attr_reader :start_row, :start_column, :piece, :piece_type, :disambiguated

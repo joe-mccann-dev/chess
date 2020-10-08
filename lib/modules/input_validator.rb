@@ -5,7 +5,7 @@ module InputValidator
     return false unless move.length.between?(2, 4)
 
     if move.length == 4
-      valid_attack_move?(move)
+      valid_attack_move?(move) || valid_pawn_attack?(move)
     elsif move.length == 2
       valid_pawn_move?(move)
     else
@@ -18,6 +18,13 @@ module InputValidator
       move[1].downcase.match?('x') &&
       move[2].downcase.match?(/[a-h]/) &&
       move[3].match?(/[1-8]/)
+  end
+
+  def valid_pawn_attack?(move)
+    move[0].downcase.match?(/[a-h]/) &&
+    move[1].downcase.match?('x') &&
+    move[2].downcase.match?(/[a-h]/) &&
+    move[3].match?(/[1-8]/)
   end
 
   def valid_pawn_move?(move)

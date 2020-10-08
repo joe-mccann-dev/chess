@@ -11,10 +11,6 @@ module MoveValidator
     end
   end
 
-  def enable_or_disable_attack_rules(move)
-    @attack_move = move.length == 4
-  end
-
   def available_location?(start_row, start_column, piece)
     if piece.is_a?(Knight)
       @squares[@dest_row][@dest_column] == ' '
@@ -43,11 +39,9 @@ module MoveValidator
   def mark_as_captured?(start_row, start_column, target, player_color, piece)
     if horizontal_vertical_move?(start_row, start_column)
       target.symbolic_color != player_color &&
-        piece.allowed_move?(@dest_row, @dest_column) &&
         path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
     else      
       target.symbolic_color != player_color &&
-        piece.allowed_move?(@dest_row, @dest_column) &&
         path_to_diagonal_attack_clear?(start_row, start_column, player_color)
     end
   end
