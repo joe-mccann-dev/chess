@@ -11,8 +11,8 @@ class Board
     @squares = squares
     @disambiguated = false
     @attack_move = false
-    @captured_by_white = []
-    @captured_by_black = []
+    @captured_by_white = captured_black_pieces
+    @captured_by_black = captured_white_pieces
   end
 
   def make_initial_board
@@ -68,6 +68,18 @@ class Board
     black_pieces
   end
 
+  def captured_white_pieces
+    white_pieces.select do |piece|
+      piece.captured
+    end
+  end
+
+  def captured_black_pieces
+    black_pieces.select do |piece|
+      piece.captured
+    end
+  end
+
   def find_piece(player_color, piece_type)
     @disambiguated = false
     player_color == :white ? find_white_piece(piece_type) : find_black_piece(piece_type)
@@ -108,6 +120,6 @@ class Board
     @piece.update_num_moves if @piece.is_a?(Pawn)
     @piece.update_location(@dest_row, @dest_column)
     display
-    display_captured if @captured_by_black.any? || @captured_by_white.any?
+    display_captured if @captured_by_white.any? || @captured_by_black.any?
   end
 end
