@@ -25,6 +25,18 @@ class Pawn
   def col_moves
     [0, 0]
   end
+
+  def attack_row_moves
+    if @symbolic_color == :white
+      [-1, -1]
+    else
+      [1, 1]
+    end
+  end
+
+  def attack_col_moves
+    [1, -1]
+  end
   
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
