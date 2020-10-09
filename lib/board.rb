@@ -81,12 +81,12 @@ class Board
     end
   end
 
-  def find_piece(player_color, piece_type)
+  def find_piece(move, player_color, piece_type)
     @disambiguated = false
-    player_color == :white ? find_white_piece(piece_type) : find_black_piece(piece_type)
+    player_color == :white ? find_white_piece(move, piece_type) : find_black_piece(move, piece_type)
   end
 
-  def find_white_piece(piece_type)
+  def find_white_piece(move, piece_type)
     pieces = white_pieces_that_go_to_dest.select do |piece|
       piece.instance_of?(piece_type) &&
         valid_move?(piece.location[0], piece.location[1], :white, piece)
@@ -94,7 +94,7 @@ class Board
     count_pieces(pieces, piece_type)
   end
 
-  def find_black_piece(piece_type)
+  def find_black_piece(move, piece_type)
     pieces = black_pieces_that_go_to_dest.select do |piece|
       piece.instance_of?(piece_type) &&
         valid_move?(piece.location[0], piece.location[1], :black, piece)

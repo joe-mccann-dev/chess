@@ -26,7 +26,7 @@ module SetupBoardVariables
     enable_or_disable_attack_rules(move)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
-    @piece = find_piece(player_color, @piece_type)
+    @piece = find_piece(move, player_color, @piece_type)
   end
 
   def enable_or_disable_attack_rules(move)
@@ -54,15 +54,15 @@ module SetupBoardVariables
 
   def determine_dest_column(move)
     if move.length == 2
-      find_dest_column(move[0].downcase)
+      translate_letter_to_index(move[0].downcase)
     elsif move.length == 3
-      find_dest_column(move[1].downcase)
+      translate_letter_to_index(move[1].downcase)
     else 
-      find_dest_column(move[2].downcase)
+      translate_letter_to_index(move[2].downcase)
     end
   end
 
-  def find_dest_column(letter)
+  def translate_letter_to_index(letter)
     ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
   end
 end
