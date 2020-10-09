@@ -35,10 +35,14 @@ class Pawn
     [1, -1]
   end
 
-  def toggle_attack_mode(start_column, dest_column)
-    @attack_mode = start_column != dest_column
+  def toggle_attack_mode(squares, start_column, dest_row, dest_column)
+    @attack_mode = attack_prerequisites_met?(squares, start_column, dest_row, dest_column)
   end
-  
+
+  def attack_prerequisites_met?(squares, start_column, dest_row, dest_column)
+    start_column != dest_column && squares[dest_row][dest_column] != ' '
+  end
+    
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end
