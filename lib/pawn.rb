@@ -35,7 +35,7 @@ class Pawn
     [1, -1]
   end
 
-  def toggle_attack_mode?(start_column, dest_column)
+  def toggle_attack_mode(start_column, dest_column)
     @attack_mode = start_column != dest_column
   end
   

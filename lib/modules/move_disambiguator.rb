@@ -32,7 +32,7 @@
   end
 
   def translate_column_index(column_index, pieces)
-    ('a'..'h').each_with_index { |l, i| return l.upcase if i == column_index }
+    ('a'..'h').each_with_index { |l, i| return l if i == column_index }
   end
 
   def disambiguate_move(response, pieces)
