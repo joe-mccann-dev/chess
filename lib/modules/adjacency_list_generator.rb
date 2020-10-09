@@ -4,7 +4,7 @@ module AdjacencyListGenerator
   def available_squares
     row = @location[0]
     col = @location[1]
-    available_squares = adj_squares(row, col)
+    @attack_mode ? adj_attack_squares(row, col) : adj_squares(row, col)
   end
 
   def adj_squares(row, col)
@@ -12,6 +12,16 @@ module AdjacencyListGenerator
     row_moves.length.times do |n|
       if on_board?(row, row_moves[n], col, col_moves[n])
         adj_list << [row + row_moves[n], col + col_moves[n]]
+      end
+    end
+    adj_list
+  end
+
+  def adj_attack_squares(row, col)
+    adj_list = []
+    row_moves.length.times do |n|
+      if on_board?(row, attack_row_moves[n], col, attack_col_moves[n])
+        adj_list << [row + attack_row_moves[n], col + attack_col_moves[n]]
       end
     end
     adj_list

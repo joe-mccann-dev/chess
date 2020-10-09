@@ -24,7 +24,7 @@
   def request_disambiguation(pieces, piece_type)
     piece_one_col = translate_column_index(pieces[0].location[1], pieces)
     piece_two_col = translate_column_index(pieces[1].location[1], pieces)
-    puts "** Both #{piece_type.to_s}s can go to that location **"
+    puts "** Two #{piece_type.to_s}s can go to that location **"
     puts "which piece would you like to move," +
     " the #{piece_type} at column #{piece_one_col}" + 
     " or the #{piece_type} at column #{piece_two_col}?"

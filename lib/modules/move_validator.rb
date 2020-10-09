@@ -3,9 +3,11 @@
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     if @attack_move
+      piece.toggle_attack_mode?(start_column, @dest_column) if piece.is_a?(Pawn)
       attack_available?(start_row, start_column, player_color, piece) &&
         piece.allowed_move?(@dest_row, @dest_column)
     else
+      piece.toggle_attack_mode?(start_column, @dest_column) if piece.is_a?(Pawn)
       available_location?(start_row, start_column, piece) &&
         piece.allowed_move?(@dest_row, @dest_column)
     end

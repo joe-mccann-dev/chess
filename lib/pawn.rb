@@ -8,6 +8,7 @@ class Pawn
     @num_moves = 0
     @location = location
     @captured = false
+    @attack_mode = false
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
@@ -27,15 +28,15 @@ class Pawn
   end
 
   def attack_row_moves
-    if @symbolic_color == :white
-      [-1, -1]
-    else
-      [1, 1]
-    end
+    @symbolic_color == :white ? [-1, -1] : [1, 1]
   end
 
   def attack_col_moves
     [1, -1]
+  end
+
+  def toggle_attack_mode?(start_column, dest_column)
+    @attack_mode = start_column != dest_column
   end
   
   def assign_symbolic_color(displayed_color, unicode)
