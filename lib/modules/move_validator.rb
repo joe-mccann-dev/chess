@@ -3,9 +3,8 @@
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     if @attack_move
-      target = @squares[@dest_row][@dest_column]
       if attack_rules_followed?(start_row, start_column, player_color, piece)
-        target.mark_as_captured
+        @target.mark_as_captured
         true
       end
     else
@@ -14,6 +13,8 @@ module MoveValidator
   end
 
   def attack_rules_followed?(start_row, start_column, player_color, piece)
+    return false if @target.is_a?(King) || @target == ' '
+
     attack_available?(start_row, start_column, player_color, piece) &&
       piece.allowed_move?(@dest_row, @dest_column)
   end
@@ -35,18 +36,15 @@ module MoveValidator
   end
 
   def attack_available?(start_row, start_column, player_color, piece)
-    target = @squares[@dest_row][@dest_column]
-    unless target == ' '
-      if piece.is_a?(Pawn)
-        piece.toggle_attack_mode(@squares, start_column, @dest_row, @dest_column) && 
-          target.symbolic_color != player_color
-      elsif piece.is_a?(Knight)
-        target.symbolic_color != player_color
-      elsif horizontal_vertical_move?(start_row, start_column)
-        path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
-      else
-        path_to_diagonal_attack_clear?(start_row, start_column, player_color)
-      end
+    if piece.is_a?(Pawn)
+      piece.toggle_attack_mode(@squares, start_column, @dest_row, @dest_column) && 
+        @target.symbolic_color != player_color
+    elsif piece.is_a?(Knight)
+      @target.symbolic_color != player_color
+    elsif horizontal_vertical_move?(start_row, start_column)
+      path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
+    else
+      path_to_diagonal_attack_clear?(start_row, start_column, player_color)
     end
   end
 

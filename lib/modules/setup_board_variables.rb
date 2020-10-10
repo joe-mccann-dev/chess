@@ -26,6 +26,7 @@ module SetupBoardVariables
     enable_or_disable_attack_rules(move)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
+    @target = @squares[@dest_row][@dest_column]
     @piece = find_piece(move, player_color, @piece_type)
   end
 
