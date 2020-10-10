@@ -50,17 +50,6 @@ module MoveValidator
     end
   end
 
-  # prevents the marking of pieces that you're not allowed to attack as captured 
-  def mark_as_captured?(start_row, start_column, target, player_color, piece)
-    if horizontal_vertical_move?(start_row, start_column)
-      target.symbolic_color != player_color &&
-        path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
-    else      
-      target.symbolic_color != player_color &&
-        path_to_diagonal_attack_clear?(start_row, start_column, player_color)
-    end
-  end
-
   def horizontal_vertical_move?(start_row, start_column)
     start_row == @dest_row || start_column == @dest_column
   end
