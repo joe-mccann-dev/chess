@@ -106,9 +106,10 @@ class Board
   # and are therefore not ambiguous moves
   def find_attack_pawn(pieces, move)
     attacking_pawn = pieces.select do |p|
+      # attacking pawn is the one residing in specified column (the first character entered)
       p.is_a?(Pawn) && p.location[1] == translate_letter_to_index(move[0])
     end[0]
-    assign_start_location(attacking_pawn)
+    assign_start_location(attacking_pawn) if attacking_pawn
     attacking_pawn
   end
 
