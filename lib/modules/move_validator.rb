@@ -27,7 +27,7 @@ module MoveValidator
   def available_location?(start_row, start_column, piece)
     piece.toggle_attack_mode(@squares, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     if piece.is_a?(Knight)
-      @squares[@dest_row][@dest_column] == ' '
+      @target == ' '
     elsif horizontal_vertical_move?(start_row, start_column)
       horizontal_vertical_unobstructed?(start_row, start_column)
     else
@@ -53,19 +53,19 @@ module MoveValidator
   end
 
   def horizontal_vertical_unobstructed?(start_row, start_column)
-    @squares[@dest_row][@dest_column] == ' ' &&
+    @target == ' ' &&
       column_has_space_for_move?(start_row, start_column) &&
       row_has_space_for_move?(start_row, start_column)
   end
 
   def path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
-    @squares[@dest_row][@dest_column].symbolic_color != player_color &&
+    @target.symbolic_color != player_color &&
       column_has_space_for_move?(start_row, start_column) &&
       row_has_space_for_move?(start_row, start_column)
   end
 
   def path_to_diagonal_attack_clear?(start_row, start_column, player_color)
-    @squares[@dest_row][@dest_column].symbolic_color != player_color &&
+    @target.symbolic_color != player_color &&
       diagonal_path_unobstructed?(start_row, start_column)
   end
 
