@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module MoveValidator
-  def valid_move?(start_row, start_column, player_color, piece)
+  def valid_move?(move, start_row, start_column, player_color, piece)
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
-        @target.mark_as_captured
+        # prevents an invalid input target from being marked as captured
+        @target.mark_as_captured if piece.is_a?(determine_piece_class(assign_prefix(move)))
         true
       end
     else

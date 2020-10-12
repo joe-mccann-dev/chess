@@ -80,7 +80,7 @@ class Game
   def move_follows_rules?(move, player_color)
     @board.disambiguated || 
       @board.find_piece(move, player_color, @board.piece_type) &&
-      @board.valid_move?(@board.start_row, @board.start_column, player_color, @board.piece)
+      @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.piece)
   end
 
   # loop breaks if input string is valid algebraic notation

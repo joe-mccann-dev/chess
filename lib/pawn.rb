@@ -22,7 +22,6 @@ class Pawn
     end
   end
 
-  # TODO - add column restrictions once ability to attack is created
   def col_moves
     [0, 0]
   end
