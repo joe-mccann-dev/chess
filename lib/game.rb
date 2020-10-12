@@ -13,9 +13,9 @@ class Game
   def start_game
     show_welcome_message
     @board.display
-    print ' Player 1, please enter your name: '
+    print " Player 1, please enter your name: ".colorize(:magenta)
     @player1.request_name
-    print "\n Player 2, please enter your name: "
+    print "\n Player 2, please enter your name: ".colorize(:magenta)
     @player2.request_name
     @player1.request_color
     assign_color(@player1.displayed_color)
@@ -58,9 +58,10 @@ class Game
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if move_follows_rules?(player1_move, @player1.symbolic_color)
 
-      puts ' move not allowed. please try again...'
+      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player1_move = validate_player1_move
     end
+    puts `clear`
     @board.update_board
   end
 
@@ -71,9 +72,10 @@ class Game
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
 
-      puts ' move not allowed. please try again...'
+      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player2_move = validate_player2_move
     end
+    puts `clear`
     @board.update_board
   end
 
@@ -89,7 +91,7 @@ class Game
     loop do
       break if valid_input?(player1_move)
 
-      puts ' invalid input. please try again...'
+      puts " invalid input. please try again...".colorize(:red)
       player1_move = request_player1_move
     end
     @board.assign_piece_type(player1_move)
@@ -102,7 +104,7 @@ class Game
     loop do
       break if valid_input?(player2_move)
 
-      puts ' invalid input. please try again...'
+      puts " invalid input. please try again...".colorize(:red)
       player2_move = request_player2_move
     end
     @board.assign_piece_type(player2_move)

@@ -12,8 +12,8 @@ class Board
     @squares = squares
     @disambiguated = false
     @attack_move = false
-    @captured_by_white = captured_black_pieces
-    @captured_by_black = captured_white_pieces
+    @captured_by_white = [].to_set
+    @captured_by_black = [].to_set
   end
 
   def make_initial_board
@@ -67,18 +67,6 @@ class Board
       end
     end
     black_pieces
-  end
-
-  def captured_white_pieces
-    white_pieces.select do |piece|
-      piece.captured
-    end
-  end
-
-  def captured_black_pieces
-    black_pieces.select do |piece|
-      piece.captured
-    end
   end
 
   def find_piece(move, player_color, piece_type)
