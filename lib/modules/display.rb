@@ -18,6 +18,7 @@ module Display
   end
 
   def display(starting_row = 8)
+    display_captured if @captured_by_white.any? || @captured_by_black.any?
     puts
     @squares.each_with_index do |row, index|
       print "\t#{starting_row} "

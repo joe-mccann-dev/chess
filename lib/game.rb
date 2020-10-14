@@ -80,8 +80,7 @@ class Game
   end
 
   def move_follows_rules?(move, player_color)
-    @board.disambiguated || 
-      @board.find_piece(move, player_color, @board.piece_type) &&
+      @board.piece_found &&
       @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.piece)
   end
 

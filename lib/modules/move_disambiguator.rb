@@ -4,6 +4,7 @@
       decide_which_piece_to_move(pieces, piece_type)
     else
       assign_start_location(pieces[0]) unless pieces.empty?
+      @piece_found = true
       pieces[0]
     end
   end
@@ -37,7 +38,7 @@
 
   def disambiguate_move(response, pieces)
     assign_start_location(pieces[response - 1])
-    @disambiguated = true
+    @piece_found = true
     pieces[response - 1]
   end
 end

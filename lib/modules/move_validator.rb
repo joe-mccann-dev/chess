@@ -2,6 +2,8 @@
 
 module MoveValidator
   def valid_move?(move, start_row, start_column, player_color, piece)
+    return false if piece.nil?
+    
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
         # prevents an invalid input target from being marked as captured

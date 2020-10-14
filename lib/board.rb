@@ -6,14 +6,14 @@ class Board
   include InputValidator
   include SetupBoardVariables
   include MoveDisambiguator
-  attr_reader :start_row, :start_column, :piece, :piece_type, :disambiguated
+  attr_reader :start_row, :start_column, :piece, :piece_type, :piece_found
 
   def initialize(squares = make_initial_board)
     @squares = squares
-    @disambiguated = false
+    @piece_found = false
     @attack_move = false
-    @captured_by_white = [].to_set
-    @captured_by_black = [].to_set
+    @captured_by_white = []
+    @captured_by_black = []
   end
 
   def make_initial_board
@@ -49,7 +49,7 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
-          @captured_by_white << square if square.captured
+          # @captured_by_white << square if square.captured
           white_pieces << square if square.symbolic_color == :white
         end
       end
@@ -61,7 +61,7 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
-          @captured_by_black << square if square.captured
+          # @captured_by_black << square if square.captured
           black_pieces << square if square.symbolic_color == :black
         end
       end
@@ -69,8 +69,13 @@ class Board
     black_pieces
   end
 
+  def push_captured_pieces
+    black_pieces.each { |piece| @captured_by_white << piece if piece.captured }
+    white_pieces.each { |piece| @captured_by_black << piece if piece.captured }
+  end
+
   def find_piece(move, player_color, piece_type)
-    @disambiguated = false
+    @piece_found = false
     player_color == :white ? find_white_piece(move, piece_type) : find_black_piece(move, piece_type)
   end
 
@@ -98,6 +103,7 @@ class Board
       p.is_a?(Pawn) && p.location[1] == translate_letter_to_index(move[0])
     end[0]
     assign_start_location(attacking_pawn) if attacking_pawn
+    @piece_found = true
     attacking_pawn
   end
 
@@ -114,7 +120,7 @@ class Board
   end
 
   def update_board
-    display_captured if @captured_by_white.any? || @captured_by_black.any?
+    push_captured_pieces
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column

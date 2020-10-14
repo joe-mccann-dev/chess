@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'pry'
-require 'set'
 require 'colorize'
 require_relative './modules/display'
 require_relative './modules/setup_board_variables'

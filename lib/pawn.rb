@@ -54,8 +54,12 @@ class Pawn
     @num_moves += 1
   end
 
-  def update_location(dest_row, column)
-    @location = [dest_row, column]
+  def update_location(dest_row, dest_column)
+    @location = [dest_row, dest_column]
+  end
+
+  def moved_two_squares?(start_row)
+    (@location[0] - start_row).abs == 2
   end
 
   def mark_as_captured
