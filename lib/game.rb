@@ -81,7 +81,7 @@ class Game
 
   def move_follows_rules?(move, player_color)
       @board.piece_found &&
-      @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.piece)
+      @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.found_piece)
   end
 
   # loop breaks if input string is valid algebraic notation

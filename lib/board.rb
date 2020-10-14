@@ -6,14 +6,14 @@ class Board
   include InputValidator
   include SetupBoardVariables
   include MoveDisambiguator
-  attr_reader :start_row, :start_column, :piece, :piece_type, :piece_found
+  attr_reader :start_row, :start_column, :found_piece, :piece_type, :piece_found
 
   def initialize(squares = make_initial_board)
     @squares = squares
     @piece_found = false
     @attack_move = false
-    @captured_by_white = []
-    @captured_by_black = []
+    @captured_by_white = [].to_set
+    @captured_by_black = [].to_set
   end
 
   def make_initial_board
@@ -49,7 +49,6 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
-          # @captured_by_white << square if square.captured
           white_pieces << square if square.symbolic_color == :white
         end
       end
@@ -61,7 +60,6 @@ class Board
     @squares.each do |row|
       row.each do |square|
         unless square == ' '
-          # @captured_by_black << square if square.captured
           black_pieces << square if square.symbolic_color == :black
         end
       end
@@ -118,8 +116,8 @@ class Board
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
-    @piece.update_num_moves if @piece.is_a?(Pawn)
-    @piece.update_location(@dest_row, @dest_column)
+    @found_piece.update_num_moves if @found_piece.is_a?(Pawn)
+    @found_piece.update_location(@dest_row, @dest_column)
     display
   end
 end

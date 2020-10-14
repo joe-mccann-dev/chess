@@ -2,13 +2,14 @@
 
 class Pawn
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :en_passant
 
   def initialize(color, location, unicode = "\u265F")
     @num_moves = 0
     @location = location
     @captured = false
     @attack_mode = false
+    @en_passant = false
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
@@ -34,12 +35,22 @@ class Pawn
     [1, -1]
   end
 
-  def toggle_attack_mode(squares, start_column, dest_row, dest_column)
-    @attack_mode = attack_prerequisites_met?(squares, start_column, dest_row, dest_column)
+  def toggle_attack_mode(squares, start_row, start_column, dest_row, dest_column)
+    @en_passant = false
+    @attack_mode = attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
   end
 
-  def attack_prerequisites_met?(squares, start_column, dest_row, dest_column)
-    start_column != dest_column && squares[dest_row][dest_column] != ' '
+  def attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
+    if en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
+      @en_passant = true
+      if @symbolic_color == :white 
+        start_column != dest_column && squares[dest_row + 1][dest_column] != ' '
+      else
+        start_column != dest_column && squares[dest_row - 1][dest_column] != ' '
+      end
+    else
+      start_column != dest_column && squares[dest_row][dest_column] != ' '
+    end
   end
     
   def assign_symbolic_color(displayed_color, unicode)
@@ -48,6 +59,16 @@ class Pawn
 
   def allowed_move?(dest_row, dest_column)
     available_squares.include?([dest_row, dest_column])
+  end
+
+  def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
+    if @symbolic_color == :white
+      start_row == 3 &&
+      squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
+    else
+      start_row == 4 && 
+      squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
+    end
   end
 
   def update_num_moves

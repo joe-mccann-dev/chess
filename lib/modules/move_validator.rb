@@ -16,10 +16,21 @@ module MoveValidator
   end
 
   def attack_rules_followed?(start_row, start_column, player_color, piece)
-    return false if @target.is_a?(King) || @target == ' '
+    if piece.is_a?(Pawn)
+      if @found_piece.is_a?(Pawn) && @found_piece.moved_two_squares?(@start_row)
+        @target = @squares[@dest_row + 1][@dest_column] if player_color == :white
+        @target = @squares[@dest_row - 1][@dest_column] if player_color == :black
+        piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column)
+      else
+        piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) && 
+          @target.symbolic_color != player_color
+      end
+    else
+      return false if @target.is_a?(King) || @target == ' '
 
-    attack_available?(start_row, start_column, player_color, piece) &&
-      piece.allowed_move?(@dest_row, @dest_column)
+      attack_available?(start_row, start_column, player_color, piece) &&
+        piece.allowed_move?(@dest_row, @dest_column)
+    end
   end
 
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
@@ -28,7 +39,7 @@ module MoveValidator
   end
 
   def available_location?(start_row, start_column, piece)
-    piece.toggle_attack_mode(@squares, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
+    piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     if piece.is_a?(Knight)
       @target == ' '
     elsif horizontal_vertical_move?(start_row, start_column)
@@ -39,10 +50,7 @@ module MoveValidator
   end
 
   def attack_available?(start_row, start_column, player_color, piece)
-    if piece.is_a?(Pawn)
-      piece.toggle_attack_mode(@squares, start_column, @dest_row, @dest_column) && 
-        @target.symbolic_color != player_color
-    elsif piece.is_a?(Knight)
+    if piece.is_a?(Knight)
       @target.symbolic_color != player_color
     elsif horizontal_vertical_move?(start_row, start_column)
       path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)
