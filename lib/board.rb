@@ -80,18 +80,12 @@ class Board
   end
 
   def find_white_piece(move, piece_type)
-    pieces = white_pieces_that_go_to_dest(move).select do |piece|
-      piece.instance_of?(piece_type) &&
-        valid_move?(move, piece.location[0], piece.location[1], :white, piece)
-    end
+    pieces = white_pieces_that_go_to_dest(move).select { |piece| piece.is_a?(piece_type) }
     valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
   end
 
   def find_black_piece(move, piece_type)
-    pieces = black_pieces_that_go_to_dest(move).select do |piece|
-      piece.instance_of?(piece_type) &&
-        valid_move?(move, piece.location[0], piece.location[1], :black, piece)
-    end
+    pieces = black_pieces_that_go_to_dest(move).select { |piece| piece.is_a?(piece_type) }
     valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
   end
 
