@@ -63,11 +63,15 @@ class Pawn
 
   def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
     if @symbolic_color == :white
-      start_row == 3 &&
-      squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
+      unless squares[dest_row + 1][dest_column] == ' '
+        start_row == 3 &&
+        squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
+      end
     else
-      start_row == 4 && 
-      squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
+      unless squares[dest_row - 1][dest_column]
+        start_row == 4 && 
+        squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
+      end
     end
   end
 

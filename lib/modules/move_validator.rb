@@ -22,6 +22,8 @@ module MoveValidator
         @target = @squares[@dest_row - 1][@dest_column] if player_color == :black
         piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column)
       else
+        return false if @target == ' '
+
         piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) && 
           @target.symbolic_color != player_color
       end

@@ -126,11 +126,8 @@ class Board
   end
 
   def handle_en_passant_move(player_color)
-    # create two empty strings for en_passant move. the attacker's previous location 
-    # and the attacked pawn, 
-    # now above or below the pawn depending on color
-    if @squares[@start_row][@start_column].en_passant
-      p "en_passant?: #{@squares[@start_row][@start_column].en_passant}"
+    attacker = @squares[@start_row][@start_column]
+    if attacker.is_a?(Pawn) && attacker.en_passant
       if player_color == :white
         @squares[@dest_row + 1][@dest_column] = ' '
       elsif player_color == :black
