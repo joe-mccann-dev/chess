@@ -111,13 +111,31 @@ class Board
     end
   end
 
-  def update_board
+  def update_board(player_color)
     push_captured_pieces
+    # move piece to new square
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
+    handle_en_passant_move(player_color)
+    # move piece to new square in the same column. make previous location an empty string
     @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
+    # move piece to new square in a different column. make previous location an empty string
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
     @found_piece.update_num_moves if @found_piece.is_a?(Pawn)
     @found_piece.update_location(@dest_row, @dest_column)
     display
+  end
+
+  def handle_en_passant_move(player_color)
+    # create two empty strings for en_passant move. the attacker's previous location 
+    # and the attacked pawn, 
+    # now above or below the pawn depending on color
+    if @squares[@start_row][@start_column].en_passant
+      p "en_passant?: #{@squares[@start_row][@start_column].en_passant}"
+      if player_color == :white
+        @squares[@dest_row + 1][@dest_column] = ' '
+      elsif player_color == :black
+        @squares[@dest_row - 1][@dest_column] = ' '
+      end
+    end
   end
 end
