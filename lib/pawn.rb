@@ -68,7 +68,7 @@ class Pawn
         squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
       end
     else
-      unless squares[dest_row - 1][dest_column]
+      unless squares[dest_row - 1][dest_column] == ' '
         start_row == 4 && 
         squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
       end
