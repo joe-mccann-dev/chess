@@ -2,7 +2,7 @@
 
 class Pawn
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :en_passant
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant
 
   def initialize(color, location, unicode = "\u265F")
     @num_moves = 0
