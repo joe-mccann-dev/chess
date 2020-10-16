@@ -11,30 +11,15 @@ module MoveValidator
         true
       end
     else
-      puts 'regular'
       regular_move_rules_followed?(start_row, start_column, player_color, piece)
     end
   end
 
   def attack_rules_followed?(start_row, start_column, player_color, piece)
-    # if piece.is_a?(Pawn)
-    #   if @found_piece.is_a?(Pawn) && @found_piece.moved_two_squares?(@start_row)
-    #     @target = @squares[@dest_row + 1][@dest_column] if player_color == :white
-    #     @target = @squares[@dest_row - 1][@dest_column] if player_color == :black
-        # piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column)
-    #   else
-    #     return false if @target == ' '
+    return false if @target.is_a?(King)
 
-
-    #   end
-    # # else
-
-    # return false if @target.is_a?(King) || @target == ' '
-
-      attack_available?(start_row, start_column, player_color, piece) &&
-        piece.allowed_move?(@dest_row, @dest_column) 
-        !@target.is_a?(King) && @target != ' '
-    # end
+    attack_available?(start_row, start_column, player_color, piece) &&
+      piece.allowed_move?(@dest_row, @dest_column) 
   end
 
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
@@ -53,11 +38,13 @@ module MoveValidator
     end
   end
 
-  def attack_available?(start_row, start_column, player_color, piece) 
+  def attack_available?(start_row, start_column, player_color, piece)
+    piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
+    return false if @target == ' ' unless piece.is_a?(Pawn) && piece.en_passant
+
     if piece.is_a?(Pawn)
       piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column)
       if piece.en_passant
-        # binding.pry
         en_passant?(player_color)
       else
         piece.attack_mode && 
