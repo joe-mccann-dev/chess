@@ -17,20 +17,24 @@ module MoveValidator
 
   def attack_rules_followed?(start_row, start_column, player_color, piece)
     piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
-    return false if @target.is_a?(King)
-    return false if @target == ' ' unless (piece.is_a?(Pawn) && piece.en_passant)
+    return false if attack_not_possible?(piece)
 
     attack_available?(start_row, start_column, player_color, piece) &&
       piece.allowed_move?(@dest_row, @dest_column) 
   end
 
+  def attack_not_possible?(piece)
+    @target.is_a?(King) ||
+    @target == ' ' unless piece.is_a?(Pawn) && piece.en_passant
+  end
+
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
+    piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     available_location?(start_row, start_column, piece) &&
       piece.allowed_move?(@dest_row, @dest_column)
   end
 
   def available_location?(start_row, start_column, piece)
-    piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     if piece.is_a?(Knight)
       @target == ' '
     elsif horizontal_vertical_move?(start_row, start_column)
@@ -61,7 +65,6 @@ module MoveValidator
   end
 
   def assign_en_passant_target?(piece, player_color)
-    binding.pry if @attack_move
     @target = @squares[@dest_row + 1][@dest_column] if player_color == :white
     @target = @squares[@dest_row - 1][@dest_column] if player_color == :black
     # force attacking pawn to be @found_piece
