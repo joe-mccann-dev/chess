@@ -35,7 +35,10 @@ module MoveValidator
   end
 
   def available_location?(start_row, start_column, piece)
-    if piece.is_a?(Knight)
+    if piece.is_a?(Pawn)
+      piece.update_double_step_move(start_row, @dest_row) if piece.allowed_move?(@dest_row, @dest_column)
+      horizontal_vertical_unobstructed?(start_row, start_column)
+    elsif piece.is_a?(Knight)
       @target == ' '
     elsif horizontal_vertical_move?(start_row, start_column)
       horizontal_vertical_unobstructed?(start_row, start_column)
@@ -69,7 +72,7 @@ module MoveValidator
     @target = @squares[@dest_row - 1][@dest_column] if player_color == :black
     # force attacking pawn to be @found_piece
     @found_piece = @squares[piece.location[0]][piece.location[1]]
-    @found_piece.is_a?(Pawn) && @target.is_a?(Pawn)
+    @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) && @target.just_moved_two
   end
 
   def horizontal_vertical_move?(start_row, start_column)

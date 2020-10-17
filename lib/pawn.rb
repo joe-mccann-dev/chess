@@ -2,7 +2,7 @@
 
 class Pawn
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, :just_moved_two
 
   def initialize(color, location, unicode = "\u265F")
     @num_moves = 0
@@ -10,6 +10,7 @@ class Pawn
     @captured = false
     @attack_mode = false
     @en_passant = false
+    @just_moved_two = false
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
@@ -83,8 +84,8 @@ class Pawn
     @location = [dest_row, dest_column]
   end
 
-  def moved_two_squares?(start_row)
-    (@location[0] - start_row).abs == 2
+  def update_double_step_move(start_row, dest_row)
+    @just_moved_two = (start_row - dest_row).abs == 2
   end
 
   def mark_as_captured
