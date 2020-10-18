@@ -111,12 +111,14 @@ class Game
   end
 
   def request_player1_move
-    print " #{@player1.name} (#{@player1.symbolic_color}), please enter a move: "
+    print " #{@player1.name} (#{@player1.symbolic_color.capitalize}), please enter a move: "
+      .colorize(:magenta)
     gets.chomp
   end
 
   def request_player2_move
-    print " #{@player2.name} (#{@player2.symbolic_color}), please enter a move: "
+    print " #{@player2.name} (#{@player2.symbolic_color.capitalize}), please enter a move: "
+      .colorize(:magenta)
     gets.chomp
   end
 end
