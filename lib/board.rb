@@ -12,8 +12,9 @@ class Board
     @squares = squares
     @piece_found = false
     @attack_move = false
-    @captured_by_white = [].to_set
-    @captured_by_black = [].to_set
+    @captured_by_white = []
+    @captured_by_black = []
+    @active_piece = nil
   end
 
   def make_initial_board
@@ -113,7 +114,7 @@ class Board
 
   def update_board(player_color)
     push_captured_pieces
-    # move piece to new square
+    # move piece to new squarerequire 'set'
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     handle_en_passant_move(player_color)
     # move piece to new square in the same column. make previous location an empty string
@@ -122,6 +123,8 @@ class Board
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
     @found_piece.update_num_moves if @found_piece.is_a?(Pawn)
     @found_piece.update_location(@dest_row, @dest_column)
+    # sets an active_piece for en_passant conditions after location is updated
+    @active_piece = @found_piece
     display
   end
 
