@@ -7,7 +7,6 @@ class King
   def initialize(color, location, unicode = "\u265A")
     @captured = false
     @location = location
-    @castle_mode = false
     @num_moves = 0
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
@@ -28,6 +27,10 @@ class King
   
   def allowed_move?(dest_row, dest_column)
     available_squares.include?([dest_row, dest_column])
+  end
+
+  def update_num_moves
+    @num_moves += 1
   end
 
   def update_location(dest_row, column)

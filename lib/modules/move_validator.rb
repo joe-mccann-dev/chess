@@ -2,8 +2,7 @@
 
 module MoveValidator
   def valid_move?(move, start_row, start_column, player_color, piece)
-    return false if piece.nil?
-    return true if @castle_move
+    return false if piece.nil? 
     
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
@@ -11,9 +10,21 @@ module MoveValidator
         @target.mark_as_captured if piece.is_a?(determine_piece_class(assign_prefix(move)))
         true
       end
+    elsif @castle_move
+      castle_rules_followed?(player_color)
     else
       regular_move_rules_followed?(start_row, start_column, player_color, piece)
     end
+  end
+
+  def castle_rules_followed?(player_color)
+    if player_color == :white
+      king_and_rook = white_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
+    else
+      king_and_rook = black_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
+    end
+    p king_and_rook
+    king_and_rook.all? { |piece| piece.num_moves == 0 }
   end
 
   def attack_rules_followed?(start_row, start_column, player_color, piece)

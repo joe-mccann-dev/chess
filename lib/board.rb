@@ -128,23 +128,6 @@ class Board
     end
   end
 
-  def update_board(move, player_color)
-    push_captured_pieces
-    # move piece to new squarerequire 'set'
-    @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
-    handle_en_passant_move(player_color)
-    # move piece to new square in the same column. make previous location an empty string
-    @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
-    # move piece to new square in a different column. make previous location an empty string
-    @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
-    @found_piece.update_num_moves if @found_piece.is_a?(Pawn)
-    @found_piece.update_location(@dest_row, @dest_column)
-    reposition_rook(move) if @castle_move
-    # sets an active_piece for en_passant conditions after location is updated
-    @active_piece = @found_piece
-    display
-  end
-
   def handle_en_passant_move(player_color)
     attacker = @squares[@start_row][@start_column]
     if attacker.is_a?(Pawn) && attacker.en_passant
@@ -161,12 +144,35 @@ class Board
     if move.length == 3
       @squares[@found_piece.location[0]][@found_piece.location[1] - 1] = @relevant_rook
       @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+      # new rook location is one column to the left of King's new position
       @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
     # queen side castle
     else
       @squares[@found_piece.location[0]][@found_piece.location[1] + 1] = @relevant_rook
       @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+      # new rook location is one column to the right of King's new position
       @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
     end
+  end
+
+  def update_board(move, player_color)
+    push_captured_pieces
+    # move piece to new squarerequire 'set'
+    @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
+    handle_en_passant_move(player_color)
+    # move piece to new square in the same column. make previous location an empty string
+    @squares[@start_row][@dest_column]  = ' ' if @start_column == @dest_column
+    # move piece to new square in a different column. make previous location an empty string
+    @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
+    @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
+    @found_piece.update_location(@dest_row, @dest_column)
+    reposition_rook(move) if @castle_move
+    # sets an active_piece for en_passant conditions after location is updated
+    @active_piece = @found_piece
+    display
+  end
+
+  def num_moves_relevant?(found_piece)
+    found_piece.is_a?(Pawn) || found_piece.is_a?(King) || found_piece.is_a?(Rook)
   end
 end

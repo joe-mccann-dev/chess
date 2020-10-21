@@ -61,7 +61,7 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player1_move = validate_player1_move
     end
-    puts `clear`
+    # puts `clear`
     @board.update_board(player1_move, @player1.symbolic_color)
   end
 
@@ -75,7 +75,7 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player2_move = validate_player2_move
     end
-    puts `clear`
+    # puts `clear`
     @board.update_board(player2_move, @player2.symbolic_color)
   end
 
