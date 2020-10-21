@@ -12,6 +12,8 @@ class Board
     @squares = squares
     @piece_found = false
     @attack_move = false
+    @castle_move = false
+    @king_in_check = false
     @captured_by_white = []
     @captured_by_black = []
     @active_piece = nil
@@ -75,7 +77,21 @@ class Board
 
   def find_piece(move, player_color, piece_type)
     @piece_found = false
+    return castle_white_or_black_king(move, player_color) if valid_castle_move?(move)
+
     player_color == :white ? find_white_piece(move, piece_type) : find_black_piece(move, piece_type)
+  end
+
+  def castle_white_or_black_king(move, player_color)
+    @piece_found = true
+    player_color == :white ? @squares[7][4] : @squares [0][4]
+    if player_color == :white
+      assign_start_location(@squares[7][4])
+      @squares[7][4]
+    else
+      assign_start_location(@squares[0][4])
+      @squares[0][4]
+    end
   end
 
   def find_white_piece(move, piece_type)
@@ -112,7 +128,7 @@ class Board
     end
   end
 
-  def update_board(player_color)
+  def update_board(move, player_color)
     push_captured_pieces
     # move piece to new squarerequire 'set'
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
@@ -123,6 +139,7 @@ class Board
     @squares[@start_row][@start_column] = ' ' if @start_column != @dest_column
     @found_piece.update_num_moves if @found_piece.is_a?(Pawn)
     @found_piece.update_location(@dest_row, @dest_column)
+    reposition_rook(move) if @castle_move
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
     display
@@ -136,6 +153,20 @@ class Board
       elsif player_color == :black
         @squares[@dest_row - 1][@dest_column] = ' '
       end
+    end
+  end
+
+  def reposition_rook(move)
+    # king side castle
+    if move.length == 3
+      @squares[@found_piece.location[0]][@found_piece.location[1] - 1] = @relevant_rook
+      @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+      @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
+    # queen side castle
+    else
+      @squares[@found_piece.location[0]][@found_piece.location[1] + 1] = @relevant_rook
+      @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+      @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
     end
   end
 end

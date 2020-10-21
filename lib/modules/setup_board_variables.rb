@@ -4,6 +4,11 @@ module SetupBoardVariables
   def assign_piece_type(move)
     @piece_prefix = assign_prefix(move)
     @piece_type = determine_piece_class(@piece_prefix)
+    @piece_type = King if valid_castle_move?(move)
+  end
+
+  def handle_castle_move(move)
+    
   end
 
   def assign_prefix(move)
@@ -23,11 +28,36 @@ module SetupBoardVariables
   end
 
   def assign_target_variables(move, player_color)
+    return assign_castle_targets(move, player_color) if valid_castle_move?(move)
+
+    @castle_move = false
     enable_or_disable_attack_rules(move)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
     @target = @squares[@dest_row][@dest_column]
     @found_piece = find_piece(move, player_color, @piece_type)
+  end
+
+  def assign_castle_targets(move, player_color)
+    @castle_move = true
+    @attack_move = false
+    @dest_row = player_color == :white ? 7 : 0
+    @dest_column = move.length == 3 ? 6 : 2
+    assign_relevant_rook(move, player_color)
+    @target = @squares[@dest_row][@dest_column]
+    @found_piece = find_piece(move, player_color, @piece_type)
+  end
+
+  def assign_relevant_rook(move, player_color)
+    # king side castle
+    if move.length == 3
+      @relevant_rook = @squares[7][7] if player_color == :white
+      @relevant_rook = @squares[0][7] if player_color == :black
+    # queen side castle
+    else
+      @relevant_rook = @squares[7, 0] if player_color == :white
+      @relevant_rook = @squares[0][0] if player_color == :black
+    end
   end
 
   def enable_or_disable_attack_rules(move)

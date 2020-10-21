@@ -3,6 +3,7 @@
 module MoveValidator
   def valid_move?(move, start_row, start_column, player_color, piece)
     return false if piece.nil?
+    return true if @castle_move
     
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
@@ -30,6 +31,7 @@ module MoveValidator
 
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
     piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
+    # piece.toggle_castle_mode
     available_location?(start_row, start_column, piece) &&
       piece.allowed_move?(@dest_row, @dest_column)
   end

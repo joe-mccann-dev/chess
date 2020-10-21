@@ -62,7 +62,7 @@ class Game
       player1_move = validate_player1_move
     end
     puts `clear`
-    @board.update_board(@player1.symbolic_color)
+    @board.update_board(player1_move, @player1.symbolic_color)
   end
 
   # loop breaks if piece is found and square is available
@@ -76,7 +76,7 @@ class Game
       player2_move = validate_player2_move
     end
     puts `clear`
-    @board.update_board(@player2.symbolic_color)
+    @board.update_board(player2_move, @player2.symbolic_color)
   end
 
   def move_follows_rules?(move, player_color)

@@ -2,11 +2,13 @@
 
 class King
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves
 
   def initialize(color, location, unicode = "\u265A")
     @captured = false
     @location = location
+    @castle_mode = false
+    @num_moves = 0
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
