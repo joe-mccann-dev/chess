@@ -34,34 +34,6 @@ module SetupBoardVariables
     @found_piece = find_piece(move, player_color, @piece_type)
   end
 
-  def assign_castle_targets(move, player_color)
-    @castle_move = true
-    @attack_move = false
-    # destination row is always the same as starting row
-    @dest_row = player_color == :white ? 7 : 0
-    # with king side castle, king always ends up at column siz
-    @dest_column = move.length == 3 ? 6 : 2
-    assign_relevant_rook(move, player_color)
-    @target = @squares[@dest_row][@dest_column]
-    @found_piece = find_piece(move, player_color, @piece_type)
-  end
-
-  def assign_relevant_rook(move, player_color)
-    # king side castle
-    if move.length == 3
-      # bottom-right
-      @relevant_rook = @squares[7][7] if player_color == :white
-      # top-right
-      @relevant_rook = @squares[0][7] if player_color == :black
-    # queen side castle
-    else
-      # bottom-left
-      @relevant_rook = @squares[7, 0] if player_color == :white
-      # top-left
-      @relevant_rook = @squares[0][0] if player_color == :black
-    end
-  end
-
   def enable_or_disable_attack_rules(move)
     @attack_move = move.length == 4
   end

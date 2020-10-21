@@ -5,6 +5,7 @@ class Board
   include MoveValidator
   include InputValidator
   include SetupBoardVariables
+  include CastleManager
   include MoveDisambiguator
   attr_reader :start_row, :start_column, :found_piece, :piece_type, :piece_found
 
@@ -77,21 +78,9 @@ class Board
 
   def find_piece(move, player_color, piece_type)
     @piece_found = false
-    return castle_white_or_black_king(move, player_color) if valid_castle_move?(move)
+    return castle_white_or_black_king(player_color) if valid_castle_move?(move)
 
     player_color == :white ? find_white_piece(move, piece_type) : find_black_piece(move, piece_type)
-  end
-
-  def castle_white_or_black_king(move, player_color)
-    @piece_found = true
-    player_color == :white ? @squares[7][4] : @squares [0][4]
-    if player_color == :white
-      assign_start_location(@squares[7][4])
-      @squares[7][4]
-    else
-      assign_start_location(@squares[0][4])
-      @squares[0][4]
-    end
   end
 
   def find_white_piece(move, piece_type)
@@ -128,33 +117,6 @@ class Board
     end
   end
 
-  def handle_en_passant_move(player_color)
-    attacker = @squares[@start_row][@start_column]
-    if attacker.is_a?(Pawn) && attacker.en_passant
-      if player_color == :white
-        @squares[@dest_row + 1][@dest_column] = ' '
-      elsif player_color == :black
-        @squares[@dest_row - 1][@dest_column] = ' '
-      end
-    end
-  end
-
-  def reposition_rook(move)
-    # king side castle
-    if move.length == 3
-      @squares[@found_piece.location[0]][@found_piece.location[1] - 1] = @relevant_rook
-      @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
-      # new rook location is one column to the left of King's new position
-      @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
-    # queen side castle
-    else
-      @squares[@found_piece.location[0]][@found_piece.location[1] + 1] = @relevant_rook
-      @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
-      # new rook location is one column to the right of King's new position
-      @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
-    end
-  end
-
   def update_board(move, player_color)
     push_captured_pieces
     # move piece to new squarerequire 'set'
@@ -170,6 +132,17 @@ class Board
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
     display
+  end
+
+  def handle_en_passant_move(player_color)
+    attacker = @squares[@start_row][@start_column]
+    if attacker.is_a?(Pawn) && attacker.en_passant
+      if player_color == :white
+        @squares[@dest_row + 1][@dest_column] = ' '
+      elsif player_color == :black
+        @squares[@dest_row - 1][@dest_column] = ' '
+      end
+    end
   end
 
   def num_moves_relevant?(found_piece)

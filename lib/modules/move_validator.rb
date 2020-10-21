@@ -17,16 +17,6 @@ module MoveValidator
     end
   end
 
-  def castle_rules_followed?(player_color)
-    if player_color == :white
-      king_and_rook = white_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
-    else
-      king_and_rook = black_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
-    end
-    p king_and_rook
-    king_and_rook.all? { |piece| piece.num_moves == 0 }
-  end
-
   def attack_rules_followed?(start_row, start_column, player_color, piece)
     piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     return false if attack_not_possible?(piece)
@@ -95,8 +85,8 @@ module MoveValidator
     start_row == @dest_row || start_column == @dest_column
   end
 
-  def horizontal_vertical_unobstructed?(start_row, start_column)
-    @target == ' ' &&
+  def horizontal_vertical_unobstructed?(start_row, start_column, target = @target)
+    target == ' ' &&
       column_has_space_for_move?(start_row, start_column) &&
       row_has_space_for_move?(start_row, start_column)
   end
