@@ -78,14 +78,14 @@ module CastleManager
   end
 
   def reposition_king_side_rook
-    @squares[@start_row][@found_piece.location[1] - 1] = @relevant_rook
+    @squares[@dest_row][@dest_column - 1] = @relevant_rook
     @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
     # new rook location is one column to the left of King's new position
     @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
   end
 
   def reposition_queen_side_rook
-    @squares[@found_piece.location[0]][@found_piece.location[1] + 1] = @relevant_rook
+    @squares[@dest_row][@dest_column + 1] = @relevant_rook
     @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
     # new rook location is one column to the right of King's new position
     @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
