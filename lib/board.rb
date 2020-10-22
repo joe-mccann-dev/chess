@@ -6,6 +6,7 @@ class Board
   include InputValidator
   include SetupBoardVariables
   include CastleManager
+  include CheckmateManager
   include MoveDisambiguator
   attr_reader :start_row, :start_column, :found_piece, :piece_type, :piece_found
 
@@ -14,7 +15,8 @@ class Board
     @piece_found = false
     @attack_move = false
     @castle_move = false
-    @king_in_check = false
+    @white_king_in_check = false
+    @black_king_in_check = false
     @captured_by_white = []
     @captured_by_black = []
     @active_piece = nil
@@ -129,6 +131,7 @@ class Board
     @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
     @found_piece.update_location(@dest_row, @dest_column)
     reposition_rook(move) if @castle_move
+    mark_king_as_in_check?(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
     display

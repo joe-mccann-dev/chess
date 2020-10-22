@@ -7,6 +7,7 @@ class King
   def initialize(color, location, unicode = "\u265A")
     @captured = false
     @location = location
+    @in_check = false
     @num_moves = 0
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
@@ -35,6 +36,14 @@ class King
 
   def update_location(dest_row, column)
     @location = [dest_row, column]
+  end
+
+  def mark_as_in_check
+    @in_check = true
+  end
+
+  def mark_as_not_in_check
+    @in_check = false
   end
 
   def mark_as_captured

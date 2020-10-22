@@ -26,7 +26,7 @@ module MoveValidator
   end
 
   def attack_not_possible?(piece)
-    @target.is_a?(King) ||
+    # @target.is_a?(King) ||
       @target == ' ' unless piece.is_a?(Pawn) && piece.en_passant
   end
 
