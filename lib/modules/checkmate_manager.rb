@@ -13,26 +13,22 @@ module CheckmateManager
     black_pieces.select { |piece| piece.is_a?(King) }[0]
   end
 
-  def check_if_move_results_in_check(player_color)
-    reassign_relevant_board_variables(player_color)
-    mark_king_as_in_check?(player_color)
-  end
-
   def mark_king_as_in_check?(player_color)
     if player_color == :white
       @black_king_in_check = white_puts_black_in_check?(player_color)
       puts 'black in check' if @black_king_in_check
+      @target.mark_as_in_check if @black_king_in_check
     else
       @white_king_in_check = black_puts_white_in_check?(player_color)
       puts 'white in check' if @white_king_in_check
+      @target.mark_as_in_check if @white_king_in_check
     end
-    @target.mark_as_in_check if @black_king_in_check || @white_king_in_check
   end
 
   def check_if_players_own_move_puts_them_in_check(player_color)
     opposite_color = player_color == :white ? :black : :white
     reassign_relevant_board_variables(opposite_color)
-    check_if_move_results_in_check(opposite_color)
+    mark_king_as_in_check?(opposite_color)
   end
 
   def reassign_relevant_board_variables(player_color)

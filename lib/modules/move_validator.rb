@@ -51,7 +51,10 @@ module MoveValidator
   def attack_available?(start_row, start_column, player_color, piece)
     if piece.is_a?(Pawn)
       manage_pawn_attack(piece, player_color)
-    elsif piece.is_a?(Knight)
+    end
+    return false if @target == ' '
+
+    if piece.is_a?(Knight)
       @target.symbolic_color != player_color
     elsif horizontal_vertical_move?(start_row, start_column)
       path_to_horiz_vert_attack_clear?(start_row, start_column, player_color)

@@ -131,7 +131,8 @@ class Board
     @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
     @found_piece.update_location(@dest_row, @dest_column)
     reposition_rook(move) if @castle_move
-    check_if_move_results_in_check(player_color)
+    reassign_relevant_board_variables(player_color)
+    mark_king_as_in_check?(player_color)
     check_if_players_own_move_puts_them_in_check(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
