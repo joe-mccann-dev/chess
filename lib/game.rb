@@ -61,7 +61,6 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player1_move = validate_player1_move
     end
-    # puts `clear`
     @board.update_board(player1_move, @player1.symbolic_color)
   end
 
@@ -75,15 +74,12 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player2_move = validate_player2_move
     end
-    # puts `clear`
     @board.update_board(player2_move, @player2.symbolic_color)
   end
 
   def move_follows_rules?(move, player_color)
-    # puts 'move puts black in check' if @board.move_puts_player_in_check?(@board.found_piece, player_color)
-      @board.piece_found &&
-      @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.found_piece)
-      # !@board.move_puts_player_in_check?(@board.found_piece, player_color)
+    @board.piece_found &&
+    @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.found_piece)
   end
 
   # loop breaks if input string is valid algebraic notation
