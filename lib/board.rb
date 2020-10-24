@@ -133,7 +133,7 @@ class Board
     reposition_rook(move) if @castle_move
     reassign_relevant_board_variables(player_color)
     mark_king_as_in_check?(player_color)
-    check_if_players_own_move_puts_them_in_check(player_color)
+    move_puts_self_in_check?(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
     display
