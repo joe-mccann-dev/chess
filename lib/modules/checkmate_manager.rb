@@ -25,6 +25,11 @@ module CheckmateManager
     end
   end
 
+  def move_puts_player_in_check?(player_color)
+    reassign_relevant_board_variables(player_color)
+    mark_king_as_in_check?(player_color)
+  end
+
   def move_puts_self_in_check?(player_color)
     opposite_color = player_color == :white ? :black : :white
     reassign_relevant_board_variables(opposite_color)
