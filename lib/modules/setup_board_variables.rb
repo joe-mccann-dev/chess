@@ -34,6 +34,15 @@ module SetupBoardVariables
     @found_piece = find_piece(move, player_color, @piece_type)
   end
 
+  def setup_variables_again(move, player_color)
+    @checking_for_check = false
+    @castle_move = false
+    enable_or_disable_attack_rules(move)
+    @dest_row = find_dest_row(move)
+    @dest_column = determine_dest_column(move)
+    @target = @squares[@dest_row][@dest_column]
+  end
+
   def enable_or_disable_attack_rules(move)
     @attack_move = move.length == 4
   end

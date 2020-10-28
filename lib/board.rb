@@ -12,7 +12,6 @@ class Board
 
   def initialize(squares = make_initial_board)
     @squares = squares
-    @squares.each { |r| r.each { |s| print s.location } }
     @piece_found = false
     @attack_move = false
     @castle_move = false
@@ -132,12 +131,11 @@ class Board
     @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
     @found_piece.update_location(@dest_row, @dest_column)
     reposition_rook(move) if @castle_move
-    move_puts_player_in_check?(player_color)
-    move_puts_self_in_check?(player_color)
+    # move_puts_player_in_check?(player_color)
+    # move_puts_self_in_check?(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
     display
-    @squares.each { |r| r.each { |s| print s.location } }
   end
 
   def handle_en_passant_move(player_color)
