@@ -45,12 +45,12 @@ class Pawn
     if en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
       @en_passant = true
       if @symbolic_color == :white 
-        start_column != dest_column && squares[dest_row + 1][dest_column] != ' '
+        start_column != dest_column && !squares[dest_row + 1][dest_column].is_a?(EmptySquare)
       else
-        start_column != dest_column && squares[dest_row - 1][dest_column] != ' '
+        start_column != dest_column && !squares[dest_row - 1][dest_column].is_a?(EmptySquare)
       end
     else
-      start_column != dest_column && squares[dest_row][dest_column] != ' '
+      start_column != dest_column && !squares[dest_row][dest_column].is_a?(EmptySquare)
     end
   end
     
@@ -64,12 +64,12 @@ class Pawn
 
   def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
     if @symbolic_color == :white && (dest_row + 1).between?(0, 7)
-      unless squares[dest_row + 1][dest_column] == ' '
+      unless squares[dest_row + 1][dest_column].is_a?(EmptySquare)
         start_row == 3 &&
         squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
       end
     elsif @symbolic_color == :black && (dest_row - 1).between?(0, 7)
-      unless squares[dest_row - 1][dest_column] == ' '
+      unless squares[dest_row - 1][dest_column].is_a?(EmptySquare)
         start_row == 4 && 
         squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
       end

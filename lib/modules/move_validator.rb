@@ -2,7 +2,7 @@
 
 module MoveValidator
   def valid_move?(move, start_row, start_column, player_color, piece)
-    return false if piece.nil? 
+    return false if piece.nil?
     
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
@@ -27,12 +27,11 @@ module MoveValidator
 
   def attack_not_possible?(piece)
     @target.is_a?(King) unless @checking_for_check ||
-      @target == ' ' unless piece.is_a?(Pawn) && piece.en_passant
+      @target.is_a?(EmptySquare) unless piece.is_a?(Pawn) && piece.en_passant
   end
 
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
     piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
-    # piece.toggle_castle_mode
     available_location?(start_row, start_column, piece) &&
       piece.allowed_move?(@dest_row, @dest_column)
   end
@@ -40,7 +39,7 @@ module MoveValidator
   def available_location?(start_row, start_column, piece)
     piece.update_double_step_move(start_row, @dest_row) if piece.is_a?(Pawn)
     if piece.is_a?(Knight)
-      @target == ' '
+      @target.is_a?(EmptySquare)
     elsif horizontal_vertical_move?(start_row, start_column)
       horizontal_vertical_unobstructed?(start_row, start_column)
     else
@@ -52,7 +51,7 @@ module MoveValidator
     if piece.is_a?(Pawn)
       manage_pawn_attack(piece, player_color)
     end
-    return false if @target == ' '
+    return false if @target.is_a?(EmptySquare)
 
     if piece.is_a?(Knight)
       @target.symbolic_color != player_color
@@ -89,7 +88,7 @@ module MoveValidator
   end
 
   def horizontal_vertical_unobstructed?(start_row, start_column, target = @target)
-    target == ' ' &&
+    target.is_a?(EmptySquare) &&
       column_has_space_for_move?(start_row, start_column) &&
       row_has_space_for_move?(start_row, start_column)
   end
@@ -119,7 +118,7 @@ module MoveValidator
 
   def check_space_between_rows(starting_place, destination)
     starting_place.upto(destination) do |r|
-      return false if @squares[r][@dest_column] != ' '
+      return false unless @squares[r][@dest_column].is_a?(EmptySquare)
     end
   end
 
@@ -137,7 +136,7 @@ module MoveValidator
 
   def check_space_between_columns(start_row, starting_place, destination)
     starting_place.upto(destination) do |c|  
-      return false if @squares[start_row][c] != ' '
+      return false unless @squares[start_row][c].is_a?(EmptySquare)
     end
   end
 
@@ -149,7 +148,7 @@ module MoveValidator
     else
       objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance)
     end
-    objects_in_path.any? { |s| s != ' ' } ? false : true
+    objects_in_path.any? { |s| !s.is_a?(EmptySquare) } ? false : true
   end
 
   def ne_nw_diagonal_objects(start_row, start_column, move_distance, diagonal = [])

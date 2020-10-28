@@ -50,15 +50,15 @@ module Display
   end
 
   def print_on_light_black(square)
-    print " #{square}  ".on_light_black if square == ' '
-    unless square == ' '
+    print "    ".on_light_black if square.is_a?(EmptySquare)
+    unless square.is_a?(EmptySquare)
       print " #{square.displayed_color}  ".on_light_black
     end
   end
 
   def print_on_black(square)
-    print " #{square}  ".on_black if square == ' '
-    unless square == ' '
+    print "    ".on_black if square.is_a?(EmptySquare)
+    unless square.is_a?(EmptySquare)
       print " #{square.displayed_color}  ".on_black
     end
   end
