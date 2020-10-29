@@ -8,7 +8,7 @@ class Board
   include CastleManager
   include CheckmateManager
   include MoveDisambiguator
-  attr_reader :start_row, :start_column, :found_piece, :piece_type, :piece_found
+  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found
 
   def initialize(squares = make_initial_board)
     @squares = squares
@@ -34,6 +34,22 @@ class Board
       white_row
     ]
   end
+
+  def replicate_board(squares)
+    board = Array.new(8) { Array.new }
+    squares.each_with_index do |row, row_idx|
+      row.each_with_index do |square, col_idx|
+        if square.is_a?(EmptySquare)
+          board[row_idx] << EmptySquare.new([row_idx, col_idx])
+        else
+          square.symbolic_color == :white ? color_arg = 1 : color_arg = 2
+          board[row_idx] << square.class.new(color_arg, [row_idx, col_idx])
+        end
+      end
+    end
+    board
+  end
+
 
   def black_row
     [
@@ -135,7 +151,6 @@ class Board
     # move_puts_self_in_check?(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
-    display
   end
 
   def handle_en_passant_move(player_color)

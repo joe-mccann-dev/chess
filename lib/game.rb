@@ -62,6 +62,7 @@ class Game
       player1_move = validate_player1_move
     end
     @board.update_board(player1_move, @player1.symbolic_color)
+    @board.display
   end
 
   # loop breaks if piece is found and square is available
@@ -75,9 +76,15 @@ class Game
       player2_move = validate_player2_move
     end
     @board.update_board(player2_move, @player2.symbolic_color)
+    @board.display
   end
 
   def move_follows_rules?(move, player_color)
+    duplicate = Board.new(@board.replicate_board(@board.squares))
+    duplicate.assign_piece_type(move)
+    duplicate.assign_target_variables(move, player_color)
+    duplicate.update_board(move, player_color)
+
     @board.piece_found &&
     @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.found_piece)
   end
