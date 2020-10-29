@@ -3,7 +3,7 @@
 module MoveValidator
   def valid_move?(move, start_row, start_column, player_color, piece)
     return false if piece.nil?
-    
+
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
         # prevents an invalid input target from being marked as captured
@@ -50,6 +50,7 @@ module MoveValidator
   end
 
   def attack_available?(start_row, start_column, player_color, piece, target)
+    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
     if piece.is_a?(Pawn)
       manage_pawn_attack(piece, player_color, target)
     end
