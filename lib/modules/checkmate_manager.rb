@@ -46,7 +46,6 @@ module CheckmateManager
       target = white_king
       black_puts_white_in_check?(player_color, target)
     end
-    # @target = @squares[@dest_row][@dest_column]  
   end
 
   def white_puts_black_in_check?(player_color, target)

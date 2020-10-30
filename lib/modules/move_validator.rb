@@ -20,8 +20,8 @@ module MoveValidator
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
     return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
     
-    piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
-    return false if attack_not_possible?(piece, target)
+    piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
+    # return false if attack_not_possible?(piece, target)
 
     attack_available?(start_row, start_column, player_color, piece, target) && 
       piece.allowed_move?(target.location[0], target.location[1]) 
@@ -52,7 +52,7 @@ module MoveValidator
   def attack_available?(start_row, start_column, player_color, piece, target)
     return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
     if piece.is_a?(Pawn)
-      manage_pawn_attack(piece, player_color, target)
+      return manage_pawn_attack(piece, player_color, target)
     end
     return false if @target.is_a?(EmptySquare)
 

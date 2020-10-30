@@ -89,6 +89,11 @@ class Game
   def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
     duplicate.assign_piece_type(move)
     duplicate.assign_target_variables(move, player_color)
+    p duplicate.instance_variable_get(:@target)
+    p "duplicate found_piece: #{duplicate.found_piece}" 
+    if duplicate.found_piece.is_a?(Pawn)
+      p "attack_mode: #{duplicate.found_piece.attack_mode}"
+    end
     return false unless basic_conditions_met?(move, player_color, duplicate)
 
     duplicate.update_board(move, player_color)
