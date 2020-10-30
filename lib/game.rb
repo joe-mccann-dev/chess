@@ -95,6 +95,7 @@ class Game
   end
 
   def basic_conditions_met?(move, player_color, board_object)
+    # binding.pry
     board_object.piece_found &&
     board_object.valid_move?(move, board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
   end

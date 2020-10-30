@@ -27,37 +27,37 @@ module CheckmateManager
 
   def move_puts_player_in_check?(player_color)
     reassign_relevant_board_variables(player_color)
-    mark_king_as_in_check?(player_color)
+    # mark_king_as_in_check?(player_color)
   end
 
   def move_puts_self_in_check?(player_color)
     opposite_color = player_color == :white ? :black : :white
     reassign_relevant_board_variables(opposite_color)
-    mark_king_as_in_check?(opposite_color)
+    # mark_king_as_in_check?(opposite_color)
   end
 
   def reassign_relevant_board_variables(player_color)
-    if player_color == :white
-      @dest_row = black_king.location[0]
-      @dest_column = black_king.location[1]
-    else
-      @dest_row = white_king.location[0]
-      @dest_column = white_king.location[1]
-    end
     @checking_for_check = true
-    @target = @squares[@dest_row][@dest_column]
     @attack_move = true
+    if player_color == :white
+      target = black_king
+      white_puts_black_in_check?(player_color, target)
+    else
+      target = white_king
+      black_puts_white_in_check?(player_color, target)
+    end
+    # @target = @squares[@dest_row][@dest_column]  
   end
 
-  def white_puts_black_in_check?(player_color)
+  def white_puts_black_in_check?(player_color, target)
     white_pieces.any? do |piece|
-      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece, target)
     end
   end
 
-  def black_puts_white_in_check?(player_color)
+  def black_puts_white_in_check?(player_color, target)
     black_pieces.any? do |piece|
-      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece, target)
     end
   end
 end 

@@ -7,8 +7,7 @@ module MoveValidator
     if @attack_move
       if attack_rules_followed?(start_row, start_column, player_color, piece)
         # prevents an invalid input target from being marked as captured
-        @target.mark_as_captured if piece.is_a?(determine_piece_class(assign_prefix(move))) &&
-          @checking_for_check == false
+        @target.mark_as_captured if piece.is_a?(determine_piece_class(assign_prefix(move)))
         true
       end
     elsif @castle_move
