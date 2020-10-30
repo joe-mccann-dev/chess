@@ -53,7 +53,7 @@ module CastleManager
   end
 
   def all_castle_conditions_true?(king_and_rook, player_color)
-    king_and_rook.all? { |piece| piece.num_moves.zero? } &&
+    king_and_rook.all? { |king_rook| king_rook.num_moves.zero? } &&
       space_free_for_castle?(player_color) && !@king_in_check
       # && king doesn't pass thru a possible check
   end
@@ -67,11 +67,19 @@ module CastleManager
   end
 
   def king_side_space_free?(player_color)
-    player_color == :white ? @squares[7][5..6].all?(' ') : @squares[0][5..6].all?(' ')
+    if player_color == :white
+      @squares[7][5..6].all? { |s| s.is_a?(EmptySquare) }
+    else
+      @squares[0][5..6].all? { |s| s.is_a?(EmptySquare) }
+    end
   end
 
   def queen_side_space_free?(player_color)
-    player_color == :white ? @squares[7][1..3].all?(' ') : @squares[0][1..3].all?(' ')
+    if player_color == :white
+      @squares[7][1..3].all? { |s| s.is_a?(EmptySquare) }
+    else
+      @squares[0][1..3].all? { |s| s.is_a?(EmptySquare) }
+    end
   end
 
   def reposition_rook(move)
@@ -79,15 +87,19 @@ module CastleManager
   end
 
   def reposition_king_side_rook
+    rook_row = @relevant_rook.location[0]
+    rook_col = @relevant_rook.location[1]
     @squares[@dest_row][@dest_column - 1] = @relevant_rook
-    @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+    @squares[rook_row][rook_col] = EmptySquare.new([rook_row, rook_col])
     # new rook location is one column to the left of King's new position
     @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
   end
 
   def reposition_queen_side_rook
+    rook_row = @relevant_rook.location[0]
+    rook_col = @relevant_rook.location[1]
     @squares[@dest_row][@dest_column + 1] = @relevant_rook
-    @squares[@relevant_rook.location[0]][@relevant_rook.location[1]] = ' '
+    @squares[rook_row][rook_col] = EmptySquare.new([rook_row, rook_col])
     # new rook location is one column to the right of King's new position
     @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
   end

@@ -35,7 +35,7 @@ class Board
     ]
   end
 
-  def replicate_board(squares)
+  def duplicate_board(squares)
     board = Array.new(8) { Array.new }
     squares.each_with_index do |row, row_idx|
       row.each_with_index do |square, col_idx|
@@ -147,7 +147,7 @@ class Board
     @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
     @found_piece.update_location(@dest_row, @dest_column)
     reposition_rook(move) if @castle_move
-    # move_puts_player_in_check?(player_color)
+    move_puts_player_in_check?(player_color)
     # move_puts_self_in_check?(player_color)
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece

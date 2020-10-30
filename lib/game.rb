@@ -80,13 +80,23 @@ class Game
   end
 
   def move_follows_rules?(move, player_color)
-    duplicate = Board.new(@board.replicate_board(@board.squares))
+    duplicate = Board.new(@board.duplicate_board(@board.squares))
+    duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
+    !duplicate.move_puts_self_in_check?(player_color) &&
+    basic_conditions_met?(move, player_color, @board)
+  end
+
+  def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
     duplicate.assign_piece_type(move)
     duplicate.assign_target_variables(move, player_color)
-    duplicate.update_board(move, player_color)
+    return false unless basic_conditions_met?(move, player_color, duplicate)
 
-    @board.piece_found &&
-    @board.valid_move?(move, @board.start_row, @board.start_column, player_color, @board.found_piece)
+    duplicate.update_board(move, player_color)
+  end
+
+  def basic_conditions_met?(move, player_color, board_object)
+    board_object.piece_found &&
+    board_object.valid_move?(move, board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
   end
 
   # loop breaks if input string is valid algebraic notation
