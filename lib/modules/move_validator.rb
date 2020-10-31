@@ -75,6 +75,8 @@ module MoveValidator
   end
 
   def assign_en_passant_target(piece, player_color, target)
+    return unless target.is_a?(EmptySquare)
+    
     @target = @squares[target.location[0] + 1][target.location[1]] if player_color == :white
     @target = @squares[target.location[0] - 1][target.location[1]] if player_color == :black
     # force attacking pawn to be @found_piece
