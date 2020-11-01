@@ -165,4 +165,10 @@ class Board
   def num_moves_relevant?(found_piece)
     found_piece.is_a?(Pawn) || found_piece.is_a?(King) || found_piece.is_a?(Rook)
   end
+
+  def mark_target_as_captured(move_followed_rules)
+    if move_followed_rules
+      @target.mark_as_captured unless @target.is_a?(EmptySquare)
+    end
+  end
 end

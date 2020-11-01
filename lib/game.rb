@@ -82,13 +82,12 @@ class Game
   def move_follows_rules?(move, player_color)
     duplicate = Board.new(@board.duplicate_board(@board.squares))
     duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
-    opponent_in_check = duplicate.move_puts_player_in_check?(player_color)
-    self_in_check = duplicate.move_puts_self_in_check?(player_color)
-    opposite_color = player_color == :white ? :black : :white
-    puts " \n** #{opposite_color} in check! **" if opponent_in_check && !self_in_check
-    puts " \n** that move puts #{player_color} in check! **" if self_in_check
-    !self_in_check &&
-      basic_conditions_met?(move, player_color, @board)
+    @opponent_in_check = duplicate.move_puts_player_in_check?(player_color)
+    @self_in_check = duplicate.move_puts_self_in_check?(player_color)
+    announce_check(player_color, duplicate)
+    follows_rules = !@self_in_check && basic_conditions_met?(move, player_color, @board)
+    @board.mark_target_as_captured(follows_rules)
+    follows_rules
   end
 
   # reassigns target variables to duplicate, then updates duplicate in order to verify move doesn't
@@ -102,9 +101,16 @@ class Game
   end
 
   def basic_conditions_met?(move, player_color, board_object)
-    # binding.pry
+    !@self_in_check
     board_object.piece_found &&
     board_object.valid_move?(move, board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
+  end
+
+  def announce_check(player_color, duplicate)
+    opposite_color = player_color == :white ? :black : :white
+    puts "\n  ** #{opposite_color} in check! **".colorize(:yellow) if @opponent_in_check && 
+      !@self_in_check
+    puts "\n  ** that move leaves #{player_color} in check! **".colorize(:yellow) if @self_in_check
   end
 
   # loop breaks if input string is valid algebraic notation
@@ -134,12 +140,14 @@ class Game
   end
 
   def request_player1_move
+    puts
     print " #{@player1.name} (#{@player1.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
     gets.chomp
   end
 
   def request_player2_move
+    puts
     print " #{@player2.name} (#{@player2.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
     gets.chomp

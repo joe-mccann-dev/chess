@@ -18,22 +18,29 @@ module Display
   end
 
   def display(starting_row = 8)
-    display_captured if @captured_by_white.any? || @captured_by_black.any?
     puts
+    print_captured_white_pieces
     @squares.each_with_index do |row, index|
-      print "\t#{starting_row} "
+      print "  #{starting_row} "
       index.even? ? print_even_row(row) : print_odd_row(row)
       starting_row -= 1
       puts "\n"
     end
-    print "\t   a   b   c   d   e   f   g   h\n\n"
+    print "     a   b   c   d   e   f   g   h\n\n"
+    print_captured_black_pieces
   end
 
-  def display_captured
-    print "\n captured by white: "
-    @captured_by_white.each { |piece| print "#{piece.displayed_color} "}
-    print "\n captured by black: "
-    @captured_by_black.each { |piece| print "#{piece.displayed_color} "}
+  def print_captured_white_pieces
+    if @captured_by_black.any?
+      @captured_by_black.each { |piece| print "  #{piece.displayed_color}"}
+    end
+    puts "\n\n"
+  end
+
+  def print_captured_black_pieces
+    if @captured_by_white.any?
+      @captured_by_white.each { |piece| print "  #{piece.displayed_color}"}
+    end
     puts
   end
 
