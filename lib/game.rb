@@ -82,11 +82,17 @@ class Game
   def move_follows_rules?(move, player_color)
     duplicate = Board.new(@board.duplicate_board(@board.squares))
     duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
-    duplicate.move_puts_player_in_check?(player_color)
-    !duplicate.move_puts_self_in_check?(player_color) &&
-    basic_conditions_met?(move, player_color, @board)
+    opponent_in_check = duplicate.move_puts_player_in_check?(player_color)
+    self_in_check = duplicate.move_puts_self_in_check?(player_color)
+    opposite_color = player_color == :white ? :black : :white
+    puts " \n** #{opposite_color} in check! **" if opponent_in_check && !self_in_check
+    puts " \n** that move puts #{player_color} in check! **" if self_in_check
+    !self_in_check &&
+      basic_conditions_met?(move, player_color, @board)
   end
 
+  # reassigns target variables to duplicate, then updates duplicate in order to verify move doesn't
+  # put player's own king in check
   def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
     duplicate.assign_piece_type(move)
     duplicate.assign_target_variables(move, player_color)
