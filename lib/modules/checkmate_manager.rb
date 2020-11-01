@@ -14,15 +14,22 @@ module CheckmateManager
   end
 
   def mark_king_as_in_check?(player_color)
+    mark_kings_as_not_in_check
     if player_color == :white
       @black_king_in_check = white_puts_black_in_check?(player_color)
       puts 'black in check' if @black_king_in_check
       @target.mark_as_in_check if @black_king_in_check
+      @black_king_in_check
     else
       @white_king_in_check = black_puts_white_in_check?(player_color)
       puts 'white in check' if @white_king_in_check
       @target.mark_as_in_check if @white_king_in_check
     end
+  end
+
+  def mark_kings_as_not_in_check
+    white_king.mark_as_not_in_check
+    black_king.mark_as_not_in_check
   end
 
   def move_puts_player_in_check?(player_color)
