@@ -84,6 +84,7 @@ class Game
     duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
     @opponent_in_check = duplicate.move_puts_player_in_check?(player_color)
     @self_in_check = duplicate.move_puts_self_in_check?(player_color)
+    puts `clear` unless @self_in_check
     announce_check(player_color, duplicate)
     follows_rules = !@self_in_check && basic_conditions_met?(move, player_color, @board)
     @board.mark_target_as_captured(follows_rules)
