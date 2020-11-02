@@ -84,6 +84,9 @@ class Game
   end
 
   def move_follows_rules?(move, player_color)
+    # @opponenet_in_check will be true when next player attempts a castle move
+    return false if @board.castle_move && @opponent_in_check
+
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, @duplicate)
     @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
@@ -105,7 +108,6 @@ class Game
   end
 
   def basic_conditions_met?(move, player_color, board_object)
-    !@self_in_check
     board_object.piece_found &&
     board_object.valid_move?(move, board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
   end

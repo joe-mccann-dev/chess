@@ -8,7 +8,7 @@ class Board
   include CastleManager
   include CheckmateManager
   include MoveDisambiguator
-  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found
+  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
 
   def initialize(squares = make_initial_board)
     @squares = squares

@@ -16,9 +16,9 @@ module CheckmateManager
   def mark_king_as_in_check?(player_color)
     mark_kings_as_not_in_check
     if player_color == :white
-      result = black_king.mark_as_in_check if white_puts_black_in_check?(player_color)
+      black_king.mark_as_in_check if white_puts_black_in_check?(player_color)
     else
-      result = white_king.mark_as_in_check if black_puts_white_in_check?(player_color)
+      white_king.mark_as_in_check if black_puts_white_in_check?(player_color)
     end
   end
 
