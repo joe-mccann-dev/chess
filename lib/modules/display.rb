@@ -18,7 +18,7 @@ module Display
   end
 
   def display(starting_row = 8)
-    puts
+    puts `clear` if !@self_in_check
     print_captured_white_pieces
     @squares.each_with_index do |row, index|
       print "  #{starting_row} "

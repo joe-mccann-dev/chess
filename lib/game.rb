@@ -61,8 +61,7 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player1_move = validate_player1_move
     end
-    @board.update_board(player1_move, @player1.symbolic_color)
-    @board.display
+    update_and_display_board(player1_move, @player1.symbolic_color)
   end
 
   # loop breaks if piece is found and square is available
@@ -75,17 +74,21 @@ class Game
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
       player2_move = validate_player2_move
     end
-    @board.update_board(player2_move, @player2.symbolic_color)
+    update_and_display_board(player2_move, @player2.symbolic_color)
+  end
+
+  def update_and_display_board(move, player_color)
+    @board.update_board(move, player_color)
     @board.display
+    announce_check(player_color, @duplicate)
   end
 
   def move_follows_rules?(move, player_color)
-    duplicate = Board.new(@board.duplicate_board(@board.squares))
-    duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
-    @opponent_in_check = duplicate.move_puts_player_in_check?(player_color)
-    @self_in_check = duplicate.move_puts_self_in_check?(player_color)
-    puts `clear` unless @self_in_check
-    announce_check(player_color, duplicate)
+    @duplicate = Board.new(@board.duplicate_board(@board.squares))
+    duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, @duplicate)
+    @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
+    @self_in_check = @duplicate.move_puts_self_in_check?(player_color)
+    announce_check(player_color, @duplicate)
     follows_rules = !@self_in_check && basic_conditions_met?(move, player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
@@ -94,11 +97,11 @@ class Game
   # reassigns target variables to duplicate, then updates duplicate in order to verify move doesn't
   # put player's own king in check
   def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
-    duplicate.assign_piece_type(move)
-    duplicate.assign_target_variables(move, player_color)
-    return false unless basic_conditions_met?(move, player_color, duplicate)
+    @duplicate.assign_piece_type(move)
+    @duplicate.assign_target_variables(move, player_color)
+    return false unless basic_conditions_met?(move, player_color, @duplicate)
 
-    duplicate.update_board(move, player_color)
+    @duplicate.update_board(move, player_color)
   end
 
   def basic_conditions_met?(move, player_color, board_object)
@@ -109,7 +112,7 @@ class Game
 
   def announce_check(player_color, duplicate)
     opposite_color = player_color == :white ? :black : :white
-    puts "\n  ** #{opposite_color} in check! **".colorize(:yellow) if @opponent_in_check && 
+    puts "\n  ** #{opposite_color.capitalize} in check! **".colorize(:yellow) if @opponent_in_check && 
       !@self_in_check
     puts "\n  ** that move leaves #{player_color} in check! **".colorize(:yellow) if @self_in_check
   end
