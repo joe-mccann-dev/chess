@@ -54,8 +54,8 @@ module CastleManager
 
   def all_castle_conditions_true?(king_and_rook, player_color)
     king_and_rook.all? { |king_rook| king_rook.num_moves.zero? } &&
-      space_free_for_castle?(player_color) && !@king_in_check
-      # && king doesn't pass thru a possible check
+      space_free_for_castle?(player_color) && 
+      black_pieces.none? { |p| path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[7][5]) }
   end
 
   def space_free_for_castle?(player_color)
