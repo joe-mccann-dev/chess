@@ -42,10 +42,8 @@ class Player
 
   def show_color_choices
     puts
-    puts ' Player 1 will now choose a color. Player 2 will be the opposite color.'
-    puts
-    puts " #{@name}, would you like to be White or Black?"
-    print " Enter 1 for White, or 2 for Black: ".colorize(:magenta)
+    puts " #{@name}, would you like to be White or Black?\n"
+    print "\n enter 1 for White, or 2 for Black: ".colorize(:magenta)
   end
 
   def assign_color(choice)

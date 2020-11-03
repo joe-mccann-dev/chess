@@ -11,11 +11,11 @@ class Game
   end
 
   def start_game
-    show_welcome_message
     @board.display
-    print " Player 1, please enter your name: ".colorize(:magenta)
+    show_welcome_message
+    print " first player's name: ".colorize(:magenta)
     @player1.request_name
-    print "\n Player 2, please enter your name: ".colorize(:magenta)
+    print "\n other player's name: ".colorize(:magenta)
     @player2.request_name
     @player1.request_color
     assign_color(@player1.displayed_color)
@@ -84,7 +84,7 @@ class Game
   end
 
   def move_follows_rules?(move, player_color)
-    # @opponenet_in_check will be true when next player attempts a castle move
+    # @opponent_in_check will be true when next player attempts a castle move
     return false if @board.castle_move && @opponent_in_check
 
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
