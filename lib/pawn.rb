@@ -41,6 +41,10 @@ class Pawn
     @attack_mode = attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
   end
 
+  def turn_attack_mode_on
+    @attack_mode = true
+  end
+
   def attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
     if en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
       @en_passant = true

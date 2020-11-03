@@ -54,8 +54,50 @@ module CastleManager
 
   def all_castle_conditions_true?(king_and_rook, player_color)
     king_and_rook.all? { |king_rook| king_rook.num_moves.zero? } &&
-      space_free_for_castle?(player_color) && 
-      black_pieces.none? { |p| path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[7][5]) }
+      space_free_for_castle?(player_color) &&
+      opponent_cannot_attack_castle_path?(player_color, @castle_type)
+  end
+
+  def opponent_cannot_attack_castle_path?(player_color, castle_type)
+    @attack_move = true
+    if player_color == :white
+      if castle_type == :king_side
+        cannot_attack_castle_path?(player_color, 7, 5)
+      else
+        cannot_attack_castle_path?(player_color, 7, 3)
+      end
+    else
+      if castle_type == :king_side
+        cannot_attack_castle_path?(player_color, 0, 5)
+      else
+        cannot_attack_castle_path?(player_color, 0, 3)
+      end
+    end
+  end
+
+  def cannot_attack_castle_path?(player_color, row, col)
+    if player_color == :white
+      castle_path_free_from_attack?(black_pieces, player_color, row, col)
+    else
+      castle_path_free_from_attack?(white_pieces, player_color, row, col)
+    end
+  end
+
+  def castle_path_free_from_attack?(pieces, player_color, row, col)
+    pieces.none? do |p|
+      p.turn_attack_mode_on if p.is_a?(Pawn)
+      if p.is_a?(Pawn) || p.is_a?(Knight)
+        p.allowed_move?(row, col)
+      else
+        if p.allowed_move?(row, col)
+          if horizontal_vertical_move?(p.location[0], p.location[1], @squares[row][col])
+            path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
+          else
+            path_to_diagonal_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
+          end
+        end
+      end
+    end
   end
 
   def space_free_for_castle?(player_color)
