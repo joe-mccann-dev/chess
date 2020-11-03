@@ -89,13 +89,17 @@ module CastleManager
       if p.is_a?(Pawn) || p.is_a?(Knight)
         p.allowed_move?(row, col)
       else
-        if p.allowed_move?(row, col)
-          if horizontal_vertical_move?(p.location[0], p.location[1], @squares[row][col])
-            path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
-          else
-            path_to_diagonal_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
-          end
-        end
+        path_from_opponent_to_castle_path_clear?(p, player_color, row, col)
+      end
+    end
+  end
+
+  def path_from_opponent_to_castle_path_clear?(p, player_color, row, col)
+    if p.allowed_move?(row, col)
+      if horizontal_vertical_move?(p.location[0], p.location[1], @squares[row][col])
+        path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
+      else
+        path_to_diagonal_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
       end
     end
   end
