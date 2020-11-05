@@ -54,7 +54,7 @@ module CheckmateManager
   def white_puts_black_in_check?(player_color)
     white_pieces.any? do |piece|
       if @en_passant
-        if piece.allowed_move?(white_king.location[0], white_king.location[1])
+        if piece.allowed_move?(black_king.location[0], black_king.location[1])
           path_to_horiz_vert_attack_clear?(piece.location[0], piece.location[1], player_color, black_king) ||
             path_to_diagonal_attack_clear?(piece.location[0], piece.location[1], player_color, black_king)
         end
