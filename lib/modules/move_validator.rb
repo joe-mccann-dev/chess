@@ -13,20 +13,12 @@ module MoveValidator
     end
   end
 
-
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
     return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
     
     piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
-    # return false if attack_not_possible?(piece, target)
-
     attack_available?(start_row, start_column, player_color, piece, target) && 
       piece.allowed_move?(target.location[0], target.location[1]) 
-  end
-
-  def attack_not_possible?(piece, target)
-    target.is_a?(King) unless @checking_for_check ||
-      target.is_a?(EmptySquare) unless piece.is_a?(Pawn) && piece.en_passant
   end
 
   def regular_move_rules_followed?(start_row, start_column, player_color, piece)
