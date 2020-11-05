@@ -15,7 +15,7 @@ module MoveValidator
 
 
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
-    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
+    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
     
     piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
     # return false if attack_not_possible?(piece, target)
@@ -47,7 +47,7 @@ module MoveValidator
   end
 
   def attack_available?(start_row, start_column, player_color, piece, target)
-    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
+    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
 
     if piece.is_a?(Pawn)
       return manage_pawn_attack(piece, player_color, target)
@@ -65,7 +65,6 @@ module MoveValidator
 
   def manage_pawn_attack(piece, player_color, target)
     if piece.en_passant
-      # binding.pry
       assign_en_passant_target(piece, player_color, target)
     else
       piece.attack_mode && target.symbolic_color != player_color
@@ -79,10 +78,10 @@ module MoveValidator
     @target = @squares[target.location[0] - 1][target.location[1]] if player_color == :black
     # force attacking pawn to be @found_piece
     @found_piece = @squares[piece.location[0]][piece.location[1]]
-    en_passant_conditions_met?(target)
+    en_passant_conditions_met?
   end
 
-  def en_passant_conditions_met?(target)
+  def en_passant_conditions_met?
     @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) && 
       @target.just_moved_two && @target == @active_piece
   end
