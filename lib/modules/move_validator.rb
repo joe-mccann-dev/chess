@@ -48,6 +48,7 @@ module MoveValidator
 
   def attack_available?(start_row, start_column, player_color, piece, target)
     return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?(target)
+
     if piece.is_a?(Pawn)
       return manage_pawn_attack(piece, player_color, target)
     end

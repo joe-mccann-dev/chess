@@ -53,13 +53,27 @@ module CheckmateManager
 
   def white_puts_black_in_check?(player_color)
     white_pieces.any? do |piece|
-      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      if @en_passant
+        if piece.allowed_move?(white_king.location[0], white_king.location[1])
+          path_to_horiz_vert_attack_clear?(piece.location[0], piece.location[1], player_color, black_king) ||
+            path_to_diagonal_attack_clear?(piece.location[0], piece.location[1], player_color, black_king)
+        end
+      else
+        attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      end
     end
   end
 
   def black_puts_white_in_check?(player_color)
     black_pieces.any? do |piece|
-      attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      if @en_passant
+        if piece.allowed_move?(white_king.location[0], white_king.location[1])
+          path_to_horiz_vert_attack_clear?(piece.location[0], piece.location[1], player_color, white_king) ||
+            path_to_diagonal_attack_clear?(piece.location[0], piece.location[1], player_color, white_king)
+        end
+      else
+        attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece)
+      end
     end
   end
 end 

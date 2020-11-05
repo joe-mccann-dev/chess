@@ -25,22 +25,17 @@ module SetupBoardVariables
 
   def assign_target_variables(move, player_color)
     return assign_castle_targets(move, player_color) if valid_castle_move?(move)
-    @checking_for_check = false
-    @castle_move = false
-    enable_or_disable_attack_rules(move)
-    @dest_row = find_dest_row(move)
-    @dest_column = determine_dest_column(move)
-    @target = @squares[@dest_row][@dest_column]
-    @found_piece = find_piece(move, player_color, @piece_type)
-  end
 
-  def setup_variables_again(move, player_color)
     @checking_for_check = false
     @castle_move = false
+    @en_passant = false
     enable_or_disable_attack_rules(move)
     @dest_row = find_dest_row(move)
     @dest_column = determine_dest_column(move)
     @target = @squares[@dest_row][@dest_column]
+    @en_passant = true if @target.is_a?(EmptySquare) && valid_pawn_attack?(move)
+    # binding.pry
+    @found_piece = find_piece(move, player_color, @piece_type)
   end
 
   def enable_or_disable_attack_rules(move)
