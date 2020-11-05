@@ -3,7 +3,7 @@
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     return false if piece.nil?
-    
+
     if @attack_move
       attack_rules_followed?(start_row, start_column, player_color, piece)
     elsif @castle_move
@@ -15,13 +15,15 @@ module MoveValidator
 
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
     return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
-    
-    piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
-    attack_available?(start_row, start_column, player_color, piece, target) && 
-      piece.allowed_move?(target.location[0], target.location[1]) 
+
+    if piece.is_a?(Pawn)
+      piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1])
+    end
+    attack_available?(start_row, start_column, player_color, piece, target) &&
+      piece.allowed_move?(target.location[0], target.location[1])
   end
 
-  def regular_move_rules_followed?(start_row, start_column, player_color, piece)
+  def regular_move_rules_followed?(start_row, start_column, _player_color, piece)
     piece.toggle_attack_mode(@squares, start_row, start_column, @dest_row, @dest_column) if piece.is_a?(Pawn)
     available_location?(start_row, start_column, piece) &&
       piece.allowed_move?(@dest_row, @dest_column)
@@ -61,24 +63,31 @@ module MoveValidator
 
   def manage_pawn_attack(piece, player_color, target)
     if piece.en_passant
-      assign_en_passant_target(piece, player_color, target)
+      manage_en_passant_attack(piece, player_color, target)
     else
       piece.attack_mode && target.symbolic_color != player_color
     end
   end
 
-  def assign_en_passant_target(piece, player_color, target)
-    return unless target.is_a?(EmptySquare)
-    
-    @target = @squares[target.location[0] + 1][target.location[1]] if player_color == :white
-    @target = @squares[target.location[0] - 1][target.location[1]] if player_color == :black
+  def manage_en_passant_attack(piece, player_color, target)
+    assign_en_passant_target(player_color, target)
     # force attacking pawn to be @found_piece
     @found_piece = @squares[piece.location[0]][piece.location[1]]
     en_passant_conditions_met?
   end
 
+  def assign_en_passant_target(player_color, target)
+    return unless target.is_a?(EmptySquare)
+
+    @target = if player_color == :white
+                @squares[target.location[0] + 1][target.location[1]]
+              else
+                @squares[target.location[0] - 1][target.location[1]]
+              end
+  end
+
   def en_passant_conditions_met?
-    @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) && 
+    @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) &&
       @target.just_moved_two && @target == @active_piece
   end
 
@@ -107,7 +116,7 @@ module MoveValidator
     end
   end
 
-  def column_has_space_for_move?(start_row, start_column, target)
+  def column_has_space_for_move?(start_row, _start_column, target)
     if start_row < target.location[0]
       return check_space_between_rows(start_row + 1, target.location[0] - 1, target) if @attack_move
 
@@ -138,7 +147,7 @@ module MoveValidator
   end
 
   def check_space_between_columns(start_row, starting_place, destination)
-    starting_place.upto(destination) do |c|  
+    starting_place.upto(destination) do |c|
       return false unless @squares[start_row][c].is_a?(EmptySquare)
     end
   end
@@ -147,42 +156,42 @@ module MoveValidator
     # binding.pry if target.is_a?(EmptySquare)
     move_distance = (target.location[1] - start_column).abs
     # pieces at bottom have a larger start_row value d/t array index
-    if start_row > target.location[0]
-      objects_in_path = ne_nw_diagonal_objects(start_row, start_column, move_distance, target)
-    else
-      objects_in_path = se_sw_diagonal_objects(start_row, start_column, move_distance, target)
-    end
+    objects_in_path = if start_row > target.location[0]
+                        ne_nw_diagonal_objects(start_row, start_column, move_distance, target)
+                      else
+                        se_sw_diagonal_objects(start_row, start_column, move_distance, target)
+                      end
     objects_in_path.any? { |s| !s.is_a?(EmptySquare) } ? false : true
   end
 
-  def ne_nw_diagonal_objects(start_row, start_column, move_distance, target, diagonal = [])
-    move_distance.times do |n|
-      push_north_diagonal(start_column, n, diagonal, target) if @squares[target.location[0] + n]
+  def ne_nw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])
+    move_distance.times do |shift|
+      push_north_diagonal(start_column, shift, diagonal, target) if @squares[target.location[0] + shift]
     end
     @attack_move ? diagonal[1..-1] : diagonal
   end
 
-  def se_sw_diagonal_objects(start_row, start_column, move_distance, target, diagonal = [])
-    move_distance.times do |n|
-      push_south_diagonal(start_column, n, diagonal, target) if @squares[target.location[0] - n]
+  def se_sw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])
+    move_distance.times do |shift|
+      push_south_diagonal(start_column, shift, diagonal, target) if @squares[target.location[0] - shift]
     end
     @attack_move ? diagonal.reverse[0..-2] : diagonal
   end
 
-  def push_north_diagonal(start_column, n, diagonal, target)
-    if target.location[1] > start_column # (ne)
-      # start at destination location and work backwards towards start piece
-      diagonal << @squares[target.location[0]+ n][target.location[1] - n]
-    else # (nw)
-      diagonal << @squares[target.location[0] + n][target.location[1] + n]
-    end
+  def push_north_diagonal(start_column, shift, diagonal, target)
+    diagonal << if target.location[1] > start_column # (ne)
+                  # start at destination location and work backwards towards start piece
+                  @squares[target.location[0] + shift][target.location[1] - shift]
+                else # (nw)
+                  @squares[target.location[0] + shift][target.location[1] + shift]
+                end
   end
 
-  def push_south_diagonal(start_column, n, diagonal, target)
-    if target.location[1] > start_column # (se)
-      diagonal << @squares[target.location[0] - n][target.location[1] - n]
-    else # (sw)
-      diagonal << @squares[target.location[0] - n][target.location[1] + n]
-    end
+  def push_south_diagonal(start_column, shift, diagonal, target)
+    diagonal << if target.location[1] > start_column # (se)
+                  @squares[target.location[0] - shift][target.location[1] - shift]
+                else # (sw)
+                  @squares[target.location[0] - shift][target.location[1] + shift]
+                end
   end
 end
