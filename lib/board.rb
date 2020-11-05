@@ -8,15 +8,14 @@ class Board
   include CastleManager
   include CheckmateManager
   include MoveDisambiguator
-  attr_reader :en_passant, :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
+  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
 
   def initialize(squares = make_initial_board)
     @squares = squares
     @piece_found = false
     @attack_move = false
     @castle_move = false
-    @white_king_in_check = false
-    @black_king_in_check = false
+    @en_passant = false
     @captured_by_white = []
     @captured_by_black = []
     @active_piece = nil
@@ -137,7 +136,7 @@ class Board
 
   def update_board(move, player_color)
     push_captured_pieces
-    # move piece to new squarerequire 'set'
+    # move piece to new square
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
     handle_en_passant_move(player_color)
     # move piece to new square in the same column. make previous location an empty string

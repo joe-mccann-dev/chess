@@ -34,7 +34,6 @@ module SetupBoardVariables
     @dest_column = determine_dest_column(move)
     @target = @squares[@dest_row][@dest_column]
     @en_passant = true if @target.is_a?(EmptySquare) && valid_pawn_attack?(move)
-    # binding.pry
     @found_piece = find_piece(move, player_color, @piece_type)
   end
 

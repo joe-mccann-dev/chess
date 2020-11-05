@@ -39,11 +39,15 @@ module MoveValidator
   end
 
   def attack_available?(start_row, start_column, player_color, piece, target)
-    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
-
     if piece.is_a?(Pawn)
-      return manage_pawn_attack(piece, player_color, target)
+      manage_pawn_attack(piece, player_color, target)
+    else
+      manage_non_pawn_attacks(start_row, start_column, player_color, piece, target)
     end
+  end
+
+  def manage_non_pawn_attacks(start_row, start_column, player_color, piece, target)
+    # can't attack an empty square unless you're a pawn making an en_passant attack
     return false if @target.is_a?(EmptySquare)
 
     if piece.is_a?(Knight)
