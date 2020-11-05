@@ -92,7 +92,7 @@ class Game
     @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
     @self_in_check = @duplicate.move_puts_self_in_check?(player_color)
     announce_check(player_color, @duplicate)
-    follows_rules = !@self_in_check && basic_conditions_met?(move, player_color, @board)
+    follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
   end
@@ -102,14 +102,14 @@ class Game
   def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
     @duplicate.assign_piece_type(move)
     @duplicate.assign_target_variables(move, player_color)
-    return false unless basic_conditions_met?(move, player_color, @duplicate)
+    return false unless basic_conditions_met?(player_color, @duplicate)
 
     @duplicate.update_board(move, player_color)
   end
 
-  def basic_conditions_met?(move, player_color, board_object)
+  def basic_conditions_met?(player_color, board_object)
     board_object.piece_found &&
-    board_object.valid_move?(move, board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
+    board_object.valid_move?(board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
   end
 
   def announce_check(player_color, duplicate)

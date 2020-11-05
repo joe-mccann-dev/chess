@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MoveValidator
-  def valid_move?(move, start_row, start_column, player_color, piece)
+  def valid_move?(start_row, start_column, player_color, piece)
     return false if piece.nil?
     
     if @attack_move

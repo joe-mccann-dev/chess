@@ -101,12 +101,12 @@ class Board
   end
 
   def find_white_piece(move, piece_type)
-    pieces = white_pieces_that_go_to_dest(move).select { |piece| piece.is_a?(piece_type) }
+    pieces = white_pieces_that_go_to_dest.select { |piece| piece.is_a?(piece_type) }
     valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
   end
 
   def find_black_piece(move, piece_type)
-    pieces = black_pieces_that_go_to_dest(move).select { |piece| piece.is_a?(piece_type) }
+    pieces = black_pieces_that_go_to_dest.select { |piece| piece.is_a?(piece_type) }
     valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
   end
 
@@ -122,16 +122,12 @@ class Board
     attacking_pawn
   end
 
-  def white_pieces_that_go_to_dest(move)
-    white_pieces.select do |piece|
-      valid_move?(move, piece.location[0], piece.location[1], :white, piece)
-    end
+  def white_pieces_that_go_to_dest
+    white_pieces.select { |piece| valid_move?(piece.location[0], piece.location[1], :white, piece) }
   end
 
-  def black_pieces_that_go_to_dest(move)
-    black_pieces.select do |piece|
-      valid_move?(move, piece.location[0], piece.location[1], :black, piece)
-    end
+  def black_pieces_that_go_to_dest
+    black_pieces.select { |piece| valid_move?(piece.location[0], piece.location[1], :black, piece) }
   end
 
   def update_board(move, player_color)
