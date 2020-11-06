@@ -79,7 +79,7 @@ class Game
 
   def update_and_display_board(move, player_color)
     @board.update_board(move, player_color)
-    @board.prompt_for_pawn_promotion(player_color) if @board.pawn_promoteable?(@board.found_piece, player_color)
+    @board.prompt_for_pawn_promotion(player_color) if @board.pawn_promotable?(@board.found_piece, player_color)
     @board.display
     announce_check(player_color, @duplicate)
   end

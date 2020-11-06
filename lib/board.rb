@@ -12,13 +12,8 @@ class Board
 
   def initialize(squares = make_initial_board)
     @squares = squares
-    @piece_found = false
-    @attack_move = false
-    @castle_move = false
-    @en_passant = false
     @captured_by_white = []
     @captured_by_black = []
-    @active_piece = nil
   end
 
   def make_initial_board
@@ -146,15 +141,15 @@ class Board
     @active_piece = @found_piece
   end
 
-  def pawn_promoteable?(piece, player_color)
+  def pawn_promotable?(piece, player_color)
     return unless piece.is_a?(Pawn)
 
     player_color == :white ? piece.location[0] == 0 : piece.location[0] == 7
   end
 
   def prompt_for_pawn_promotion(player_color)
-    puts "Pawn promotion! Select which piece you'd like your pawn to become: "
-    puts "Enter [1] for Queen, [2] for Rook, [3] for Knight, [4] for Bishop"
+    puts "\n Pawn promotion! Select which piece you'd like your pawn to become. ".colorize(:yellow)
+    print " Enter [1] for Queen, [2] for Rook, [3] for Knight, [4] for Bishop: ".colorize(:yellow)
     choice = gets.chomp.to_i
     choice = 1 unless choice.between?(1, 4)
     promote_pawn(choice, player_color)
@@ -171,12 +166,12 @@ class Board
 
   def handle_en_passant_move(player_color)
     attacker = @squares[@start_row][@start_column]
-    if attacker.is_a?(Pawn) && attacker.en_passant
-      if player_color == :white
-        @squares[@dest_row + 1][@dest_column] = EmptySquare.new([@dest_row + 1, @dest_column])
-      elsif player_color == :black
-        @squares[@dest_row - 1][@dest_column] = EmptySquare.new([@dest_row - 1, @dest_column])
-      end
+    return unless attacker.is_a?(Pawn) && attacker.en_passant
+
+    if player_color == :white
+      @squares[@dest_row + 1][@dest_column] = EmptySquare.new([@dest_row + 1, @dest_column])
+    else
+      @squares[@dest_row - 1][@dest_column] = EmptySquare.new([@dest_row - 1, @dest_column])
     end
   end
 

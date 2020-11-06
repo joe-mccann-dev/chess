@@ -153,7 +153,6 @@ module MoveValidator
   end
 
   def diagonal_path_unobstructed?(start_row, start_column, target)
-    # binding.pry if target.is_a?(EmptySquare)
     move_distance = (target.location[1] - start_column).abs
     # pieces at bottom have a larger start_row value d/t array index
     objects_in_path = if start_row > target.location[0]
