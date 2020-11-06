@@ -79,6 +79,7 @@ class Game
 
   def update_and_display_board(move, player_color)
     @board.update_board(move, player_color)
+    @board.prompt_for_pawn_promotion(player_color) if @board.pawn_promoteable?(@board.found_piece, player_color)
     @board.display
     announce_check(player_color, @duplicate)
   end
@@ -116,7 +117,7 @@ class Game
     opposite_color = player_color == :white ? :black : :white
     puts "\n  ** #{opposite_color.capitalize} in check! **".colorize(:yellow) if @opponent_in_check && 
       !@self_in_check
-    puts "\n  ** that move leaves #{player_color} in check! **".colorize(:yellow) if @self_in_check
+    puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:yellow) if @self_in_check
   end
 
   # loop breaks if input string is valid algebraic notation

@@ -146,6 +146,34 @@ class Board
     @active_piece = @found_piece
   end
 
+  def pawn_promoteable?(piece, player_color)
+    return unless piece.is_a?(Pawn)
+
+    player_color == :white ? piece.location[0] == 0 : piece.location[0] == 7
+  end
+
+  def prompt_for_pawn_promotion(player_color)
+    puts "Pawn promotion! Select which piece you'd like your pawn to become: "
+    puts "Enter [1] for Queen, [2] for Rook, [3] for Knight, [4] for Bishop"
+    choice = gets.chomp.to_i
+    loop do
+      break if choice.between?(1, 4)
+
+      choice = gets.chomp.to_i
+      puts "please select 1, 2, 3, or 4."
+    end
+    promote_pawn(choice, player_color)
+  end
+
+  def promote_pawn(choice, player_color)
+    choices = [Queen, Rook, Knight, Bishop]
+    if player_color == :white
+      @squares[@dest_row][@dest_column] = choices[choice - 1].new(1, [@dest_row, @dest_column] )
+    else
+      @squares[@dest_row][@dest_column] = choices[choice - 1].new(2, [@dest_row, @dest_column] )
+    end
+  end
+
   def handle_en_passant_move(player_color)
     attacker = @squares[@start_row][@start_column]
     if attacker.is_a?(Pawn) && attacker.en_passant
