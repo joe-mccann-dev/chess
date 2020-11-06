@@ -27,11 +27,7 @@ class Game
 
   def play_game
     @board.display
-    player1_chooses_white?(@player1.symbolic_color) ? player1_goes_first : player2_goes_first
-  end
-
-  def player1_chooses_white?(player1_color)
-    player1_color == :white
+    @player1.symbolic_color == :white ? player1_goes_first : player2_goes_first
   end
 
   def player1_goes_first
