@@ -156,12 +156,7 @@ class Board
     puts "Pawn promotion! Select which piece you'd like your pawn to become: "
     puts "Enter [1] for Queen, [2] for Rook, [3] for Knight, [4] for Bishop"
     choice = gets.chomp.to_i
-    loop do
-      break if choice.between?(1, 4)
-
-      choice = gets.chomp.to_i
-      puts "please select 1, 2, 3, or 4."
-    end
+    choice = 1 unless choice.between?(1, 4)
     promote_pawn(choice, player_color)
   end
 
