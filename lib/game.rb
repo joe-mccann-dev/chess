@@ -97,11 +97,12 @@ class Game
   # reassigns target variables to duplicate, then updates duplicate in order to verify move doesn't
   # put player's own king in check
   def duplicate_board_to_prevent_move_puts_self_in_check(move, player_color, duplicate)
-    @duplicate.assign_piece_type(move)
-    @duplicate.assign_target_variables(move, player_color)
-    return false unless basic_conditions_met?(player_color, @duplicate)
-
-    @duplicate.update_board(move, player_color)
+    duplicate.assign_piece_type(move)
+    duplicate.assign_target_variables(move, player_color)
+    return false unless basic_conditions_met?(player_color, duplicate)
+    
+    duplicate.re_ambiguate
+    duplicate.update_board(move, player_color)
   end
 
   def basic_conditions_met?(player_color, board_object)
@@ -111,9 +112,9 @@ class Game
 
   def announce_check(player_color, duplicate)
     opposite_color = player_color == :white ? :black : :white
-    puts "\n  ** #{opposite_color.capitalize} in check! **".colorize(:yellow) if @opponent_in_check && 
+    puts "\n  ** #{opposite_color.capitalize} in check! **".colorize(:red) if @opponent_in_check && 
       !@self_in_check
-    puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:yellow) if @self_in_check
+    puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
   end
 
   # loop breaks if input string is valid algebraic notation

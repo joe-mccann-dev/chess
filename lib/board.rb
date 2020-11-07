@@ -10,6 +10,8 @@ class Board
   include MoveDisambiguator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
 
+  @@disambiguated = false
+
   def initialize(squares = make_initial_board)
     @squares = squares
     @captured_by_white = []
@@ -44,6 +46,9 @@ class Board
     board
   end
 
+  def re_ambiguate
+    @@disambiguated = false
+  end
 
   def black_row
     [
@@ -148,11 +153,15 @@ class Board
   end
 
   def prompt_for_pawn_promotion(player_color)
-    puts "\n Pawn promotion! Select which piece you'd like your pawn to become. ".colorize(:yellow)
-    print " Enter [1] for Queen, [2] for Rook, [3] for Knight, [4] for Bishop: ".colorize(:yellow)
+    puts " ** pawn promotion! ** \n".colorize(:magenta)
+    puts " select which piece you'd like your Pawn to become. "
+    choices = ["Queen", "Rook", "Knight", "Bishop"]
+    choices.each_with_index do |_c, i| 
+      puts " enter[#{i + 1}] for #{choices[i]}"
+    end
     choice = gets.chomp.to_i
     choice = 1 unless choice.between?(1, 4)
-    promote_pawn(choice, player_color)
+    @active_piece = promote_pawn(choice, player_color)
   end
 
   def promote_pawn(choice, player_color)
