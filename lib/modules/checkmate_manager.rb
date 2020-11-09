@@ -22,6 +22,30 @@ module CheckmateManager
     end
   end
 
+  # def checkmate?(player_color)
+  #   allowed_moves = if player_color == :white
+  #                     white_king.available_squares
+  #                   else
+  #                     black_king.available_squares
+  #                   end
+  #                   p allowed_moves
+  #   i = 0
+  #   moves_that_result_in_check = []
+  #   original_allowed_moves = allowed_moves
+  #   until allowed_moves.empty?
+  #     opposite_color = player_color == :white ? :black : :white
+  #     # binding.pry
+  #     move = allowed_moves[0]
+  #     reassign_relevant_board_variables(opposite_color, move[0], move[1])
+  #     if move_puts_self_in_check?(player_color)
+  #       moves_that_result_in_check << allowed_moves[i]
+  #     end
+  #     allowed_moves.shift
+  #     i += 1
+  #   end
+  #   moves_that_result_in_check.any? && moves_that_result_in_check.length == original_allowed_moves.length
+  # end
+
   def mark_kings_as_not_in_check
     white_king.mark_as_not_in_check
     black_king.mark_as_not_in_check
