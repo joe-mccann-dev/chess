@@ -90,8 +90,10 @@ class Game
     simulate_and_examine_board_state(move, player_color, @duplicate)
     @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
     if @opponent_in_check
-      binding.pry
+      @piece_that_put_opp_in_check = @duplicate.found_piece
+      # binding.pry
       if player_color == :white
+        
         # move = all the squares that the black king can move to legally
         # need to translate, e.g. [0, 1] to a "move", such as "Kb8", 
         # and then pass it into simulate_and_examine_board_state
@@ -114,7 +116,7 @@ class Game
         end
         count = 0
         algebraic_notations.each do |move|
-          binding.pry
+          # binding.pry
           duplicate = Board.new(@duplicate.duplicate_board(@duplicate.squares))
           opposite_color = player_color == :white ? :black : :white
           simulate_and_examine_board_state(move, opposite_color, duplicate)
@@ -123,7 +125,28 @@ class Game
         end
       end
       # checkmate is true if every space the king can go to results in a check
-      @checkmate = count == king_moves.length
+      pieces_minus_king = @duplicate.black_pieces.select { |p| !p.is_a?(King) }
+      @checkmate = count == king_moves.length && 
+      pieces_minus_king.none? do |piece|
+        # only works when attacker attacks from same row or column??
+        put_in_check_via_row = @duplicate.black_king.location[0] == @piece_that_put_opp_in_check.location[0]
+        put_in_check_via_col = @duplicate.black_king.location[1] == @piece_that_put_opp_in_check.location[1]
+        attacker_row = @piece_that_put_opp_in_check.location[0]
+        attacker_col = @piece_that_put_opp_in_check.location[1]
+        # if put_in_check_via_row
+          col = @duplicate.black_king.location[1] + 1
+          row = @duplicate.black_king.location[0]
+          while col < attacker_col
+            binding.pry
+            attacker_col = @piece_that_put_opp_in_check.location[1]
+            result = @duplicate.regular_move_rules_followed?(piece.location[0], piece.location[1], :black, piece, @duplicate.squares[row][col])
+            break if result
+
+            col += 1
+          end
+        # end
+        result
+      end
       puts "@checkmate: #{@checkmate}"
     end
       # duplicate board for every potential move (found in king.available_squares)
