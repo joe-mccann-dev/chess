@@ -160,6 +160,7 @@ module MoveValidator
                       else
                         se_sw_diagonal_objects(start_row, start_column, move_distance, target)
                       end
+    # if any pieces in path are NOT EmptySquares, then the path is NOT unobstructed
     objects_in_path.any? { |s| !s.is_a?(EmptySquare) } ? false : true
   end
 

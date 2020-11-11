@@ -22,30 +22,6 @@ module CheckmateManager
     end
   end
 
-  # def checkmate?(player_color)
-  #   allowed_moves = if player_color == :white
-  #                     white_king.available_squares
-  #                   else
-  #                     black_king.available_squares
-  #                   end
-  #                   p allowed_moves
-  #   i = 0
-  #   moves_that_result_in_check = []
-  #   original_allowed_moves = allowed_moves
-  #   until allowed_moves.empty?
-  #     opposite_color = player_color == :white ? :black : :white
-  #     # binding.pry
-  #     move = allowed_moves[0]
-  #     reassign_relevant_board_variables(opposite_color, move[0], move[1])
-  #     if move_puts_self_in_check?(player_color)
-  #       moves_that_result_in_check << allowed_moves[i]
-  #     end
-  #     allowed_moves.shift
-  #     i += 1
-  #   end
-  #   moves_that_result_in_check.any? && moves_that_result_in_check.length == original_allowed_moves.length
-  # end
-
   def mark_kings_as_not_in_check
     white_king.mark_as_not_in_check
     black_king.mark_as_not_in_check
@@ -57,9 +33,12 @@ module CheckmateManager
   end
 
   def move_puts_self_in_check?(player_color)
-    opposite_color = player_color == :white ? :black : :white
-    reassign_relevant_board_variables(opposite_color)
-    mark_king_as_in_check?(opposite_color)
+    reassign_relevant_board_variables(opposite(player_color))
+    mark_king_as_in_check?(opposite(player_color))
+  end
+
+  def opposite(player_color)
+    player_color == :white ? :black : :white
   end
 
   def reassign_relevant_board_variables(player_color)
@@ -100,4 +79,53 @@ module CheckmateManager
       end
     end
   end
+
+  def king_moves_in_algebraic_notation(player_color, algebraic_notations = [])
+    king = player_color == :white ? black_king : white_king
+    king.available_squares.each do |square_location|
+      row = translate_row_index_to_displayed_row(square_location[0])
+      col = translate_column_index(square_location[1])
+      if @squares[square_location[0]][square_location[1]].symbolic_color == player_color
+        # include in x since attack mode should be on to simulate king attacking its way out of check
+        # @attack_mode boolean switch in SetupBoardVariables 
+        algebraic_notations << "Kx#{col}#{row}"
+      else
+        algebraic_notations << "K#{col}#{row}"
+      end
+    end
+    algebraic_notations
+  end
+
+  def check_not_blockable?(player_color)
+    binding.pry
+    if player_color == :white
+      pieces_except_king = black_pieces.select { |p| !p.is_a?(King) }
+      king = black_king
+    else
+      pieces_except_king = white_pieces.select { |p| !p.is_a?(King) }
+      king = white_king
+    end
+    search_for_potential_block(pieces_except_king, king, player_color)
+  end
+
+  def search_for_potential_block(pieces, king, player_color)
+    binding.pry
+    pieces.none? do |p|
+      attacker_row = @active_piece.location[0]
+      attacker_col = @active_piece.location[1]
+      col = king.location[1] + 1
+      row = king.location[0]
+      while col < attacker_col
+        attacker_col = @active_piece.location[1]
+        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        break if result
+
+        col += 1
+      end
+      result
+    end
+  end
+
+  # put_in_check_via_row = king.location[0] == @active_piece.location[0]
+  # put_in_check_via_col = king.location[1] == @active_piece.location[1]
 end 

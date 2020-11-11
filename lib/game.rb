@@ -89,83 +89,34 @@ class Game
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     simulate_and_examine_board_state(move, player_color, @duplicate)
     @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
-    if @opponent_in_check
-      @piece_that_put_opp_in_check = @duplicate.found_piece
-      # binding.pry
-      if player_color == :white
-        
-        # move = all the squares that the black king can move to legally
-        # need to translate, e.g. [0, 1] to a "move", such as "Kb8", 
-        # and then pass it into simulate_and_examine_board_state
-        # do this within a loop?
-        # every time a move results in move_puts_self_in_check? returning true
-        # increase count by 1
-        # if count equals number of king_moves => checkmate
-        king_moves = @duplicate.black_king.available_squares
-        # @duplicate.assign_start_location(@duplicate.black_king)
-        algebraic_notations = []
-        king_moves.each do |square_location|
-          row = @duplicate.translate_row_index_to_displayed_row(square_location[0])
-          col = @duplicate.translate_column_index(square_location[1])
-          if @duplicate.squares[square_location[0]][square_location[1]].symbolic_color == player_color
-            # include in x since attack mode should be on to simulate king attacking its way out of check
-            algebraic_notations << "Kx#{col}#{row}"
-          else
-            algebraic_notations << "K#{col}#{row}"
-          end
-        end
-        count = 0
-        algebraic_notations.each do |move|
-          # binding.pry
-          duplicate = Board.new(@duplicate.duplicate_board(@duplicate.squares))
-          opposite_color = player_color == :white ? :black : :white
-          simulate_and_examine_board_state(move, opposite_color, duplicate)
-          escape_puts_in_check = duplicate.move_puts_self_in_check?(opposite_color)
-          count += 1 if escape_puts_in_check
-        end
-      end
-      # checkmate is true if every space the king can go to results in a check
-      pieces_minus_king = @duplicate.black_pieces.select { |p| !p.is_a?(King) }
-      @checkmate = count == king_moves.length && 
-      pieces_minus_king.none? do |piece|
-        # only works when attacker attacks from same row or column??
-        put_in_check_via_row = @duplicate.black_king.location[0] == @piece_that_put_opp_in_check.location[0]
-        put_in_check_via_col = @duplicate.black_king.location[1] == @piece_that_put_opp_in_check.location[1]
-        attacker_row = @piece_that_put_opp_in_check.location[0]
-        attacker_col = @piece_that_put_opp_in_check.location[1]
-        # if put_in_check_via_row
-          col = @duplicate.black_king.location[1] + 1
-          row = @duplicate.black_king.location[0]
-          while col < attacker_col
-            binding.pry
-            attacker_col = @piece_that_put_opp_in_check.location[1]
-            result = @duplicate.regular_move_rules_followed?(piece.location[0], piece.location[1], :black, piece, @duplicate.squares[row][col])
-            break if result
-
-            col += 1
-          end
-        # end
-        result
-      end
-      puts "@checkmate: #{@checkmate}"
-    end
-      # duplicate board for every potential move (found in king.available_squares)
-      # if all those moves result in king putting himself in check,
-      # then checkmate == true
+    check_for_checkmate(player_color) if @opponent_in_check
+    puts "@checkmate: #{@checkmate}"
     @self_in_check = @duplicate.move_puts_self_in_check?(player_color)
-    king = @duplicate.black_king
-    
-    puts "self in check: #{@self_in_check}"
-    puts "opponent in check: #{@opponent_in_check}"
     announce_check(player_color, @duplicate)
     follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
   end
+  
+  def check_for_checkmate(player_color)
+    king_moves = @duplicate.king_moves_in_algebraic_notation(player_color)
+    unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves)
+    @checkmate = unsuccessful_escape_count == king_moves.length && 
+      @duplicate.check_not_blockable?(player_color)
+  end
 
-      # @test = @opponent_in_check && 
-    # @duplicate.attack_rules_followed?(king.location[0], king.location[1], :black, king, @duplicate.squares[king.available_squares[1][0]][king.available_squares[1][1]])
-    # puts "test result: #{@test}"
+  def count_moves_that_result_in_check(player_color, king_moves)
+    count = 0
+    king_moves.each do |move|
+      # duplicate board for every potential move.
+      duplicate = Board.new(@duplicate.duplicate_board(@duplicate.squares))
+      opposite_color = player_color == :white ? :black : :white
+      simulate_and_examine_board_state(move, opposite_color, duplicate)
+      escape_attempt_puts_in_check = duplicate.move_puts_self_in_check?(opposite_color)
+      count += 1 if escape_attempt_puts_in_check
+    end
+    count
+  end
 
   # reassigns target variables to duplicate, then updates duplicate in order to verify move doesn't
   # put player's own king in check
@@ -184,8 +135,7 @@ class Game
   end
 
   def announce_check(player_color, duplicate)
-    opposite_color = player_color == :white ? :black : :white
-    puts "\n  ** #{opposite_color.capitalize} in check! **".colorize(:red) if @opponent_in_check && 
+    puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check && 
       !@self_in_check
     puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
   end
