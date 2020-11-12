@@ -102,7 +102,7 @@ class Game
     king_moves = @duplicate.king_moves_in_algebraic_notation(player_color)
     unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves)
     @checkmate = unsuccessful_escape_count == king_moves.length && 
-      @duplicate.check_not_blockable?(player_color)
+      !@duplicate.check_blockable?(player_color)
   end
 
   def count_moves_that_result_in_check(player_color, king_moves)

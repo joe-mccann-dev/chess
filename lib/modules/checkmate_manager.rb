@@ -96,7 +96,8 @@ module CheckmateManager
     algebraic_notations
   end
 
-  def check_not_blockable?(player_color)
+  # checkmate is false if check is blockable
+  def check_blockable?(player_color)
     binding.pry
     if player_color == :white
       pieces_except_king = black_pieces.select { |p| !p.is_a?(King) }
@@ -108,21 +109,42 @@ module CheckmateManager
     search_for_potential_block(pieces_except_king, king, player_color)
   end
 
+  # can any of opposite player's pieces capture or block the piece that put the king in check?
   def search_for_potential_block(pieces, king, player_color)
     binding.pry
-    pieces.none? do |p|
+    # determine if piece that put king in check can be captured
+    can_be_captured = determine_if_attacker_can_be_captured(pieces, player_color)
+    # see if the attacker's line of attack can be blocked
+    can_be_blocked = determine_if_attacker_can_be_blocked(pieces, player_color)
+    can_be_captured || can_be_blocked
+  end
+
+  def determine_if_attacker_can_be_captured(pieces, king, player_color)
+    @attack_move = true
+    row = @active_piece.location[0]
+    col = @active_piece.location[1]
+    pieces.any? do |p|
+      attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+    end
+  end
+
+  def determine_if_attacker_can_be_blocked(pieces, king, player_color)
+    # knight cannot be blocked since paths are irrelevant to a Knight
+    return false if @active_piece.is_a?(Knight)
+    
+    pieces.any? do |p|
       attacker_row = @active_piece.location[0]
       attacker_col = @active_piece.location[1]
       col = king.location[1] + 1
       row = king.location[0]
       while col < attacker_col
         attacker_col = @active_piece.location[1]
-        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
-        break if result
+        blockable = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        break if blockable
 
         col += 1
       end
-      result
+      blockable
     end
   end
 
