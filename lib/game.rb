@@ -77,7 +77,11 @@ class Game
 
   def update_and_display_board(move, player_color)
     @board.update_board(move, player_color)
-    @board.prompt_for_pawn_promotion(player_color) if @board.pawn_promotable?(@board.found_piece, player_color)
+    if @board.pawn_promotable?(@board.found_piece, player_color)
+      @board.prompt_for_pawn_promotion(player_color)
+      bug_preventing_placeholder = Board.new(@board.duplicate_board(@board.squares))
+      determine_check_status(player_color, bug_preventing_placeholder)
+    end
     @board.display
     announce_check(player_color, @duplicate)
   end
@@ -88,21 +92,25 @@ class Game
 
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     simulate_and_examine_board_state(move, player_color, @duplicate)
-    @opponent_in_check = @duplicate.move_puts_player_in_check?(player_color)
-    check_for_checkmate(player_color) if @opponent_in_check
-    puts "@checkmate: #{@checkmate}"
-    @self_in_check = @duplicate.move_puts_self_in_check?(player_color)
+    determine_check_status(player_color, @duplicate)
     announce_check(player_color, @duplicate)
     follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
   end
+
+  def determine_check_status(player_color, board)
+    @opponent_in_check = board.move_puts_player_in_check?(player_color)
+    check_for_checkmate(player_color, board) if @opponent_in_check
+    puts "@checkmate: #{@checkmate}"
+    @self_in_check = board.move_puts_self_in_check?(player_color)
+  end
   
-  def check_for_checkmate(player_color)
-    king_moves = @duplicate.king_moves_in_algebraic_notation(player_color)
+  def check_for_checkmate(player_color, board)
+    king_moves = board.king_moves_in_algebraic_notation(player_color)
     unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves)
     @checkmate = unsuccessful_escape_count == king_moves.length && 
-      !@duplicate.check_blockable?(player_color)
+      !board.check_blockable?(player_color)
   end
 
   def count_moves_that_result_in_check(player_color, king_moves)
@@ -129,9 +137,9 @@ class Game
     duplicate.update_board(move, player_color)
   end
 
-  def basic_conditions_met?(player_color, board_object)
-    board_object.piece_found &&
-    board_object.valid_move?(board_object.start_row, board_object.start_column, player_color, board_object.found_piece)
+  def basic_conditions_met?(player_color, board)
+    board.piece_found &&
+    board.valid_move?(board.start_row, board.start_column, player_color, board.found_piece)
   end
 
   def announce_check(player_color, duplicate)

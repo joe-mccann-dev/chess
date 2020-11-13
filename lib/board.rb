@@ -11,7 +11,7 @@ class Board
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
 
   @@disambiguated = false
-
+  
   def initialize(squares = make_initial_board)
     @squares = squares
     @captured_by_white = []
@@ -153,6 +153,7 @@ class Board
   end
 
   def prompt_for_pawn_promotion(player_color)
+    @@pawn_promoted = true
     puts " ** pawn promotion! ** \n".colorize(:magenta)
     puts " select which piece you'd like your Pawn to become. "
     choices = ["Queen", "Rook", "Knight", "Bishop"]
