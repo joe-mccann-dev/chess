@@ -113,10 +113,10 @@ module CheckmateManager
     binding.pry
     # determine if piece that put king in check can be captured
     # king can capture attacker if it doesn't put him in check
-    can_be_blocked = determine_if_attacker_can_be_blocked(pieces.select { |p| !p.is_a?(King) }, king, player_color)
     can_be_captured = determine_if_attacker_can_be_captured(pieces, player_color)
     # see if the attacker's line of attack can be blocked
     # king can't block his own check
+    can_be_blocked = determine_if_attacker_can_be_blocked(pieces.select { |p| !p.is_a?(King) }, king, player_color)
     can_be_captured || can_be_blocked
   end
 
@@ -124,28 +124,19 @@ module CheckmateManager
     # knight cannot be blocked since pieces in path are irrelevant to a Knight and do not effect check
     return false if @active_piece.is_a?(Knight)
     
+    @attack_move = false
     # check made in horizontal line. piece can block check-line at spaces from edge of king to edge of attacker
     pieces.any? do |p|
       attacker_col = @active_piece.location[1]
-      attacker_on_left = attacker_col < king.location[1]
-      attacker_on_right = attacker_col > king.location[1]
-      col = attacker_on_right ? king.location[1] + 1 : king.location[1] - 1
+      col = attacker_col > king.location[1] ? king.location[1] + 1 : king.location[1] - 1
       row = king.location[0]
-      if attacker_on_right
-        while col < attacker_col
-          result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
-          break if result
+      while col < attacker_col
+        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        break if result
 
-          col += 1
-        end
-      else
-        while col > attacker_col
-          result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
-          break if result
-
-          col -= 1
-        end
+        col += 1
       end
+      result
     end
   end
 
