@@ -153,7 +153,6 @@ class Board
   end
 
   def prompt_for_pawn_promotion(player_color)
-    @@pawn_promoted = true
     puts " ** pawn promotion! ** \n".colorize(:magenta)
     puts " select which piece you'd like your Pawn to become. "
     choices = ["Queen", "Rook", "Knight", "Bishop"]
@@ -162,7 +161,8 @@ class Board
     end
     choice = gets.chomp.to_i
     choice = 1 unless choice.between?(1, 4)
-    @active_piece = promote_pawn(choice, player_color)
+    @found_piece = promote_pawn(choice, player_color)
+    @active_piece = @found_piece
   end
 
   def promote_pawn(choice, player_color)

@@ -80,7 +80,7 @@ class Game
     if @board.pawn_promotable?(@board.found_piece, player_color)
       @board.prompt_for_pawn_promotion(player_color)
       bug_preventing_placeholder = Board.new(@board.duplicate_board(@board.squares))
-      determine_check_status(player_color, bug_preventing_placeholder)
+      determine_check_status(player_color, bug_preventing_placeholder, @board.found_piece)
     end
     @board.display
     announce_check(player_color, @duplicate)
@@ -92,36 +92,42 @@ class Game
 
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     simulate_and_examine_board_state(move, player_color, @duplicate)
-    determine_check_status(player_color, @duplicate)
+    determine_check_status(player_color, @duplicate, @duplicate.found_piece)
     announce_check(player_color, @duplicate)
     follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
   end
 
-  def determine_check_status(player_color, board)
+  def determine_check_status(player_color, board, found_piece)
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
-    check_for_checkmate(player_color, board) if @opponent_in_check
-    puts "@checkmate: #{@checkmate}"
     @self_in_check = board.move_puts_self_in_check?(player_color)
+    @checkmate = checkmate?(player_color, board, found_piece) if @opponent_in_check
+    puts "@checkmate: #{@checkmate}"
+    
   end
   
-  def check_for_checkmate(player_color, board)
+  def checkmate?(player_color, board, found_piece)
     king_moves = board.king_moves_in_algebraic_notation(player_color)
-    unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves)
-    @checkmate = unsuccessful_escape_count == king_moves.length && 
-      !board.check_blockable?(player_color)
+    unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves, board)
+    puts "unsuccessful_escape_count: #{unsuccessful_escape_count}"
+    puts "king_moves: #{king_moves}"
+    puts "king_moves.length: #{king_moves.length}"
+    p unsuccessful_escape_count == king_moves.length
+    unsuccessful_escape_count == king_moves.length && 
+      !board.check_blockable?(player_color, found_piece)
   end
 
-  def count_moves_that_result_in_check(player_color, king_moves)
+  def count_moves_that_result_in_check(player_color, king_moves, board)
     count = 0
     king_moves.each do |move|
       # duplicate board for every potential move.
-      duplicate = Board.new(@duplicate.duplicate_board(@duplicate.squares))
+      duplicate = Board.new(board.duplicate_board(board.squares))
       opposite_color = player_color == :white ? :black : :white
-      simulate_and_examine_board_state(move, opposite_color, duplicate)
       escape_attempt_puts_in_check = duplicate.move_puts_self_in_check?(opposite_color)
       count += 1 if escape_attempt_puts_in_check
+      simulate_and_examine_board_state(move, opposite_color, duplicate)
+      puts "move: #{move}. count:#{count}"
     end
     count
   end

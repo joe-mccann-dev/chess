@@ -82,22 +82,24 @@ module CheckmateManager
 
   def king_moves_in_algebraic_notation(player_color, algebraic_notations = [])
     king = player_color == :white ? black_king : white_king
-    king.available_squares.each do |square_location|
-      row = translate_row_index_to_displayed_row(square_location[0])
-      col = translate_column_index(square_location[1])
-      if @squares[square_location[0]][square_location[1]].symbolic_color == player_color
+    king.available_squares.each do |location|
+      row = translate_row_index_to_displayed_row(location[0])
+      col = translate_column_index(location[1])
+      if @squares[location[0]][location[1]].symbolic_color == player_color
         # include in x since attack mode should be on to simulate king attacking its way out of check
         # @attack_mode boolean switch in SetupBoardVariables 
         algebraic_notations << "Kx#{col}#{row}"
       else
-        algebraic_notations << "K#{col}#{row}"
+        if available_location?(location[0], location[1], king, @squares[location[0]][location[1]])
+          algebraic_notations << "K#{col}#{row}"
+        end
       end
     end
     algebraic_notations
   end
 
   # checkmate is false if check is blockable
-  def check_blockable?(player_color)
+  def check_blockable?(player_color, found_piece)
     if player_color == :white
       pieces = black_pieces
       king = black_king
@@ -105,30 +107,41 @@ module CheckmateManager
       pieces = white_pieces
       king = white_king
     end
-    search_for_potential_block(pieces, king, player_color)
+    search_for_potential_block(pieces, king, player_color, found_piece)
   end
 
   # can any of opposite player's pieces capture or block the piece that put the king in check?
-  def search_for_potential_block(pieces, king, player_color)
+  def search_for_potential_block(pieces, king, player_color, found_piece)
     binding.pry
     # determine if piece that put king in check can be captured
     # king can capture attacker if it doesn't put him in check
-    can_be_captured = determine_if_attacker_can_be_captured(pieces, player_color)
+    can_be_captured = determine_if_attacker_can_be_captured(pieces, player_color, found_piece)
+    puts "can be captured: "
+    p can_be_captured
     # see if the attacker's line of attack can be blocked
     # king can't block his own check
-    can_be_blocked = determine_if_attacker_can_be_blocked(pieces.select { |p| !p.is_a?(King) }, king, player_color)
+    can_be_blocked = determine_if_attacker_can_be_blocked(pieces.select { |p| !p.is_a?(King) }, king, player_color, found_piece)
     can_be_captured || can_be_blocked
   end
 
-  def determine_if_attacker_can_be_blocked(pieces, king, player_color)
+  def determine_if_attacker_can_be_blocked(pieces, king, player_color, found_piece)
     # knight cannot be blocked since pieces in path are irrelevant to a Knight and do not effect check
-    return false if @active_piece.is_a?(Knight)
-    
+    return false if found_piece.is_a?(Knight)
+
     @attack_move = false
+    attacker_row = found_piece.location[0]
+    attacker_col = found_piece.location[1]
     # check made in horizontal line. piece can block check-line at spaces from edge of king to edge of attacker
+    if attacker_col > king.location[1]
+      can_be_blocked_on_right?(pieces, king, player_color, attacker_col)
+    else
+      can_be_blocked_on_left?(pieces, king, player_color, attacker_col)
+    end
+  end
+
+  def can_be_blocked_on_right?(pieces, king, player_color, attacker_col)
     pieces.any? do |p|
-      attacker_col = @active_piece.location[1]
-      col = attacker_col > king.location[1] ? king.location[1] + 1 : king.location[1] - 1
+      col = king.location[1] + 1
       row = king.location[0]
       while col < attacker_col
         result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
@@ -140,14 +153,27 @@ module CheckmateManager
     end
   end
 
-  def determine_if_attacker_can_be_captured(pieces, player_color)
-    @attack_move = true
-    row = @active_piece.location[0]
-    col = @active_piece.location[1]
+  def can_be_blocked_on_left?(pieces, king, player_color, attacker_col)
     pieces.any? do |p|
-      attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col]) &&
-       !move_puts_player_in_check?(player_color)
+      col = king.location[1] - 1
+      row = king.location[0]
+      while col > attacker_col
+        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        break if result
+
+        col -= 1
+      end
+      result
     end
+  end
+
+  def determine_if_attacker_can_be_captured(pieces, player_color, found_piece)
+    @attack_move = true
+    row = found_piece.location[0]
+    col = found_piece.location[1]
+    binding.pry
+    pieces.any? do |p|
+      attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
   end
 
   # put_in_check_via_row = king.location[0] == @active_piece.location[0]
