@@ -31,19 +31,17 @@ class Game
   end
 
   def player1_goes_first
-    loop do
-      break if @checkmate
-      
+    loop do 
       player1_turn
       break if @checkmate
 
       player2_turn
+      break if @checkmate
     end
   end
 
   def player2_goes_first
     loop do
-      # break if @board.checkmate?
       player2_turn
       player1_turn
     end
@@ -108,14 +106,20 @@ class Game
   end
   
   def checkmate?(player_color, board, found_piece)
+    # king_moves = board.king_moves_in_algebraic_notation(player_color)
+    # unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves, board)
+    # puts "unsuccessful_escape_count: #{unsuccessful_escape_count}"
+    # puts "king_moves: #{king_moves}"
+    # puts "king_moves.length: #{king_moves.length}"
+    # p unsuccessful_escape_count == king_moves.length
+    every_king_move_results_in_check?(player_color, board, found_piece) && 
+      !board.check_blockable?(player_color, found_piece)
+  end
+
+  def every_king_move_results_in_check?(player_color, board, found_piece)
     king_moves = board.king_moves_in_algebraic_notation(player_color)
     unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves, board)
-    puts "unsuccessful_escape_count: #{unsuccessful_escape_count}"
-    puts "king_moves: #{king_moves}"
-    puts "king_moves.length: #{king_moves.length}"
-    p unsuccessful_escape_count == king_moves.length
-    unsuccessful_escape_count == king_moves.length && 
-      !board.check_blockable?(player_color, found_piece)
+    unsuccessful_escape_count == king_moves.length
   end
 
   def count_moves_that_result_in_check(player_color, king_moves, board)

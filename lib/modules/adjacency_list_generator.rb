@@ -4,6 +4,7 @@ module AdjacencyListGenerator
   def available_squares
     row = @location[0]
     col = @location[1]
+    # necessary only to account for pawn attacks
     @attack_mode ? adj_attack_squares(row, col) : adj_squares(row, col)
   end
 
