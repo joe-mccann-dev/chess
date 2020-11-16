@@ -127,8 +127,13 @@ class Game
     king_moves.each do |move|
       # duplicate board for every potential move.
       duplicate = Board.new(board.duplicate_board(board.squares))
+      binding.pry
       opposite_color = player_color == :white ? :black : :white
-      escape_attempt_puts_in_check = duplicate.move_puts_self_in_check?(opposite_color)
+      escape_attempt_puts_in_check = duplicate.white_pieces.any? do |p|
+        row = duplicate.find_dest_row(move)
+        col = duplicate.determine_dest_column(move)
+        duplicate.regular_move_rules_followed?(p.location[0], p.location[1], duplicate.opposite(player_color), p, duplicate.squares[row][col])
+      end
       count += 1 if escape_attempt_puts_in_check
       simulate_and_examine_board_state(move, opposite_color, duplicate)
       puts "move: #{move}. count:#{count}"
