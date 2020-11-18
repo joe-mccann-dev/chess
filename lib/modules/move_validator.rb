@@ -9,7 +9,7 @@ module MoveValidator
     elsif @castle_move
       castle_rules_followed?(player_color)
     else
-      regular_move_rules_followed?(start_row, start_column, player_color, piece)
+      regular_move_rules_followed?(start_row, start_column, piece)
     end
   end
 
@@ -23,7 +23,7 @@ module MoveValidator
       piece.allowed_move?(target.location[0], target.location[1])
   end
 
-  def regular_move_rules_followed?(start_row, start_column, _player_color, piece, target = @target)
+  def regular_move_rules_followed?(start_row, start_column, piece, target = @target)
     piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
     available_location?(start_row, start_column, piece, target) &&
       piece.allowed_move?(target.location[0], target.location[1])
@@ -132,6 +132,7 @@ module MoveValidator
     starting_place.upto(destination) do |r|
       return false unless @squares[r][target.location[1]].is_a?(EmptySquare)
     end
+    true
   end
 
   def row_has_space_for_move?(start_row, start_column, target)
@@ -150,6 +151,7 @@ module MoveValidator
     starting_place.upto(destination) do |c|
       return false unless @squares[start_row][c].is_a?(EmptySquare)
     end
+    true
   end
 
   def diagonal_path_unobstructed?(start_row, start_column, target)

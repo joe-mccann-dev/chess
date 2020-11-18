@@ -96,8 +96,8 @@ module CheckmateManager
     algebraic_notations
   end
 
-  # checkmate is false if a check is blockable
-  def check_blockable?(player_color, found_piece)
+  # checkmate is false if a check is escapable
+  def check_escapable?(player_color, found_piece)
     if player_color == :white
       pieces = black_pieces
       king = black_king
@@ -111,22 +111,10 @@ module CheckmateManager
   # can any of opposite player's pieces capture or block the piece that put the king in check?
   # e.g. if white puts black king in check, can any black pieces capture or block the piece making the check
   def allowed_to_block_or_capture?(pieces, king, player_color, found_piece)
-    binding.pry
-    # determine if piece that put king in check can be captured
-    # a piece or king can capture attacker if the capture doesn't place king in check
-    can_be_captured = if player_color == :white
-                        attacker_can_be_captured?(pieces, player_color, found_piece) 
-                        # && 
-                        #   !white_puts_black_in_check?(player_color, king)
-                      else
-                        attacker_can_be_captured?(pieces, player_color, found_piece) 
-                        # && 
-                        #   !black_puts_white_if_check?(player_color, king)
-                      end
-    puts "can be captured: #{can_be_captured}"
+    can_be_captured = attacker_can_be_captured?(pieces, player_color, found_piece) 
     # see if the attacker's line of attack can be blocked
     # king can't block his own check
-    can_be_blocked = attacker_can_be_blocked?(pieces.select { |p| !p.is_a?(King) }, king, player_color, found_piece)
+    can_be_blocked = attacker_can_be_blocked?(pieces.select { |p| !p.is_a?(King) }, king, found_piece)
     # if attacker can be captured or blocked, then checkmate is false and game continues
     can_be_captured || can_be_blocked
   end
@@ -136,44 +124,70 @@ module CheckmateManager
     row = found_piece.location[0]
     col = found_piece.location[1]
     pieces.any? do |p|
+      # if p is a king, then he cannot capture a piece if it puts him in check.
+      # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),
+      # then if any attacking pieces can go to square the king wants to capture,
+      # then attacker cannot be captured.
+      next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color)
+
       attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
     end
   end
 
-  def attacker_can_be_blocked?(pieces, king, player_color, found_piece)
+  def pieces_can_attack_king_moves?(row, col, player_color)
+    dest_square = @squares[row][col]
+    pieces = player_color == :white ? white_pieces : black_pieces
+    pieces.any? do |p|
+      if dest_square.is_a?(EmptySquare)
+        regular_move_rules_followed?(p.location[0], p.location[1], p, dest_square)
+      elsif dest_square.symbolic_color == opposite(player_color)
+        @attack_move = true
+        attack_rules_followed?(p.location[0], p.location[1], player_color, p, dest_square)
+      else
+        @attack_move = false
+        if horizontal_vertical_move?(p.location[0], p.location[1], dest_square)
+          column_has_space_for_move?(p.location[0], p.location[1], dest_square) &&
+            row_has_space_for_move?(p.location[0], p.location[1], dest_square)
+        else
+          diagonal_path_unobstructed?(p.location[0], p.location[1], dest_square)
+        end
+      end
+    end
+  end
+
+  def attacker_can_be_blocked?(pieces, king, found_piece)
     # knight cannot be blocked since pieces in path are irrelevant to a Knight and do not effect check
     return false if found_piece.is_a?(Knight)
 
     @attack_move = false
     attacker_row = found_piece.location[0]
     attacker_col = found_piece.location[1]
-    puts "attacker row == king row #{attacker_row == king.location[0]}"
     # horizontal attack
     if attacker_row == king.location[0]
-      can_be_blocked_horizontally?(pieces, king, player_color, attacker_col)
+      can_be_blocked_horizontally?(pieces, king, attacker_col)
     # vertical attack
     elsif attacker_col == king.location[1]
-      can_be_blocked_vertically?(pieces, king, player_color, attacker_row)
+      can_be_blocked_vertically?(pieces, king, attacker_row)
     else
-      can_be_blocked_diagonally?(pieces, king, player_color, attacker_row, attacker_col)
+      can_be_blocked_diagonally?(pieces, king, attacker_row, attacker_col)
     end
   end
 
   # check made in horizontal line. piece can block check-line at spaces from edge of king to edge of attacker
-  def can_be_blocked_horizontally?(pieces, king, player_color, attacker_col)
+  def can_be_blocked_horizontally?(pieces, king, attacker_col)
     if attacker_col > king.location[1]
-      can_be_blocked_on_right?(pieces, king, player_color, attacker_col)
+      can_be_blocked_on_right?(pieces, king, attacker_col)
     else
-      can_be_blocked_on_left?(pieces, king, player_color, attacker_col)
+      can_be_blocked_on_left?(pieces, king, attacker_col)
     end
   end
 
-  def can_be_blocked_on_right?(pieces, king, player_color, attacker_col)
+  def can_be_blocked_on_right?(pieces, king, attacker_col)
     pieces.any? do |p|
       col = king.location[1] + 1
       row = king.location[0]
       while col < attacker_col
-        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         break if result
 
         col += 1
@@ -182,12 +196,12 @@ module CheckmateManager
     end
   end
 
-  def can_be_blocked_on_left?(pieces, king, player_color, attacker_col)
+  def can_be_blocked_on_left?(pieces, king, attacker_col)
     pieces.any? do |p|
       col = king.location[1] - 1
       row = king.location[0]
       while col > attacker_col
-        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         break if result
 
         col -= 1
@@ -196,22 +210,22 @@ module CheckmateManager
     end
   end
 
-  def can_be_blocked_vertically?(pieces, king, player_color, attacker_row)
+  def can_be_blocked_vertically?(pieces, king, attacker_row)
     # e.g white Qe2 puts black Ke8 in check
     if attacker_row > king.location[0]
       # technically below since @squares[0] is first row, but named it "above" because row[0] is row 8 on the display
-      can_be_blocked_above?(pieces, king, player_color, attacker_row)
+      can_be_blocked_above?(pieces, king, attacker_row)
     else
-      can_be_blocked_below?(pieces, king, player_color, attacker_row)
+      can_be_blocked_below?(pieces, king, attacker_row)
     end
   end
 
-  def can_be_blocked_above?(pieces, king, player_color, attacker_row)
+  def can_be_blocked_above?(pieces, king, attacker_row)
     pieces.any? do |p|
       row = king.location[0] + 1
       col = king.location[1]
       while row < attacker_row
-        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         break if result
 
         row += 1
@@ -220,12 +234,12 @@ module CheckmateManager
     end
   end
 
-  def can_be_blocked_below?(pieces, king, player_color, attacker_row)
+  def can_be_blocked_below?(pieces, king, attacker_row)
     pieces.any? do |p|
       row = king.location[0] - 1
       col = king.location[1]
       while row > attacker_row
-        result = regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         break if result
 
         row -= 1
@@ -234,25 +248,23 @@ module CheckmateManager
     end
   end
 
-  def can_be_blocked_diagonally?(pieces, king, player_color, attacker_row, attacker_col)
+  def can_be_blocked_diagonally?(pieces, king, attacker_row, attacker_col)
     move_distance = (attacker_col - king.location[1]).abs
     path = if attacker_row > king.location[0]
              ne_nw_diagonal_objects(attacker_row, attacker_col, move_distance, king)
            else
              se_sw_diagonal_objects(attacker_row, attacker_col, move_distance, king)
            end
-    piece_reaches_diagonal?(pieces, path, player_color)
+    piece_reaches_diagonal?(pieces, path)
   end
 
-  def piece_reaches_diagonal?(pieces, path, player_color)
+  def piece_reaches_diagonal?(pieces, path)
     pieces.any? do |p|
       path.each do |s|
         row = s.location[0]
         col = s.location[1]
-        if regular_move_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
-          return true
-
-        end
+        return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
+        
       end
     end
     false

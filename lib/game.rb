@@ -33,10 +33,17 @@ class Game
   def player1_goes_first
     loop do 
       player1_turn
-      break if @checkmate
+      if @checkmate
+        puts "  ** Checkmate! #{@player1.symbolic_color.capitalize} wins! ** ".colorize(:green)
+        break
 
+      end
       player2_turn
-      break if @checkmate
+      if @checkmate
+        puts "  ** Checkmate! #{@player2.symbolic_color.capitalize} wins! ** ".colorize(:green)
+        break
+
+      end
     end
   end
 
@@ -101,19 +108,11 @@ class Game
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
     @checkmate = checkmate?(player_color, board, found_piece) if @opponent_in_check
-    puts "@checkmate: #{@checkmate}"
-    
   end
   
   def checkmate?(player_color, board, found_piece)
-    # king_moves = board.king_moves_in_algebraic_notation(player_color)
-    # unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves, board)
-    # puts "unsuccessful_escape_count: #{unsuccessful_escape_count}"
-    # puts "king_moves: #{king_moves}"
-    # puts "king_moves.length: #{king_moves.length}"
-    # p unsuccessful_escape_count == king_moves.length
     every_king_move_results_in_check?(player_color, board, found_piece) && 
-      !board.check_blockable?(player_color, found_piece)
+      !board.check_escapable?(player_color, found_piece)
   end
 
   def every_king_move_results_in_check?(player_color, board, found_piece)
@@ -122,21 +121,12 @@ class Game
     unsuccessful_escape_count == king_moves.length
   end
 
-  def count_moves_that_result_in_check(player_color, king_moves, board)
-    count = 0
+  def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
-      # duplicate board for every potential move.
-      duplicate = Board.new(board.duplicate_board(board.squares))
-      binding.pry
-      opposite_color = player_color == :white ? :black : :white
-      escape_attempt_puts_in_check = duplicate.white_pieces.any? do |p|
-        row = duplicate.find_dest_row(move)
-        col = duplicate.determine_dest_column(move)
-        duplicate.regular_move_rules_followed?(p.location[0], p.location[1], duplicate.opposite(player_color), p, duplicate.squares[row][col])
-      end
+      row = board.find_dest_row(move)
+      col = board.determine_dest_column(move)
+      escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)
       count += 1 if escape_attempt_puts_in_check
-      simulate_and_examine_board_state(move, opposite_color, duplicate)
-      puts "move: #{move}. count:#{count}"
     end
     count
   end
