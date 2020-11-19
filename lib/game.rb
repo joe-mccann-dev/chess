@@ -65,6 +65,7 @@ class Game
       player1_move = validate_player1_move
     end
     update_and_display_board(player1_move, @player1.symbolic_color)
+    @checkmate = checkmate?(@player1.symbolic_color, @board, @board.found_piece)
   end
 
   # loop breaks if piece is found and square is available
@@ -78,6 +79,7 @@ class Game
       player2_move = validate_player2_move
     end
     update_and_display_board(player2_move, @player2.symbolic_color)
+    @checkmate = checkmate?(@player2.symbolic_color, @board, @board.found_piece)
   end
 
   def update_and_display_board(move, player_color)
@@ -107,12 +109,13 @@ class Game
   def determine_check_status(player_color, board, found_piece)
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
-    @checkmate = checkmate?(player_color, board, found_piece) if @opponent_in_check
   end
   
   def checkmate?(player_color, board, found_piece)
-    every_king_move_results_in_check?(player_color, board, found_piece) && 
-      !board.check_escapable?(player_color, found_piece)
+    if board.move_puts_player_in_check?(player_color)
+      every_king_move_results_in_check?(player_color, board, found_piece) && 
+        !board.check_escapable?(player_color, found_piece)
+    end
   end
 
   def every_king_move_results_in_check?(player_color, board, found_piece)
