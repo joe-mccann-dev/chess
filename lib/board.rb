@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# controls various piece objects. controls updating board. "finds" pieces after receiving input from Game
 class Board
   include Display
   include MoveValidator
@@ -8,10 +9,11 @@ class Board
   include CastleManager
   include CheckmateManager
   include MoveDisambiguator
-  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece, :piece_type, :piece_found, :castle_move
+  attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
+              :piece_type, :piece_found, :castle_move
 
   @@disambiguated = false
-  
+
   def initialize(squares = make_initial_board)
     @squares = squares
     @captured_by_white = []
@@ -32,13 +34,13 @@ class Board
   end
 
   def duplicate_board(squares)
-    board = Array.new(8) { Array.new }
+    board = Array.new(8) { [] }
     squares.each_with_index do |row, row_idx|
       row.each_with_index do |square, col_idx|
         if square.is_a?(EmptySquare)
           board[row_idx] << EmptySquare.new([row_idx, col_idx])
         else
-          square.symbolic_color == :white ? color_arg = 1 : color_arg = 2
+          color_arg = square.symbolic_color == :white ? 1 : 2
           board[row_idx] << square.class.new(color_arg, [row_idx, col_idx])
         end
       end
@@ -139,24 +141,28 @@ class Board
     @squares[@start_row][@dest_column]  = EmptySquare.new([@start_row, @dest_column]) if @start_column == @dest_column
     # move piece to new square in a different column. make previous location an empty string
     @squares[@start_row][@start_column] = EmptySquare.new([@start_row, @start_column]) if @start_column != @dest_column
-    @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
-    @found_piece.update_location(@dest_row, @dest_column)
+    update_found_piece
     reposition_rook(move) if @castle_move
     # sets an active_piece for en_passant conditions after location is updated
     @active_piece = @found_piece
   end
 
+  def update_found_piece
+    @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
+    @found_piece.update_location(@dest_row, @dest_column)
+  end
+
   def pawn_promotable?(piece, player_color)
     return unless piece.is_a?(Pawn)
 
-    player_color == :white ? piece.location[0] == 0 : piece.location[0] == 7
+    piece.location[0] == (player_color == :white ? 0 : 7)
   end
 
   def prompt_for_pawn_promotion(player_color)
     puts " ** pawn promotion! ** \n".colorize(:magenta)
     puts " select which piece you'd like your Pawn to become. "
-    choices = ["Queen", "Rook", "Knight", "Bishop"]
-    choices.each_with_index do |_c, i| 
+    choices = %w[Queen Rook Knight Bishop]
+    choices.each_with_index do |_c, i|
       puts " enter[#{i + 1}] for #{choices[i]}"
     end
     choice = gets.chomp.to_i
@@ -167,11 +173,11 @@ class Board
 
   def promote_pawn(choice, player_color)
     choices = [Queen, Rook, Knight, Bishop]
-    if player_color == :white
-      @squares[@dest_row][@dest_column] = choices[choice - 1].new(1, [@dest_row, @dest_column] )
-    else
-      @squares[@dest_row][@dest_column] = choices[choice - 1].new(2, [@dest_row, @dest_column] )
-    end
+    @squares[@dest_row][@dest_column] = if player_color == :white
+                                          choices[choice - 1].new(1, [@dest_row, @dest_column])
+                                        else
+                                          choices[choice - 1].new(2, [@dest_row, @dest_column])
+                                        end
   end
 
   def handle_en_passant_move(player_color)
@@ -190,8 +196,8 @@ class Board
   end
 
   def mark_target_as_captured(move_followed_rules)
-    if move_followed_rules
-      @target.mark_as_captured unless @target.is_a?(EmptySquare)
-    end
+    return unless move_followed_rules
+
+    @target.mark_as_captured unless @target.is_a?(EmptySquare)
   end
 end
