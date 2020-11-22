@@ -33,7 +33,6 @@ module CastleManager
 
   def castle_white_or_black_king(player_color)
     @piece_found = true
-    player_color == :white ? @squares[7][4] : @squares [0][4]
     if player_color == :white
       assign_start_location(@squares[7][4])
       @squares[7][4]
