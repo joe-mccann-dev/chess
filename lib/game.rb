@@ -33,17 +33,13 @@ class Game
   def player1_goes_first
     loop do 
       player1_turn
-      if @checkmate
-        puts "  ** Checkmate! #{@player1.symbolic_color.capitalize} wins! ** ".colorize(:green)
-        break
+      announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
+      break if @checkmate || @stalemate
 
-      end
       player2_turn
-      if @checkmate
-        puts "  ** Checkmate! #{@player2.symbolic_color.capitalize} wins! ** ".colorize(:green)
-        break
+      announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
+      break if @checkmate || @stalemate
 
-      end
     end
   end
 
@@ -52,6 +48,11 @@ class Game
       player2_turn
       player1_turn
     end
+  end
+
+  def announce_checkmate_or_stalemate(player, checkmate, stalemate)
+    puts "  ** Checkmate! #{player.symbolic_color.capitalize} wins! ** ".colorize(:green) if @checkmate
+    puts "  ** Stalemate. Game ends in a draw **".colorize(:green) if @stalemate
   end
 
   # loop breaks if piece is found and square is available
@@ -109,10 +110,17 @@ class Game
   def determine_check_status(player_color, board, found_piece)
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
+    @stalemate = stalemate?(player_color, board, found_piece)
   end
   
   def checkmate?(player_color, board, found_piece)
     board.move_puts_player_in_check?(player_color) &&
+      every_king_move_results_in_check?(player_color, board, found_piece) && 
+      !board.check_escapable?(player_color, found_piece)
+  end
+
+  def stalemate?(player_color, board, found_piece)
+    !@opponent_in_check &&
       every_king_move_results_in_check?(player_color, board, found_piece) && 
       !board.check_escapable?(player_color, found_piece)
   end
