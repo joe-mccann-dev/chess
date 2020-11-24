@@ -112,10 +112,9 @@ class Game
   end
   
   def checkmate?(player_color, board, found_piece)
-    if board.move_puts_player_in_check?(player_color)
+    board.move_puts_player_in_check?(player_color) &&
       every_king_move_results_in_check?(player_color, board, found_piece) && 
-        !board.check_escapable?(player_color, found_piece)
-    end
+      !board.check_escapable?(player_color, found_piece)
   end
 
   def every_king_move_results_in_check?(player_color, board, found_piece)
