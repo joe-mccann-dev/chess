@@ -46,7 +46,13 @@ class Game
   def player2_goes_first
     loop do
       player2_turn
+      announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
+      break if @checkmate || @stalemate
+
       player1_turn
+      announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
+      break if @checkmate || @stalemate
+      
     end
   end
 

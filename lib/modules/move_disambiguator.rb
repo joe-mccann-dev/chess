@@ -1,5 +1,5 @@
  module MoveDisambiguator
-  def count_pieces(pieces, piece_type)
+  def disambiguate_if_necessary(pieces, piece_type)
     if pieces.length > 1
       decide_which_piece_to_move(pieces, piece_type)
     else

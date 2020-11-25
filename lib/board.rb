@@ -104,12 +104,20 @@ class Board
 
   def find_white_piece(move, piece_type)
     pieces = white_pieces_that_go_to_dest.select { |piece| piece.is_a?(piece_type) }
-    valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
+    if valid_pawn_attack?(move)
+      find_attack_pawn(pieces, move)
+    else
+      disambiguate_if_necessary(pieces, piece_type)
+    end
   end
 
   def find_black_piece(move, piece_type)
     pieces = black_pieces_that_go_to_dest.select { |piece| piece.is_a?(piece_type) }
-    valid_pawn_attack?(move) ? find_attack_pawn(pieces, move) : count_pieces(pieces, piece_type)
+    if valid_pawn_attack?(move)
+      find_attack_pawn(pieces, move)
+    else
+      disambiguate_if_necessary(pieces, piece_type)
+    end
   end
 
   # prevents unnecessary disambiguation since all pawn attacks indicate starting column
