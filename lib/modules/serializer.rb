@@ -27,7 +27,8 @@ module Serializer
     YAML.dump(
       'board' => @board,
       'player1' => @player1,
-      'player2' => @player2
+      'player2' => @player2,
+      'current_player' => @current_player
     )
   end
 
@@ -59,5 +60,7 @@ module Serializer
     @board = game_data['board']
     @player1 = game_data['player1']
     @player2 = game_data['player2']
+    @current_player = game_data['current_player']
+    play_game
   end
 end

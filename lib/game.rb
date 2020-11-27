@@ -28,16 +28,21 @@ class Game
 
   def play_game
     @board.display
+    if @current_player == @player1
+      return player1_goes_first
+    elsif @current_player == @player2
+      return player2_goes_first
+    end
     @player1.symbolic_color == :white ? player1_goes_first : player2_goes_first
   end
 
   def player1_goes_first
-    loop do 
+    loop do
       player1_turn
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
-      player2_turn unless @save_load_requested
+      player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
@@ -50,7 +55,7 @@ class Game
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
-      player1_turn unless @save_load_requested
+      player1_turn
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
@@ -64,6 +69,7 @@ class Game
 
   # loop breaks if piece is found and square is available
   def player1_turn
+    @current_player = @player1
     player1_move = validate_player1_move
     return if @save_load_requested
 
@@ -80,6 +86,7 @@ class Game
 
   # loop breaks if piece is found and square is available
   def player2_turn
+    @current_player = @player2
     player2_move = validate_player2_move
     return if @save_load_requested
 
