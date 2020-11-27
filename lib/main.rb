@@ -22,6 +22,29 @@ require_relative './king'
 require_relative './queen'
 require_relative './pawn'
 
+puts
+puts "Welcome to my Chess game!"
+puts "What would you like to do?"
+puts
+choices = ['two_player   ', 'one_player   ', 'load_previous']
+choices.each_with_index do |_c, i|
+  puts " #{choices[i]} => enter[#{i + 1}] "
+end
+
+selection = gets.chomp
+loop do
+  break if selection.to_i.between?(1, 3)
+
+  choices.each_with_index do |_c, i|
+    puts " #{choices[i]} => enter[#{i + 1}] \n"
+  end
+  selection = gets.chomp
+end
+
 game = Game.new
-game.start_game
-game.play_game
+if selection == '1'
+  game.start_game
+  game.play_game
+else
+  game.load_game
+end

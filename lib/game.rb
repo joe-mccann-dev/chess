@@ -71,8 +71,6 @@ class Game
   def player1_turn
     @current_player = @player1
     player1_move = validate_player1_move
-    return if @save_load_requested
-
     loop do
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if move_follows_rules?(player1_move, @player1.symbolic_color)
@@ -88,8 +86,6 @@ class Game
   def player2_turn
     @current_player = @player2
     player2_move = validate_player2_move
-    return if @save_load_requested
-
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
@@ -138,8 +134,10 @@ class Game
   end
 
   def stalemate?(player_color, board, found_piece)
+    king_moves = board.king_moves_in_algebraic_notation(player_color)
     !@opponent_in_check &&
-      every_king_move_results_in_check?(player_color, board, found_piece) && 
+      king_moves.length > 0 &&
+      every_king_move_results_in_check?(player_color, board, found_piece) &&
       !board.check_escapable?(player_color, found_piece)
   end
 

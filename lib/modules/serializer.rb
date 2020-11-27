@@ -35,7 +35,10 @@ module Serializer
   def load_game
     yaml_files = File.join('**', '*.yaml')
     saved_games = Dir.glob(yaml_files, base: 'saved_games')
-    return 'no games found!' if saved_games.empty?
+    if saved_games.empty?
+      puts 'no games found!'
+      return
+    end
 
     saved_games.each_with_index { |game, index| puts "[#{index + 1}]#{game}" }
     selection = verify_selection(saved_games)
