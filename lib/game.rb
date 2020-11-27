@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Game
+  include Serializer
   include Display
   include InputValidator
 
-  def initialize(player1 = Player.new, player2 = Player.new, board = Board.new)
+  def initialize(board = Board.new, player1 = Player.new, player2 = Player.new)
     @player1 = player1
     @player2 = player2
     @board = board
@@ -36,7 +37,7 @@ class Game
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
-      player2_turn
+      player2_turn unless @save_load_requested
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
@@ -49,10 +50,10 @@ class Game
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
-      player1_turn
+      player1_turn unless @save_load_requested
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
-      
+
     end
   end
 
@@ -64,6 +65,8 @@ class Game
   # loop breaks if piece is found and square is available
   def player1_turn
     player1_move = validate_player1_move
+    return if @save_load_requested
+
     loop do
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if move_follows_rules?(player1_move, @player1.symbolic_color)
@@ -78,6 +81,8 @@ class Game
   # loop breaks if piece is found and square is available
   def player2_turn
     player2_move = validate_player2_move
+    return if @save_load_requested
+
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
@@ -172,10 +177,11 @@ class Game
   # loop breaks if input string is valid algebraic notation
   def validate_player1_move
     player1_move = request_player1_move
+    @save_load_requested = player1_move.match?(/^(save|load)$/)
     loop do
       break if valid_input?(player1_move)
 
-      puts " invalid input. please try again...".colorize(:red)
+      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested
       player1_move = request_player1_move
     end
     @board.assign_piece_type(player1_move)
@@ -185,10 +191,11 @@ class Game
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
     player2_move = request_player2_move
+    @save_load_requested = player2_move.match?(/^(save|load)$/)
     loop do
       break if valid_input?(player2_move)
 
-      puts " invalid input. please try again...".colorize(:red)
+      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested
       player2_move = request_player2_move
     end
     @board.assign_piece_type(player2_move)
