@@ -2,7 +2,8 @@
 
 class Pawn
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, :just_moved_two, :num_moves
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, 
+              :just_moved_two, :num_moves, :prefix
 
   def initialize(color, location, unicode = "\u265F")
     @num_moves = 0
@@ -14,6 +15,7 @@ class Pawn
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
+    @prefix = ''
   end
 
   def row_moves

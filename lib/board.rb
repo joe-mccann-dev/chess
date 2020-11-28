@@ -9,6 +9,7 @@ class Board
   include CastleManager
   include CheckmateManager
   include MoveDisambiguator
+  include CPUMoveGenerator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
               :piece_type, :piece_found, :castle_move
 

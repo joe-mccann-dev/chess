@@ -11,6 +11,7 @@ require_relative './modules/move_disambiguator'
 require_relative './modules/castle_manager'
 require_relative './modules/checkmate_manager'
 require_relative './modules/serializer'
+require_relative './modules/cpu_move_generator'
 require_relative './game'
 require_relative './board'
 require_relative './empty_square'
@@ -43,6 +44,10 @@ end
 
 game = Game.new
 if selection == '1'
+  game.start_game
+  game.play_game
+elsif selection == '2'
+  game = Game.new(Board.new, Player.new, Player.new('CPU'))
   game.start_game
   game.play_game
 else

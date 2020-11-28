@@ -2,7 +2,7 @@
 
 class Bishop
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
 
   def initialize(color, location, unicode = "\u265D")
     @captured = false
@@ -10,6 +10,7 @@ class Bishop
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
+    @prefix = 'B'
   end
 
   def assign_symbolic_color(displayed_color, unicode)

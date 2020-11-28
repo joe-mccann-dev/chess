@@ -2,7 +2,7 @@
 
 class Rook
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :prefix
 
   def initialize(color, location, unicode = "\u265C")
     @captured = false
@@ -11,6 +11,7 @@ class Rook
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
+    @prefix = 'R'
   end
 
   def assign_symbolic_color(displayed_color, unicode)

@@ -2,7 +2,7 @@
 
 class King
   include AdjacencyListGenerator
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :in_check
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :in_check, :prefix
 
   def initialize(color, location, unicode = "\u265A")
     @captured = false
@@ -12,6 +12,7 @@ class King
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
+    @prefix = 'K'
   end
 
   def assign_symbolic_color(displayed_color, unicode)

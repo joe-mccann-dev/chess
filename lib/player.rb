@@ -5,8 +5,8 @@ class Player
   attr_reader :displayed_color, :symbolic_color, :name
   attr_accessor :winner
 
-  def initialize
-    @name = ''
+  def initialize(name = '')
+    @name = name
     @displayed_color = ''
     @symbolic_color = nil
     @winner = false
@@ -21,7 +21,7 @@ class Player
     name = gets.chomp
     loop do
       break if valid_name?(name)
-
+      puts "name 'cpu' reserved for computer player" if name.downcase == 'cpu'
       print ' please enter a valid name: '
       name = gets.chomp
     end

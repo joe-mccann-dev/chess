@@ -259,10 +259,11 @@ module CheckmateManager
   end
 
   def piece_reaches_diagonal?(pieces, path)
-    pieces.any? do |p|
+    pieces.each do |p|
       path.each do |s|
         row = s.location[0]
         col = s.location[1]
+        binding.pry
         return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         
       end
