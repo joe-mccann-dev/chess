@@ -183,31 +183,29 @@ module CheckmateManager
   end
 
   def can_be_blocked_on_right?(pieces, king, attacker_col)
-    pieces.any? do |p|
+    pieces.each do |p|
       col = king.location[1] + 1
       row = king.location[0]
       while col < attacker_col
-        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
-        break if result
+        return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
 
         col += 1
       end
-      result
     end
+    false
   end
 
   def can_be_blocked_on_left?(pieces, king, attacker_col)
-    pieces.any? do |p|
+    pieces.each do |p|
       col = king.location[1] - 1
       row = king.location[0]
       while col > attacker_col
-        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
-        break if result
+        return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
 
         col -= 1
       end
-      result
     end
+    false
   end
 
   def can_be_blocked_vertically?(pieces, king, attacker_row)
@@ -221,31 +219,29 @@ module CheckmateManager
   end
 
   def can_be_blocked_above?(pieces, king, attacker_row)
-    pieces.any? do |p|
+    pieces.each do |p|
       row = king.location[0] + 1
       col = king.location[1]
       while row < attacker_row
-        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
-        break if result
+        return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
 
         row += 1
       end
-      result
     end
+    false
   end
 
   def can_be_blocked_below?(pieces, king, attacker_row)
-    pieces.any? do |p|
+    pieces.each do |p|
       row = king.location[0] - 1
       col = king.location[1]
       while row > attacker_row
-        result = regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
-        break if result
+        return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
 
         row -= 1
       end
-      result
     end
+    false
   end
 
   def can_be_blocked_diagonally?(pieces, king, attacker_row, attacker_col)
@@ -263,7 +259,6 @@ module CheckmateManager
       path.each do |s|
         row = s.location[0]
         col = s.location[1]
-        binding.pry
         return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
         
       end
