@@ -108,7 +108,7 @@ class Board
     if valid_pawn_attack?(move)
       find_attack_pawn(pieces, move)
     else
-      disambiguate_if_necessary(pieces, piece_type)
+      disambiguate_if_necessary(pieces, piece_type, @@disambiguated)
     end
   end
 
@@ -117,7 +117,7 @@ class Board
     if valid_pawn_attack?(move)
       find_attack_pawn(pieces, move)
     else
-      disambiguate_if_necessary(pieces, piece_type)
+      disambiguate_if_necessary(pieces, piece_type, @@disambiguated)
     end
   end
 
@@ -176,6 +176,7 @@ class Board
     end
     choice = gets.chomp.to_i
     choice = 1 unless choice.between?(1, 4)
+    choice = 1 if @cpu_mode
     @found_piece = promote_pawn(choice, player_color)
     @active_piece = @found_piece
   end

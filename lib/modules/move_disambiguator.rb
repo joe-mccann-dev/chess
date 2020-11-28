@@ -1,7 +1,7 @@
  module MoveDisambiguator
-  def disambiguate_if_necessary(pieces, piece_type)
+  def disambiguate_if_necessary(pieces, piece_type, disambiguated)
     if pieces.length > 1
-      decide_which_piece_to_move(pieces, piece_type)
+      decide_which_piece_to_move(pieces, piece_type, disambiguated)
     else
       @@disambiguated = false
       assign_start_location(pieces[0]) unless pieces.empty?
@@ -14,13 +14,13 @@
   # (@duplicate) in Game, this method gets called twice
   # when checking for check, thereby prompting the user a second time unnecessarily.
   # the use of @@disambiguated prevents this from happening.
-  def decide_which_piece_to_move(pieces, piece_type)
-    unless @@disambiguated
+  def decide_which_piece_to_move(pieces, piece_type, disambiguated)
+    unless disambiguated
       request_disambiguation(pieces, piece_type)
       response = gets.chomp.to_i
     end
     # prevents a nil error when disambiguate_move gets called
-    response = 1 if @@disambiguated || @cpu_mode
+    response = 1 if disambiguated || @cpu_mode
     loop do
       break if response.between?(1, 2)
 

@@ -125,7 +125,7 @@ class Game
   def determine_check_status(player_color, board, found_piece)
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
-    # @stalemate = stalemate?(player_color, board, found_piece)
+    @stalemate = stalemate?(player_color, board, found_piece)
   end
   
   def checkmate?(player_color, board, found_piece)
@@ -136,7 +136,7 @@ class Game
 
   def stalemate?(player_color, board, found_piece)
     king_moves = board.king_moves_in_algebraic_notation(player_color)
-    !@opponent_in_check&&
+    !@opponent_in_check &&
       king_moves.length > 0 &&
       every_king_move_results_in_check?(player_color, board, found_piece) &&
       !board.check_escapable?(player_color, found_piece)
@@ -216,14 +216,13 @@ class Game
 
   def manage_cpu_moves
     cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
-    # moves_that_attack = cpu_moves.select { |move| move.include?('x') }
+    moves_that_attack = cpu_moves.select { |move| move.include?('x') }
     # give preference to moves that attack
-    # if moves_that_attack.any?
-      # moves_that_attack[(rand * moves_that_attack.length).floor]
-    # else
-    binding.pry
+    if moves_that_attack.any?
+      moves_that_attack[(rand * moves_that_attack.length).floor]
+    else
       cpu_moves[(rand * cpu_moves.length).floor]
-    # end
+    end
   end
 
   def request_player1_move
