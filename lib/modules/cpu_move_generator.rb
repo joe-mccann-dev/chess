@@ -1,15 +1,24 @@
 # frozen_string_literal: true
 
 module CPUMoveGenerator
-  def generate_cpu_move(cpu_color)
+  def generate_cpu_moves(cpu_color)
     pieces = cpu_color == :black ? black_pieces : white_pieces
     opposite_color_pieces = cpu_color == :black ? white_pieces : black_pieces
     king = cpu_color == :black ? black_king : white_king
-    empty_squares = []
+    empty_squares = find_empty_squares
+    regular_moves = find_regular_moves(empty_squares, pieces)
+    attack_moves = find_attack_moves(cpu_color, opposite_color_pieces, pieces)
+    regular_moves + attack_moves
+  end
+
+  def find_empty_squares(empty_squares = [])
     @squares.each do |row|
       row.each { |s| empty_squares << s if s.is_a?(EmptySquare)}
     end
-    moves = []
+    empty_squares
+  end
+
+  def find_regular_moves(empty_squares, pieces, moves = [])
     empty_squares.each do |square|
       dest_row = square.location[0]
       dest_col = square.location[1]
@@ -21,6 +30,11 @@ module CPUMoveGenerator
         end
       end
     end
+    # include castle_moves as possibility
+    moves
+  end
+
+  def find_attack_moves(cpu_color, opposite_color_pieces, pieces, moves = [])
     opposite_color_pieces.each do |square_with_opponent_piece|
       dest_row = square_with_opponent_piece.location[0]
       dest_col = square_with_opponent_piece.location[1]
@@ -37,12 +51,10 @@ module CPUMoveGenerator
         end
       end
     end
-    # binding.pry
     moves
-    # [(rand * moves.length).floor]
   end
 
   def toggle_cpu_mode(player)
-    @cpu_mode = player.name == 'cpu'
+    @cpu_mode = player.name == 'CPU'
   end
 end

@@ -120,18 +120,19 @@ module CheckmateManager
   end
 
   def attacker_can_be_captured?(pieces, player_color, found_piece)
-    @attack_move = true
     row = found_piece.location[0]
     col = found_piece.location[1]
-    pieces.any? do |p|
+    pieces.each do |p|
+      @attack_move = true
       # if p is a king, then he cannot capture a piece if it puts him in check.
       # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),
       # then if any attacking pieces can go to square the king wants to capture,
       # then attacker cannot be captured.
       next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color)
-
-      attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+      return true if attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
+      
     end
+    false
   end
 
   def pieces_can_attack_king_moves?(row, col, player_color)

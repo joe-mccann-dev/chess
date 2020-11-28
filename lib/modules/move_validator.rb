@@ -156,6 +156,9 @@ module MoveValidator
 
   def diagonal_path_unobstructed?(start_row, start_column, target)
     move_distance = (target.location[1] - start_column).abs
+    # if @attack_move
+    #   return true if move_distance == 1
+    # end
     # pieces at bottom have a larger start_row value d/t array index
     objects_in_path = if start_row > target.location[0]
                         ne_nw_diagonal_objects(start_row, start_column, move_distance, target)

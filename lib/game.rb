@@ -91,8 +91,7 @@ class Game
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
-      @cpu_moves.pop
-      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
+      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @player2.name == 'CPU'
       player2_move = validate_player2_move
     end
     update_and_display_board(player2_move, @player2.symbolic_color)
@@ -126,7 +125,7 @@ class Game
   def determine_check_status(player_color, board, found_piece)
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
-    @stalemate = stalemate?(player_color, board, found_piece)
+    # @stalemate = stalemate?(player_color, board, found_piece)
   end
   
   def checkmate?(player_color, board, found_piece)
@@ -178,6 +177,8 @@ class Game
   def announce_check(player_color, duplicate)
     puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check && 
       !@self_in_check
+    # prevent spamming of message as cpu cycles thru random moves
+    return if @player2.name == 'CPU'
     puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
   end
 
@@ -198,22 +199,31 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
-    player2_move = @player2.name == 'CPU' ? deal_with_cpu_moves : request_player2_move
+    player2_move = @player2.name == 'CPU' ? manage_cpu_moves : request_player2_move
     @board.toggle_cpu_mode(@player2)
-    @save_load_requested = player2_move.match?(/^(save|load)$/)
+    unless @player2.name == 'CPU'
+      @save_load_requested = player2_move.match?(/^(save|load)$/)
+    end
     loop do
       break if valid_input?(player2_move)
 
-      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested || @player2.name == 'CPU'
-      player2_move = @player2.name == 'CPU' ? deal_with_cpu_moves : request_player2_move
+      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested
+      player2_move = request_player2_move
     end
     @board.assign_piece_type(player2_move)
     player2_move
   end
 
-  def deal_with_cpu_moves
-    @cpu_moves ||= @board.generate_cpu_move(@player2.symbolic_color)
-    @cpu_moves[(rand * @cpu_moves.length).floor]
+  def manage_cpu_moves
+    cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
+    # moves_that_attack = cpu_moves.select { |move| move.include?('x') }
+    # give preference to moves that attack
+    # if moves_that_attack.any?
+      # moves_that_attack[(rand * moves_that_attack.length).floor]
+    # else
+    binding.pry
+      cpu_moves[(rand * cpu_moves.length).floor]
+    # end
   end
 
   def request_player1_move
