@@ -210,4 +210,9 @@ class Board
 
     @target.mark_as_captured unless @target.is_a?(EmptySquare)
   end
+
+  def no_legal_moves?(player_color)
+    checking_for_stalemate = true
+    generate_cpu_moves(player_color, checking_for_stalemate).length == 0
+  end
 end

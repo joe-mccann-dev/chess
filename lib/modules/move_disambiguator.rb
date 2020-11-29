@@ -22,7 +22,7 @@
     # prevents a nil error when disambiguate_move gets called
     response = 1 if disambiguated || @cpu_mode
     loop do
-      break if response.between?(1, 2)
+      break if response.between?(1, pieces.length)
 
       puts '** please select a piece to move by choosing a number **'
       request_disambiguation(pieces, piece_type)

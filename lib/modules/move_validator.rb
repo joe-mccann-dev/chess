@@ -147,9 +147,20 @@ module MoveValidator
     end
   end
 
+  # def check_space_between_columns(start_row, starting_place, destination)
+  #   starting_place.upto(destination) do |c|
+  #     return false unless @squares[start_row][c].is_a?(EmptySquare)
+  #   end
+  #   true
+  # end
+
   def check_space_between_columns(start_row, starting_place, destination)
     starting_place.upto(destination) do |c|
-      return false unless @squares[start_row][c].is_a?(EmptySquare)
+      current_square = @squares[start_row][c]
+      return false unless current_square.is_a?(EmptySquare) ||
+        unless (destination - current_square.location[1]).abs == 0
+          current_square.is_a?(King) && @checking_for_check
+        end
     end
     true
   end

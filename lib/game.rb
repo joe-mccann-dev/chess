@@ -129,6 +129,7 @@ class Game
   end
   
   def checkmate?(player_color, board, found_piece)
+    binding.pry
     board.move_puts_player_in_check?(player_color) &&
       every_king_move_results_in_check?(player_color, board, found_piece) && 
       !board.check_escapable?(player_color, found_piece)
@@ -137,7 +138,7 @@ class Game
   def stalemate?(player_color, board, found_piece)
     king_moves = board.king_moves_in_algebraic_notation(player_color)
     !@opponent_in_check &&
-      king_moves.length > 0 &&
+      board.no_legal_moves?(player_color) &&
       every_king_move_results_in_check?(player_color, board, found_piece) &&
       !board.check_escapable?(player_color, found_piece)
   end
@@ -150,6 +151,7 @@ class Game
 
   def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
+      binding.pry
       row = board.find_dest_row(move)
       col = board.determine_dest_column(move)
       escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)
@@ -184,8 +186,8 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player1_move
-    player1_move = request_player1_move
     @board.toggle_cpu_mode(@player1)
+    player1_move = request_player1_move
     @save_load_requested = player1_move.match?(/^(save|load)$/)
     loop do
       break if valid_input?(player1_move)
@@ -199,8 +201,8 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
-    player2_move = @player2.name == 'CPU' ? manage_cpu_moves : request_player2_move
     @board.toggle_cpu_mode(@player2)
+    player2_move = @player2.name == 'CPU' ? manage_cpu_moves : request_player2_move
     unless @player2.name == 'CPU'
       @save_load_requested = player2_move.match?(/^(save|load)$/)
     end
@@ -216,13 +218,13 @@ class Game
 
   def manage_cpu_moves
     cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
-    moves_that_attack = cpu_moves.select { |move| move.include?('x') }
-    # give preference to moves that attack
-    if moves_that_attack.any?
-      moves_that_attack[(rand * moves_that_attack.length).floor]
-    else
+    # moves_that_attack = cpu_moves.select { |move| move.include?('x') }
+    # # give preference to moves that attack
+    # if moves_that_attack.any?
+    #   moves_that_attack[(rand * moves_that_attack.length).floor]
+    # else
       cpu_moves[(rand * cpu_moves.length).floor]
-    end
+    # end
   end
 
   def request_player1_move

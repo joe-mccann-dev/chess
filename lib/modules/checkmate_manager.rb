@@ -111,31 +111,43 @@ module CheckmateManager
   # can any of opposite player's pieces capture or block the piece that put the king in check?
   # e.g. if white puts black king in check, can any black pieces capture or block the piece making the check
   def allowed_to_block_or_capture?(pieces, king, player_color, found_piece)
-    can_be_captured = attacker_can_be_captured?(pieces, player_color, found_piece) 
+    can_be_captured = attacker_can_be_captured?(pieces, player_color, found_piece)
     # see if the attacker's line of attack can be blocked
     # king can't block his own check
-    can_be_blocked = attacker_can_be_blocked?(pieces.select { |p| !p.is_a?(King) }, king, found_piece)
+    can_be_blocked = attacker_can_be_blocked?(pieces.reject { |p| p.is_a?(King) }, king, found_piece)
     # if attacker can be captured or blocked, then checkmate is false and game continues
     can_be_captured || can_be_blocked
   end
 
+  # can defender capture the piece that just put king in check
   def attacker_can_be_captured?(pieces, player_color, found_piece)
     row = found_piece.location[0]
     col = found_piece.location[1]
-    pieces.each do |p|
+    pieces.any? do |p|
       @attack_move = true
       # if p is a king, then he cannot capture a piece if it puts him in check.
       # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),
       # then if any attacking pieces can go to square the king wants to capture,
       # then attacker cannot be captured.
-      next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color)
-      return true if attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
-      
+      # next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color, found_piece)
+      next if p.is_a?(King) && opponent_pieces_can_attack_where_king_would_capture?(player_color, row, col)
+
+      attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
     end
-    false
   end
 
+  def opponent_pieces_can_attack_where_king_would_capture?(player_color, row, col)
+    pieces = player_color == :white ? white_pieces : black_pieces
+    king = player_color == :white ? black_king : white_king
+    # use a placeholder so that a regular move is simulated 
+    # (#attack_rules_follwed? would return false since attacker and @squares[row][col] would be the same color)
+    # the important idea is that if the piece can go there normally, it can also attack that square
+    placeholder = EmptySquare.new([row, col])
+    pieces.any? { |p| regular_move_rules_followed?(p.location[0], p.location[1], p, placeholder)}
+  end
+  
   def pieces_can_attack_king_moves?(row, col, player_color)
+    @checking_for_check = true
     dest_square = @squares[row][col]
     pieces = player_color == :white ? white_pieces : black_pieces
     pieces.any? do |p|
@@ -145,7 +157,7 @@ module CheckmateManager
         @attack_move = true
         attack_rules_followed?(p.location[0], p.location[1], player_color, p, dest_square)
       else
-        @attack_move = false
+        @attack_move = true
         if horizontal_vertical_move?(p.location[0], p.location[1], dest_square)
           column_has_space_for_move?(p.location[0], p.location[1], dest_square) &&
             row_has_space_for_move?(p.location[0], p.location[1], dest_square)
