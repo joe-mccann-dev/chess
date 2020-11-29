@@ -161,7 +161,7 @@ module MoveValidator
       current_square = @squares[start_row][c]
       return false unless current_square.is_a?(EmptySquare) ||
         unless (destination - current_square.location[1]).abs == 0
-          binding.pry
+          # binding.pry
           current_square.is_a?(King) && @checking_for_check &&
             current_square.symbolic_color == @target.symbolic_color
         end
