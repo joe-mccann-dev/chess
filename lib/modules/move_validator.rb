@@ -116,6 +116,7 @@ module MoveValidator
     end
   end
 
+  # vertical movement
   def column_has_space_for_move?(start_row, _start_column, target)
     if start_row < target.location[0]
       return check_space_between_rows(start_row + 1, target.location[0] - 1, target) if @attack_move
@@ -135,6 +136,7 @@ module MoveValidator
     true
   end
 
+  # horizontal movement
   def row_has_space_for_move?(start_row, start_column, target)
     if start_column < target.location[1]
       return check_space_between_columns(start_row, start_column + 1, target.location[1] - 1) if @attack_move
@@ -159,7 +161,9 @@ module MoveValidator
       current_square = @squares[start_row][c]
       return false unless current_square.is_a?(EmptySquare) ||
         unless (destination - current_square.location[1]).abs == 0
-          current_square.is_a?(King) && @checking_for_check
+          binding.pry
+          current_square.is_a?(King) && @checking_for_check &&
+            current_square.symbolic_color == @target.symbolic_color
         end
     end
     true
