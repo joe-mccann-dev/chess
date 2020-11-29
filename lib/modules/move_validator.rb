@@ -175,17 +175,16 @@ module MoveValidator
 
   def diagonal_path_unobstructed?(start_row, start_column, target)
     move_distance = (target.location[1] - start_column).abs
-    # if @attack_move
-    #   return true if move_distance == 1
-    # end
     # pieces at bottom have a larger start_row value d/t array index
     objects_in_path = if start_row > target.location[0]
                         ne_nw_diagonal_objects(start_row, start_column, move_distance, target)
                       else
                         se_sw_diagonal_objects(start_row, start_column, move_distance, target)
                       end
-    # if any pieces in path are NOT EmptySquares, then the path is NOT unobstructed
-    objects_in_path.any? { |s| !s.is_a?(EmptySquare) } ? false : true
+    # TODO: TEST THIS
+    # if any pieces in path are NOT EmptySquares or are NOT defending king, then the path is NOT unobstructed
+    # objects_in_path.any? { |s| !s.is_a?(EmptySquare) || !current_square_defending_king?(s.location[1], s) } ? false : true
+    objects_in_path.any? { |s| !s.is_a?(EmptySquare)  } ? false : true
   end
 
   def ne_nw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])
