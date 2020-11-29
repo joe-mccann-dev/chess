@@ -111,7 +111,7 @@ module CheckmateManager
   # can any of opposite player's pieces capture or block the piece that put the king in check?
   # e.g. if white puts black king in check, can any black pieces capture or block the piece making the check
   def allowed_to_block_or_capture?(pieces, king, player_color, found_piece)
-    binding.pry
+    # binding.pry
     can_be_captured = attacker_can_be_captured?(pieces, player_color, found_piece)
     # see if the attacker's line of attack can be blocked
     # king can't block his own check
@@ -126,7 +126,7 @@ module CheckmateManager
     row = found_piece.location[0]
     col = found_piece.location[1]
     pieces.any? do |p|
-      binding.pry
+      # binding.pry
       @attack_move = true
       # if p is a king, then he cannot capture a piece if it puts him in check.
       # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),

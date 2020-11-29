@@ -129,9 +129,12 @@ module MoveValidator
     end
   end
 
+  # vertical movement
   def check_space_between_rows(starting_place, destination, target)
     starting_place.upto(destination) do |r|
-      return false unless @squares[r][target.location[1]].is_a?(EmptySquare)
+      current_square = @squares[r][target.location[1]]
+      return false unless current_square.is_a?(EmptySquare) ||
+        current_square_defending_king?(destination, current_square)
     end
     true
   end
@@ -149,24 +152,25 @@ module MoveValidator
     end
   end
 
-  # def check_space_between_columns(start_row, starting_place, destination)
-  #   starting_place.upto(destination) do |c|
-  #     return false unless @squares[start_row][c].is_a?(EmptySquare)
-  #   end
-  #   true
-  # end
-
+  # horizontal movement
   def check_space_between_columns(start_row, starting_place, destination)
     starting_place.upto(destination) do |c|
       current_square = @squares[start_row][c]
       return false unless current_square.is_a?(EmptySquare) ||
-        unless (destination - current_square.location[1]).abs == 0
-          # binding.pry
-          current_square.is_a?(King) && @checking_for_check &&
-            current_square.symbolic_color == @target.symbolic_color
-        end
+        current_square_defending_king?(destination, current_square)
     end
     true
+  end
+
+  # prevents defending king from being in the way of a horizontal or vertical determination of check, 
+  # e.g. Queen to the right, potential move to the left 
+  # => he is in the way and it won't register as the move putting himself in check
+  def current_square_defending_king?(destination, current_square)
+    # unless condition necessary for when defending king is directly next to an attacker
+    unless (destination - current_square.location[1]).abs == 0
+      current_square.is_a?(King) && @checking_for_check &&
+        current_square.symbolic_color == @target.symbolic_color
+    end
   end
 
   def diagonal_path_unobstructed?(start_row, start_column, target)
