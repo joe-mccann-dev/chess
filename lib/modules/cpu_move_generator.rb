@@ -63,8 +63,4 @@ module CPUMoveGenerator
     end
     moves
   end
-
-  def toggle_cpu_mode(player)
-    @cpu_mode = player.name == 'CPU'
-  end
 end

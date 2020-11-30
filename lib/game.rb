@@ -21,7 +21,7 @@ class Game
       @player2.request_name
     end
     @player1.request_color
-    assign_color(@player1.displayed_color)
+    assign_color(@player1.displayed_color)f
   end
 
   def assign_color(color)
@@ -35,7 +35,12 @@ class Game
     elsif @current_player == @player2
       return player2_goes_first
     end
+    @cpu_mode = toggle_cpu_mode(@player2)
     @player1.symbolic_color == :white ? player1_goes_first : player2_goes_first
+  end
+
+  def toggle_cpu_mode(player2)
+    player2.name == 'CPU'
   end
 
   def player1_goes_first
