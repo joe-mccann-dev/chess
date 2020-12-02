@@ -11,7 +11,7 @@ module CPUMoveGenerator
     regular_moves + attack_moves
   end
 
-  def determine_piece_set(color, checking_for_stalemate)
+  def determine_piece_set(color, checking_for_stalemate = nil)
     if checking_for_stalemate
       # e.g., white moves and potentially puts black in stalemate, can black move any other pieces?
       color == :white ? black_pieces.reject { |p| p.is_a?(King) } : white_pieces.reject { |p| p.is_a?(King) }

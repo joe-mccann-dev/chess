@@ -183,7 +183,7 @@ module MoveValidator
                       end
     # TODO: TEST THIS
     # if any pieces in path are NOT EmptySquares or are NOT defending king, then the path is NOT unobstructed
-    # objects_in_path.any? { |s| !s.is_a?(EmptySquare) || !current_square_defending_king?(s.location[1], s) } ? false : true
+    # objects_in_path.any? { |s| !s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s) } ? false : true
     objects_in_path.any? { |s| !s.is_a?(EmptySquare)  } ? false : true
   end
 

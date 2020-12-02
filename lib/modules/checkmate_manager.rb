@@ -9,6 +9,10 @@ module CheckmateManager
     black_pieces.select { |piece| piece.is_a?(King) }[0]
   end
 
+  def check?
+    white_king.in_check || black_king.in_check
+  end
+
   def mark_king_as_in_check?(player_color)
     mark_kings_as_not_in_check
     if player_color == :white

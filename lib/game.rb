@@ -21,7 +21,7 @@ class Game
       @player2.request_name
     end
     @player1.request_color
-    assign_color(@player1.displayed_color)f
+    assign_color(@player1.displayed_color)
   end
 
   def assign_color(color)
@@ -191,7 +191,6 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player1_move
-    @board.toggle_cpu_mode(@player1)
     player1_move = request_player1_move
     @save_load_requested = player1_move.match?(/^(save|load)$/)
     loop do
@@ -206,11 +205,8 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
-    @board.toggle_cpu_mode(@player2)
-    player2_move = @player2.name == 'CPU' ? manage_cpu_moves : request_player2_move
-    unless @player2.name == 'CPU'
-      @save_load_requested = player2_move.match?(/^(save|load)$/)
-    end
+    player2_move = @cpu_mode ? find_cpu_moves : request_player2_move
+    @save_load_requested = player2_move.match?(/^(save|load)$/) unless @cpu_mode
     loop do
       break if valid_input?(player2_move)
 
@@ -221,15 +217,16 @@ class Game
     player2_move
   end
 
-  def manage_cpu_moves
-    cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
-    # moves_that_attack = cpu_moves.select { |move| move.include?('x') }
-    # # give preference to moves that attack
-    # if moves_that_attack.any?
-    #   moves_that_attack[(rand * moves_that_attack.length).floor]
-    # else
-      cpu_moves[(rand * cpu_moves.length).floor]
-    # end
+  def find_cpu_moves
+    @cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
+    random_move = @cpu_moves[(rand * @cpu_moves.length).floor]
+    if @board.check?
+      king_attack_moves = @cpu_moves.select { |m| m.include?('Kx') }
+      random_king_attack = king_attack_moves[(rand * king_attack_moves.length).floor]
+      king_attack_moves.any? ? random_king_attack : random_move
+    else
+      random_move
+    end
   end
 
   def request_player1_move
