@@ -121,7 +121,8 @@ module CheckmateManager
     # king can't block his own check
     can_be_blocked = attacker_can_be_blocked?(pieces.reject { |p| p.is_a?(King) }, king, found_piece)
     # if attacker can be captured or blocked, then checkmate is false and game continues
-    # binding.pry
+    puts "can_be_captured: #{can_be_captured}"
+    puts "can_be_blocked: #{can_be_blocked}"
     can_be_captured || can_be_blocked
   end
 
@@ -153,17 +154,28 @@ module CheckmateManager
     pieces.any? { |p| regular_move_rules_followed?(p.location[0], p.location[1], p, placeholder)}
   end
   
+  # all King_moves will either be EmptySquares or White pieces that he can attack
   def pieces_can_attack_king_moves?(row, col, player_color)
     @checking_for_check = true
     dest_square = @squares[row][col]
     pieces = player_color == :white ? white_pieces : black_pieces
     pieces.any? do |p|
+      # check if any White pieces can attack blank_square King destination
       if dest_square.is_a?(EmptySquare)
+        binding.pry
+        # need to turn_attack_mode_on for Pawns so that AdjacencyListGenerator 
+        # accurately reflects the pawn's available_squares
+        # otherwise just want to test if pawn can go to the EmptySquare, 
+        # therefore I used #regular_move_rules_followed? instead of #attack_rules_followed?
+        p.turn_attack_mode_on if p.is_a?(Pawn)
         regular_move_rules_followed?(p.location[0], p.location[1], p, dest_square)
-      elsif dest_square.symbolic_color == opposite(player_color)
-        @attack_move = true
-        attack_rules_followed?(p.location[0], p.location[1], player_color, p, dest_square)
+      # King destination is a White piece threatened by Black King
       else
+        # can a piece attack King after he captures the piece at @squares[row][col]
+        return p.allowed_move?(row, col) if p.is_a?(Knight)
+
+        # turn attack_move on so that occupation of square by same color doesn't throw things off
+        # e.g. White can't attack a square occupied by another White piece
         @attack_move = true
         if horizontal_vertical_move?(p.location[0], p.location[1], dest_square)
           column_has_space_for_move?(p.location[0], p.location[1], dest_square) &&
@@ -174,6 +186,14 @@ module CheckmateManager
       end
     end
   end
+  
+
+  # removed from above method
+      # **if king is moving to a square occupied by his own colored piece?, king can't move there. it wouldn't be an "available_location"
+
+      # elsif dest_square.symbolic_color == opposite(player_color)
+      #   @attack_move = true
+      #   attack_rules_followed?(p.location[0], p.location[1], player_color, p, dest_square)
 
   def attacker_can_be_blocked?(pieces, king, found_piece)
     # knight cannot be blocked since pieces in path are irrelevant to a Knight and do not effect check

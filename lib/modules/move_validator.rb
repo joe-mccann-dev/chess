@@ -24,7 +24,9 @@ module MoveValidator
   end
 
   def regular_move_rules_followed?(start_row, start_column, piece, target = @target)
-    piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
+    unless @checking_for_check
+      piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
+    end
     available_location?(start_row, start_column, piece, target) &&
       piece.allowed_move?(target.location[0], target.location[1])
   end

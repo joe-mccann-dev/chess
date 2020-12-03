@@ -15,10 +15,23 @@ class Board
 
   @@disambiguated = false
 
-  def initialize(squares = make_initial_board)
+  def initialize(squares = checkmate_test)
     @squares = squares
     @captured_by_white = []
     @captured_by_black = []
+  end
+
+  def checkmate_test
+    king_cannot_escape_knight_check = [
+      [EmptySquare.new([0,0]), EmptySquare.new([0,1]), Queen.new(1, [0, 2]), EmptySquare.new([0,3]), EmptySquare.new([0,4]), EmptySquare.new([0,5]), Queen.new(1, [0,6]), EmptySquare.new([0, 7])],
+      Array.new(8) { |c| EmptySquare.new([1, c]) },
+      Array.new(8) { |c| EmptySquare.new([2, c]) },
+      Array.new(8) { |c| c == 0 ? Bishop.new(1, [3, 0]) : EmptySquare.new([3, c]) },
+      Array.new(3) { |c| EmptySquare.new([4, c]) } + [King.new(2, [4, 3]), EmptySquare.new([4, 4]), Pawn.new(1, [4, 5]), EmptySquare.new([4, 6]), EmptySquare.new([4, 7])],
+      Array.new(8) { |c| c == 3 ? Pawn.new(1, [5, 3]) : EmptySquare.new([5, c]) },
+      Array.new(8) { |c| EmptySquare.new([6, c]) },
+      [Knight.new(1, [7, 0]), King.new(1, [7, 1]), EmptySquare.new([7, 2]), EmptySquare.new([7, 3]), EmptySquare.new([7, 4]), Bishop.new(1, [7, 5]), EmptySquare.new([7, 6]), EmptySquare.new([7, 7]) ]
+    ]
   end
 
   def make_initial_board

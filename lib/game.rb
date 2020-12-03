@@ -156,7 +156,7 @@ class Game
 
   def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
-      # binding.pry
+      binding.pry
       row = board.find_dest_row(move)
       col = board.determine_dest_column(move)
       escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)

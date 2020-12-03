@@ -132,7 +132,7 @@ describe CheckmateManager do
       let(:black_pawn2) { instance_double(Pawn, symbolic_color: :black, location: [1, 4], allowed_move?: false) }
       let(:black_pawn3) { instance_double(Pawn, symbolic_color: :black, location: [1, 5], allowed_move?: false) }
       let(:attacking_queen) { instance_double(Queen, symbolic_color: :white, location: [0, 7]) }
-      let(:blocking_rook) { instance_double(Rook, symbolic_color: :black, location: [3, 6], allowed_move?: true)}
+      let(:blocking_rook) { instance_double(Rook, symbolic_color: :black, location: [3, 6], allowed_move?: true) }
       
       before do
         allow(black_king).to receive(:is_a?).with(King).and_return(true)
@@ -160,45 +160,70 @@ describe CheckmateManager do
     end
 
     context 'when an attacked king can capture the attacker with one of his other pieces' do
+      let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 4], allowed_move?: true) }
+      let(:black_queen) { instance_double(Queen, symbolic_color: :black, location: [0, 3]) }
+      let(:black_pawn1) { instance_double(Pawn, symbolic_color: :black, location: [1, 3], allowed_move?: false) }
+      let(:black_pawn2) { instance_double(Pawn, symbolic_color: :black, location: [1, 4], allowed_move?: false) }
+      let(:black_pawn3) { instance_double(Pawn, symbolic_color: :black, location: [1, 5], allowed_move?: false) }
+      let(:attacking_queen) { instance_double(Queen, symbolic_color: :white, location: [0, 5]) }
+      let(:other_attacking_queen) { instance_double(Queen, symbolic_color: :white, location: [0,7]) }
+      let(:defending_knight) { instance_double(Knight, symbolic_color: :black, location: [2, 4], allowed_move?: true) }
 
+      before do
+        allow(black_king).to receive(:is_a?).with(King).and_return(true)
+        allow(black_king).to receive(:is_a?).with(EmptySquare).and_return(false)
+        allow(black_king).to receive(:is_a?).with(Pawn).and_return(false)
+        allow(black_king).to receive(:is_a?).with(Knight).and_return(false)
+        allow(attacking_queen).to receive(:allowed_move?).with(attacking_queen.location[0],attacking_queen.location[1]).and_return(false)
+        allow(defending_knight).to receive(:allowed_move?).and_return(true)
+      end
+      it 'returns true' do
+        knight_can_capture_queen = [
+          [EmptySquare.new([0,0]), EmptySquare.new([0,1]), EmptySquare.new([0,2]), black_queen, black_king, attacking_queen, EmptySquare.new([0,6]), attacking_queen],
+          [EmptySquare.new([1,0]), EmptySquare.new([1,1]), EmptySquare.new([1,2]), black_pawn1, black_pawn2, black_pawn3, EmptySquare.new([1,6]), EmptySquare.new([1,7])],
+          Array.new(8) { |c| c == 4 ? defending_knight : EmptySquare.new([2, c]) },
+          Array.new(8) { |c| EmptySquare.new([4, c]) },
+          Array.new(8) { |c| EmptySquare.new([5, c]) },
+          Array.new(8) { |c| EmptySquare.new([6, c]) },
+          Array.new(8) { |c| EmptySquare.new([7, c]) }
+        ]
+        board.instance_variable_set(:@squares, knight_can_capture_queen)
+        expect(board.check_escapable?(attacking_color, attacking_queen)).to be(true)
+      end
+    end
+
+    context 'when an attacked king cannot block or capture piece that put him in check' do
+      let(:black_king) { instance_double(King, symbolic_color: :black, location: [4, 3]) }
+      let(:white_pawn1) { instance_double(Pawn, symbolic_color: :white, location: [5, 3]) }
+      let(:white_pawn2) { instance_double(Pawn, symbolic_color: :white, location: [4, 5]) }
+      let(:white_bishop1) {instance_double(Bishop, symbolic_color: :white, location: [3, 0]) }
+      let(:white_bishop2) { instance_double(Bishop, symbolic_color: :white, location: [7, 5]) }
+      let(:white_queen1) { instance_double(Queen, symbolic_color: :white, location: [0, 2]) }
+      let(:white_queen2) { instance_double(Queen, symbolic_color: :white, location: [0, 6]) }
+      let(:attacking_knight) { instance_double(Knight, symbolic_color: :white, location: [6, 2]) }
+
+      before do
+        allow(black_king).to receive(:is_a?).with(King).and_return(true)
+        allow(black_king).to receive(:is_a?).with(EmptySquare).and_return(false)
+        allow(black_king).to receive(:is_a?).with(Pawn).and_return(false)
+        allow(black_king).to receive(:is_a?).with(Knight).and_return(false)
+        allow(white_queen1).to receive(:allowed_move?).with(6, 2).and_return(true)
+        allow(attacking_knight).to receive(:allowed_move?).with(attacking_knight.location[0],attacking_knight.location[1]).and_return(false)
+      end
+      it 'returns false' do
+        king_cannot_escape_knight_check = [
+          [EmptySquare.new([0,0]), EmptySquare.new([0,1]), white_queen1, EmptySquare.new([0,3]), EmptySquare.new([0,4]), EmptySquare.new([0,5]), white_queen2, EmptySquare.new([0, 7])],
+          Array.new(8) { |c| EmptySquare.new([1, c]) },
+          Array.new(8) { |c| EmptySquare.new([2, c]) },
+          Array.new(8) { |c| c == 0 ? white_bishop1 : EmptySquare.new([3, c]) },
+          Array.new(3) { |c| EmptySquare.new([4, c]) } + [black_king, EmptySquare.new([4, 4]), white_pawn2, EmptySquare.new([4, 6]), EmptySquare.new([4, 7])],
+          Array.new(8) { |c| c == 3 ? white_pawn1 : EmptySquare.new([5, c]) },
+          Array.new(8) { |c| c == 2 ? attacking_knight : EmptySquare.new([6, c]) },
+          Array.new(8) { |c| c == 5 ? white_bishop2 : EmptySquare.new([7, c]) }
+        ]
+        board.instance_variable_set(:@squares, king_cannot_escape_knight_check)
+        expect(board.check_escapable?(attacking_color, attacking_knight)).to be(false)
+      end
     end
   end
 end
-
-# describe CheckmateManager do
-#   describe '#check_escapable' do
-
-#     context 'when an attacked king can block check with one of the other pieces' do
-#       # white attacking black king with 3 queens, but black can block check with his queen
-#       row0 = [ EmptySquare.new([0, 0]), Queen.new(1, [0, 1]), EmptySquare.new([0, 2]), EmptySquare.new([0, 3]), King.new(2, [0, 4]), Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7]) ]
-#       row1 = [ Queen.new(1, [1, 0]), EmptySquare.new([1, 1]), EmptySquare.new([1, 2]), EmptySquare.new([1, 3]), Pawn.new(2, [1, 4]), Pawn.new(2, [1, 5]), Pawn.new(2, [1, 6]), Pawn.new(2,[1, 7]) ]
-#       row2 = Array.new(8) { |c| EmptySquare.new([2, c]) }
-#       # black queen at row3 column0 can block check
-#       row3 = Array.new(8) { |c| c == 0 ? Queen.new(2, [3, c]) : EmptySquare.new([3, c]) }
-#       row4 = Array.new(8) { |c| c == 3 ? Queen.new(1, [4, c]) : EmptySquare.new([4, c]) }
-#       row5 = Array.new(8) { |c| EmptySquare.new([5, c]) }
-#       row6 = Array.new(8) { |c| c == 4 ? EmptySquare.new([6, c]) : Pawn.new(1, [6, c]) }
-#       row7 = [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]), EmptySquare.new([7, 3]), King.new(1, [7, 4]), Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7]) ]
-#       escapable_check_squares = [row0, row1, row2, row3, row4, row5, row6, row7]
-
-#       subject(:board) { Board.new(escapable_check_squares) }
-#       it 'returns true' do
-#         player_color = :white
-#         attacker = board.squares[0][1]
-#         expect(board.check_escapable?(player_color, attacker)).to be(true)
-#       end
-#     end
-
-#     context 'when an attacked king can capture the attacker with of his other pieces' do
-#       row0 = [ EmptySquare.new([0, 0]), Queen.new(1, [0, 1]), EmptySquare.new([0, 2]), EmptySquare.new([0, 3]), King.new(2, [0, 4]), Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7]) ]
-#       row1 = [ Queen.new(1, [1, 0]), EmptySquare.new([1, 1]), EmptySquare.new([1, 2]), EmptySquare.new([1, 3]), Pawn.new(2, [1, 4]), Pawn.new(2, [1, 5]), Pawn.new(2, [1, 6]), Pawn.new(2,[1, 7]) ]
-#       row2 = Array.new(8) { |c| EmptySquare.new([2, c]) }
-#       # black queen at row3 column0 can block check
-#       row3 = Array.new(8) { |c| c == 0 ? Queen.new(2, [3, c]) : EmptySquare.new([3, c]) }
-#       row4 = Array.new(8) { |c| c == 3 ? Queen.new(1, [4, c]) : EmptySquare.new([4, c]) }
-#       row5 = Array.new(8) { |c| EmptySquare.new([5, c]) }
-#       row6 = Array.new(8) { |c| c == 4 ? EmptySquare.new([6, c]) : Pawn.new(1, [6, c]) }
-#       row7 = [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]), EmptySquare.new([7, 3]), King.new(1, [7, 4]), Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7]) ]
-#     end
-#   end
-# end
