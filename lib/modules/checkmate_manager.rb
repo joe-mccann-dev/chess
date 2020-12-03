@@ -121,6 +121,7 @@ module CheckmateManager
     # king can't block his own check
     can_be_blocked = attacker_can_be_blocked?(pieces.reject { |p| p.is_a?(King) }, king, found_piece)
     # if attacker can be captured or blocked, then checkmate is false and game continues
+    # binding.pry
     can_be_captured || can_be_blocked
   end
 
@@ -130,7 +131,6 @@ module CheckmateManager
     row = found_piece.location[0]
     col = found_piece.location[1]
     pieces.any? do |p|
-      # binding.pry
       @attack_move = true
       # if p is a king, then he cannot capture a piece if it puts him in check.
       # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),
@@ -138,7 +138,7 @@ module CheckmateManager
       # then attacker cannot be captured.
       # next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color, found_piece)
       next if p.is_a?(King) && opponent_pieces_can_attack_where_king_would_capture?(player_color, row, col)
-
+      
       attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
     end
   end

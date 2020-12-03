@@ -1,8 +1,8 @@
 class EmptySquare
     attr_reader :location, :symbolic_color
 
-    def initialize(location)
+    def initialize(location, symbolic_color = nil)
       @location = location
-      @symbolic_color = nil
+      @symbolic_color = symbolic_color
     end
   end
