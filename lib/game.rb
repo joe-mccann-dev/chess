@@ -97,7 +97,6 @@ class Game
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
 
-      @incorrect_cpu_attempts += 1 if @cpu_mode
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @player2.name == 'CPU'
       player2_move = validate_player2_move
     end
@@ -206,7 +205,9 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
-    player2_move = @cpu_mode ? find_cpu_moves : request_player2_move
+    return find_cpu_moves if @cpu_mode
+    
+    player2_move = request_player2_move
     @save_load_requested = player2_move.match?(/^(save|load)$/) unless @cpu_mode
     loop do
       break if valid_input?(player2_move)

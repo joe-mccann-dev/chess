@@ -40,7 +40,7 @@ module CPUMoveGenerator
       end
     end
     # include castle_moves as possibility
-    moves
+    moves + ['0-0', '0-0-0']
   end
 
   def find_attack_moves(cpu_color, opposite_color_pieces, pieces, moves = [])
