@@ -96,6 +96,8 @@ class Game
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
+
+      @incorrect_cpu_attempts += 1 if @cpu_mode
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @player2.name == 'CPU'
       player2_move = validate_player2_move
     end

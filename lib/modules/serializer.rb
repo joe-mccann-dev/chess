@@ -28,7 +28,8 @@ module Serializer
       'board' => @board,
       'player1' => @player1,
       'player2' => @player2,
-      'current_player' => @current_player
+      'current_player' => @current_player,
+      'cpu_mode' => @cpu_mode
     )
   end
 
@@ -63,7 +64,8 @@ module Serializer
     @board = game_data['board']
     @player1 = game_data['player1']
     @player2 = game_data['player2']
-    @current_player = game_data['current_player']
+    @current_player = game_data['current_player'],
+    @cpu_mode = game_data['cpu_mode']
     play_game
   end
 end
