@@ -135,7 +135,6 @@ class Game
   end
   
   def checkmate?(player_color, board, found_piece)
-    # binding.pry
     board.move_puts_player_in_check?(player_color) &&
       every_king_move_results_in_check?(player_color, board, found_piece) && 
       !board.check_escapable?(player_color, found_piece)
@@ -206,7 +205,7 @@ class Game
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
     return find_cpu_moves if @cpu_mode
-    
+
     player2_move = request_player2_move
     @save_load_requested = player2_move.match?(/^(save|load)$/) unless @cpu_mode
     loop do
