@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# handles declaration of check, checkmate, and stalemate.
+# controls order of turns and saving/loading games and majority of requesting user input
 class Game
   include Serializer
   include Display
@@ -30,11 +32,9 @@ class Game
 
   def play_game
     @board.display
-    if @current_player == @player1
-      return player1_goes_first
-    elsif @current_player == @player2
-      return player2_goes_first
-    end
+    return player1_goes_first if @current_player == @player1
+    return player2_goes_first if @current_player == @player2
+
     @cpu_mode = toggle_cpu_mode(@player2)
     @player1.symbolic_color == :white ? player1_goes_first : player2_goes_first
   end
@@ -50,11 +50,9 @@ class Game
       break if @checkmate || @stalemate
 
       @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
-      p @board.cpu_moves
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
-
     end
   end
 
@@ -67,13 +65,12 @@ class Game
       player1_turn
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
-
     end
   end
 
-  def announce_checkmate_or_stalemate(player, checkmate, stalemate)
+  def announce_checkmate_or_stalemate(player, _checkmate, _stalemate)
     puts "  ** Checkmate! #{player.symbolic_color.capitalize} wins! ** ".colorize(:green) if @checkmate
-    puts "  ** Stalemate. Game ends in a draw **".colorize(:green) if @stalemate
+    puts '  ** Stalemate. Game ends in a draw **'.colorize(:green) if @stalemate
   end
 
   # loop breaks if piece is found and square is available
@@ -100,7 +97,7 @@ class Game
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
 
-      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @player2.name == 'CPU'
+      puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @cpu_mode
       player2_move = @cpu_mode ? @board.cpu_moves.pop : validate_player2_move
       @board.assign_piece_type(player2_move) if @cpu_mode
     end
@@ -122,6 +119,7 @@ class Game
   def move_follows_rules?(move, player_color)
     # @opponent_in_check will be true when next player attempts a castle move
     return false if @board.castle_move && @opponent_in_check
+
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     simulate_and_examine_board_state(move, player_color, @duplicate)
     determine_check_status(player_color, @duplicate, @duplicate.found_piece)
@@ -136,22 +134,21 @@ class Game
     @self_in_check = board.move_puts_self_in_check?(player_color)
     @stalemate = stalemate?(player_color, board, found_piece)
   end
-  
+
   def checkmate?(player_color, board, found_piece)
     board.move_puts_player_in_check?(player_color) &&
-      every_king_move_results_in_check?(player_color, board, found_piece) && 
+      every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end
 
   def stalemate?(player_color, board, found_piece)
-    king_moves = board.king_moves_in_algebraic_notation(player_color)
     !@opponent_in_check &&
       board.no_legal_moves?(player_color) &&
-      every_king_move_results_in_check?(player_color, board, found_piece) &&
+      every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end
 
-  def every_king_move_results_in_check?(player_color, board, found_piece)
+  def every_king_move_results_in_check?(player_color, board)
     king_moves = board.king_moves_in_algebraic_notation(player_color)
     unsuccessful_escape_count = count_moves_that_result_in_check(player_color, king_moves, board)
     unsuccessful_escape_count == king_moves.length
@@ -173,21 +170,22 @@ class Game
     duplicate.assign_piece_type(move)
     duplicate.assign_target_variables(move, player_color)
     return false unless basic_conditions_met?(player_color, duplicate)
-    
+
     duplicate.re_ambiguate
     duplicate.update_board(move, player_color)
   end
 
   def basic_conditions_met?(player_color, board)
     board.piece_found &&
-    board.valid_move?(board.start_row, board.start_column, player_color, board.found_piece)
+      board.valid_move?(board.start_row, board.start_column, player_color, board.found_piece)
   end
 
   def announce_check(player_color, duplicate)
-    puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check && 
-      !@self_in_check
+    puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check &&
+                                                                                                !@self_in_check
     # prevent spamming of message as cpu cycles thru random moves
     return if @player2.name == 'CPU'
+
     puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
   end
 
@@ -198,7 +196,7 @@ class Game
     loop do
       break if valid_input?(player1_move)
 
-      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested
+      puts ' invalid input. please try again...'.colorize(:red) unless @save_load_requested
       player1_move = request_player1_move
     end
     @board.assign_piece_type(player1_move)
@@ -212,7 +210,7 @@ class Game
     loop do
       break if valid_input?(player2_move)
 
-      puts " invalid input. please try again...".colorize(:red) unless @save_load_requested
+      puts ' invalid input. please try again...'.colorize(:red) unless @save_load_requested
       player2_move = request_player2_move
     end
     @board.assign_piece_type(player2_move)

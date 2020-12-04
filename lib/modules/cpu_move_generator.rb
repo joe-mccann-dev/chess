@@ -6,7 +6,7 @@ module CPUMoveGenerator
     opposite_color_pieces = cpu_color == :black ? white_pieces : black_pieces
     king = cpu_color == :black ? black_king : white_king
     empty_squares = find_empty_squares
-    regular_moves = find_regular_moves(empty_squares, pieces)
+    regular_moves = find_regular_moves(empty_squares, pieces, checking_for_stalemate)
     attack_moves = find_attack_moves(cpu_color, opposite_color_pieces, pieces)
     @cpu_moves = regular_moves + attack_moves
   end
@@ -27,7 +27,7 @@ module CPUMoveGenerator
     empty_squares
   end
 
-  def find_regular_moves(empty_squares, pieces, moves = [])
+  def find_regular_moves(empty_squares, pieces, checking_for_stalemate, moves = [])
     empty_squares.each do |square|
       dest_row = square.location[0]
       dest_col = square.location[1]
@@ -39,8 +39,10 @@ module CPUMoveGenerator
         end
       end
     end
-    # include castle_moves as possibility
-    moves
+    # include castle_moves as possibility, except when checking for stalemate
+    # if king or rook can legally move, that is enough to determine stalemate is false.
+    # add moves onto castle array so they are selected last in 'moves.pop' situation
+    checking_for_stalemate ? moves : ['0-0', '0-0-0'] + moves
   end
 
   def find_attack_moves(cpu_color, opposite_color_pieces, pieces, moves = [])
