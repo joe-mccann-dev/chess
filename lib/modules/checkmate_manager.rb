@@ -174,13 +174,6 @@ module CheckmateManager
       end
     end
   end
-
-      # removed from above method
-      # **if king is moving to a square occupied by his own colored piece?, king can't move there. it wouldn't be an "available_location"
-
-      # elsif dest_square.symbolic_color == opposite(player_color)
-      #   @attack_move = true
-      #   attack_rules_followed?(p.location[0], p.location[1], player_color, p, dest_square)
   
   # can a piece attack King after he captures the piece at @squares[row][col]
   def piece_can_attack_where_king_attacks?(piece, dest_square, row, col)

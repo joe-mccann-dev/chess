@@ -20,6 +20,12 @@ class Board
     @captured_by_white = []
     @captured_by_black = []
     @cpu_moves = []
+    @cpu_mode = false
+  end
+
+  # necessary to prevent move_disambiguation prompt when playing against cpu
+  def turn_cpu_mode_on(mode)
+    @cpu_mode = mode
   end
 
   def make_initial_board
