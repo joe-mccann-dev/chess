@@ -49,6 +49,8 @@ class Game
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if @checkmate || @stalemate
 
+      @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
+      p @board.cpu_moves
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
@@ -92,13 +94,15 @@ class Game
   # loop breaks if piece is found and square is available
   def player2_turn
     @current_player = @player2
-    player2_move = validate_player2_move
+    player2_move = @cpu_mode ? @board.cpu_moves[(rand * @board.cpu_moves.length).floor] : validate_player2_move
+    @board.assign_piece_type(player2_move) if @cpu_mode
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
 
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @player2.name == 'CPU'
-      player2_move = validate_player2_move
+      player2_move = @cpu_mode ? @board.cpu_moves.pop : validate_player2_move
+      @board.assign_piece_type(player2_move) if @cpu_mode
     end
     update_and_display_board(player2_move, @player2.symbolic_color)
     @checkmate = checkmate?(@player2.symbolic_color, @board, @board.found_piece)
@@ -118,7 +122,6 @@ class Game
   def move_follows_rules?(move, player_color)
     # @opponent_in_check will be true when next player attempts a castle move
     return false if @board.castle_move && @opponent_in_check
-
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
     simulate_and_examine_board_state(move, player_color, @duplicate)
     determine_check_status(player_color, @duplicate, @duplicate.found_piece)
@@ -156,7 +159,6 @@ class Game
 
   def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
-      binding.pry
       row = board.find_dest_row(move)
       col = board.determine_dest_column(move)
       escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)
@@ -205,8 +207,6 @@ class Game
 
   # loop breaks if input string is valid algebraic notation
   def validate_player2_move
-    return find_cpu_moves if @cpu_mode
-
     player2_move = request_player2_move
     @save_load_requested = player2_move.match?(/^(save|load)$/) unless @cpu_mode
     loop do
@@ -217,18 +217,6 @@ class Game
     end
     @board.assign_piece_type(player2_move)
     player2_move
-  end
-
-  def find_cpu_moves
-    @cpu_moves = @board.generate_cpu_moves(@player2.symbolic_color)
-    random_move = @cpu_moves[(rand * @cpu_moves.length).floor]
-    if @board.check?
-      king_attack_moves = @cpu_moves.select { |m| m.include?('Kx') }
-      random_king_attack = king_attack_moves[(rand * king_attack_moves.length).floor]
-      king_attack_moves.any? ? random_king_attack : random_move
-    else
-      random_move
-    end
   end
 
   def request_player1_move

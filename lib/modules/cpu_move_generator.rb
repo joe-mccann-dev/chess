@@ -8,7 +8,7 @@ module CPUMoveGenerator
     empty_squares = find_empty_squares
     regular_moves = find_regular_moves(empty_squares, pieces)
     attack_moves = find_attack_moves(cpu_color, opposite_color_pieces, pieces)
-    regular_moves + attack_moves
+    @cpu_moves = regular_moves + attack_moves
   end
 
   def determine_piece_set(color, checking_for_stalemate = nil)
@@ -40,7 +40,7 @@ module CPUMoveGenerator
       end
     end
     # include castle_moves as possibility
-    moves + ['0-0', '0-0-0']
+    moves
   end
 
   def find_attack_moves(cpu_color, opposite_color_pieces, pieces, moves = [])

@@ -359,9 +359,9 @@ player1: &1 !ruby/object:Player
   symbolic_color: :white
   winner: false
 player2: !ruby/object:Player
-  name: k
+  name: CPU
   displayed_color: "\e[0;36;49m♟\e[0m"
   symbolic_color: :black
   winner: false
 current_player: *1
-cpu_mode: false
+cpu_mode: true

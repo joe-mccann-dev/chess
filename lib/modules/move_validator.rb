@@ -168,9 +168,11 @@ module MoveValidator
   # e.g. Queen to the right, potential move to the left 
   # => he is in the way and it won't register as the move putting himself in check
   def current_square_defending_king?(destination, current_square)
+    return false unless @checking_for_check
+    
     # unless condition necessary for when defending king is directly next to an attacker
     unless (destination - current_square.location[1]).abs == 0
-      current_square.is_a?(King) && @checking_for_check &&
+      current_square.is_a?(King) &&
         current_square.symbolic_color == @target.symbolic_color
     end
   end
@@ -183,10 +185,11 @@ module MoveValidator
                       else
                         se_sw_diagonal_objects(start_row, start_column, move_distance, target)
                       end
-    # TODO: TEST THIS
     # if any pieces in path are NOT EmptySquares or are NOT defending king, then the path is NOT unobstructed
-    # objects_in_path.any? { |s| !s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s) } ? false : true
-    objects_in_path.any? { |s| !s.is_a?(EmptySquare)  } ? false : true
+    objects_in_path.each do |s|
+      return false unless s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s)
+    end
+    true
   end
 
   def ne_nw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])

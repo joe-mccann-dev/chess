@@ -44,9 +44,9 @@ module CastleManager
 
   def castle_rules_followed?(player_color)
     king_and_rook = if player_color == :white
-                      white_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
+                      white_pieces.select { |piece| piece == @relevant_rook && @relevant_rook.is_a?(Rook) || piece.is_a?(King) }
                     else
-                      black_pieces.select { |piece| piece == @relevant_rook || piece.is_a?(King) }
+                      black_pieces.select { |piece| piece == @relevant_rook && @relevant_rook.is_a?(Rook) || piece.is_a?(King) }
                     end
     all_castle_conditions_true?(king_and_rook, player_color)
   end

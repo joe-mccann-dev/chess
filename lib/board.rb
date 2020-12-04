@@ -11,7 +11,7 @@ class Board
   include MoveDisambiguator
   include CPUMoveGenerator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
-              :piece_type, :piece_found, :castle_move
+              :piece_type, :piece_found, :castle_move, :cpu_moves
 
   @@disambiguated = false
 
@@ -19,6 +19,7 @@ class Board
     @squares = squares
     @captured_by_white = []
     @captured_by_black = []
+    @cpu_moves = []
   end
 
   def make_initial_board
