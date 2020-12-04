@@ -20,6 +20,7 @@
       response = gets.chomp.to_i
     end
     # prevents a nil error when disambiguate_move gets called
+    binding.pry
     response = 1 if disambiguated || @cpu_mode
     loop do
       break if response.between?(1, pieces.length)

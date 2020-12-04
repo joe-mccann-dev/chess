@@ -8,6 +8,8 @@ module SetupBoardVariables
   end
 
   def assign_prefix(move)
+    binding.pry if move.nil?
+
     if move.length == 2 || valid_pawn_attack?(move)
       ''
     else

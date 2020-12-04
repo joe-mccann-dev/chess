@@ -70,16 +70,24 @@ class Pawn
 
   def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
     if @symbolic_color == :white && (dest_row + 1).between?(0, 7)
-      unless squares[dest_row + 1][dest_column].is_a?(EmptySquare)
-        start_row == 3 &&
-        squares[dest_row + 1][dest_column].symbolic_color != @symbolic_color
-      end
+      target = squares[dest_row + 1][dest_column]
+      valid_white_en_passant?(start_row, target)
     elsif @symbolic_color == :black && (dest_row - 1).between?(0, 7)
-      unless squares[dest_row - 1][dest_column].is_a?(EmptySquare)
-        start_row == 4 && 
-        squares[dest_row - 1][dest_column].symbolic_color != @symbolic_color
-      end
+      target = squares[dest_row - 1][dest_column]
+      valid_black_en_passant?(start_row, target)
     end
+  end
+
+  def valid_white_en_passant?(start_row, target)
+    start_row == 3 &&
+      target.symbolic_color != @symbolic_color &&
+      target.is_a?(Pawn)
+  end
+
+  def valid_black_en_passant?(start_row, target)
+    start_row == 4 &&
+      target.symbolic_color != @symbolic_color &&
+      target.is_a?(Pawn)
   end
 
   def update_num_moves
