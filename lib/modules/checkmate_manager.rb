@@ -100,8 +100,8 @@ module CheckmateManager
     algebraic_notations
   end
 
-  # checkmate is false if a check is escapable
-  def check_escapable?(player_color, found_piece)
+  # checkmate is false if attacker can be blocked or captured 
+  def can_block_or_capture?(player_color, found_piece)
     if player_color == :white
       pieces = black_pieces
       king = black_king
@@ -120,8 +120,6 @@ module CheckmateManager
     # king can't block his own check
     can_be_blocked = attacker_can_be_blocked?(pieces.reject { |p| p.is_a?(King) }, king, found_piece)
     # if attacker can be captured or blocked, then checkmate is false and game continues
-    puts "can_be_captured: #{can_be_captured}"
-    puts "can_be_blocked: #{can_be_blocked}"
     can_be_captured || can_be_blocked
   end
 
