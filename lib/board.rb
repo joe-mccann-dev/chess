@@ -143,6 +143,9 @@ class Board
   end
 
   def update_board(move, player_color)
+    # necessary for occassional bug
+    return if @found_piece.is_a?(EmptySquare)
+
     push_captured_pieces
     # move piece to new square
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
