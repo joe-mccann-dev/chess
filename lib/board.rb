@@ -24,8 +24,9 @@ class Board
   end
 
   # necessary to prevent move_disambiguation prompt when playing against cpu
-  def turn_cpu_mode_on(mode)
+  def turn_cpu_mode_on(mode, color)
     @cpu_mode = mode
+    @cpu_color = color if @cpu_mode
   end
 
   def make_initial_board

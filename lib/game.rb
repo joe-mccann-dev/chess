@@ -36,7 +36,7 @@ class Game
     return player2_goes_first if @current_player == @player2
 
     @cpu_mode = toggle_cpu_mode(@player2)
-    @board.turn_cpu_mode_on(@cpu_mode)
+    @board.turn_cpu_mode_on(@cpu_mode, @player2.symbolic_color)
     @player1.symbolic_color == :white ? player1_goes_first : player2_goes_first
   end
 
@@ -101,9 +101,10 @@ class Game
 
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @cpu_mode
       player2_move = @cpu_mode ? @board.cpu_moves.pop : validate_player2_move
-      binding.pry if player2_move.nil?
-      return @stalemate = true if player2_move.nil?
-
+      # player2_move will occasionally return nil in near stalemate situations
+      if player2_move.nil?
+        player2_move = @board.generate_cpu_moves(@player2.symbolic_color)[(rand * @board.cpu_moves.length).floor]
+      end
       @board.assign_piece_type(player2_move) if @cpu_mode
     end
     update_and_display_board(player2_move, @player2.symbolic_color)

@@ -20,8 +20,8 @@
       response = gets.chomp.to_i
     end
     # prevents a nil error when disambiguate_move gets called
-    binding.pry
-    response = 1 if disambiguated || @cpu_mode
+    # prevent getting prompted when cpu selects a move that requires disambiguation
+    response = 1 if disambiguated || (@cpu_mode && @cpu_color == pieces[0].symbolic_color)
     loop do
       break if response.between?(1, pieces.length)
 
