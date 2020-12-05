@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 
 module InputValidator
-  def valid_input?(move)
-    return false unless move.length.between?(2, 5)
-    return valid_castle_move?(move) if move.include?('0')
-    return save_game if move.match?(/save/)
-    return load_game if move.match?(/load/)
+  def valid_input?(input)
+    return false unless input.length.between?(2, 5)
+    return valid_castle_move?(input) if input.include?('0')
     
-    if move.length == 4
-      valid_attack_move?(move) || valid_pawn_attack?(move)
-    elsif move.length == 2
-      valid_pawn_move?(move)
+    if input.length == 4
+      valid_attack_move?(input) || valid_pawn_attack?(input)
+    elsif input.length == 2
+      valid_pawn_move?(input)
     else
-      valid_character_move?(move)
+      valid_character_move?(input)
     end
   end
 

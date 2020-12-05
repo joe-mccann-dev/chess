@@ -42,6 +42,22 @@ class Board
     ]
   end
 
+  def black_row
+    [
+      Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),
+      Queen.new(2, [0, 3]), King.new(2, [0, 4]),
+      Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])
+    ]
+  end
+
+  def white_row
+    [
+      Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),
+      Queen.new(1, [7, 3]), King.new(1, [7, 4]),
+      Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])
+    ]
+  end
+
   def duplicate_board(squares)
     board = Array.new(8) { [] }
     squares.each_with_index do |row, row_idx|
@@ -60,23 +76,7 @@ class Board
   def re_ambiguate
     @@disambiguated = false
   end
-
-  def black_row
-    [
-      Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),
-      Queen.new(2, [0, 3]), King.new(2, [0, 4]),
-      Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])
-    ]
-  end
-
-  def white_row
-    [
-      Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),
-      Queen.new(1, [7, 3]), King.new(1, [7, 4]),
-      Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])
-    ]
-  end
-
+  
   def white_pieces(white_pieces = [])
     @squares.each do |row|
       row.each do |square|

@@ -20,6 +20,7 @@ module CheckmateManager
     else
       white_king.mark_as_in_check if black_puts_white_in_check?(player_color)
     end
+    check?
   end
 
   def mark_kings_as_not_in_check
@@ -28,12 +29,12 @@ module CheckmateManager
   end
 
   def move_puts_player_in_check?(player_color)
-    reassign_relevant_board_variables(player_color)
+    assign_king_as_target(player_color)
     mark_king_as_in_check?(player_color)
   end
 
   def move_puts_self_in_check?(player_color)
-    reassign_relevant_board_variables(opposite(player_color))
+    assign_king_as_target(opposite(player_color))
     mark_king_as_in_check?(opposite(player_color))
   end
 
@@ -41,7 +42,9 @@ module CheckmateManager
     player_color == :white ? :black : :white
   end
 
-  def reassign_relevant_board_variables(player_color)
+  def assign_king_as_target(player_color)
+    @checking_for_check = true
+    @attack_move = true
     if player_color == :white
       @dest_row = black_king.location[0]
       @dest_column = black_king.location[1]
@@ -49,9 +52,7 @@ module CheckmateManager
       @dest_row = white_king.location[0]
       @dest_column = white_king.location[1]
     end
-    @checking_for_check = true
     @target = @squares[@dest_row][@dest_column]
-    @attack_move = true
   end
 
   def white_puts_black_in_check?(player_color, target = @target)
@@ -134,7 +135,6 @@ module CheckmateManager
       # in this case, if he captures the found_piece ( the attacker located at @squares[row][col] ),
       # then if any attacking pieces can go to square the king wants to capture,
       # then attacker cannot be captured.
-      # next if p.is_a?(King) && pieces_can_attack_king_moves?(row, col, player_color, found_piece)
       next if p.is_a?(King) && opponent_pieces_can_attack_where_king_would_capture?(player_color, row, col)
       
       attack_rules_followed?(p.location[0], p.location[1], opposite(player_color), p, @squares[row][col])
@@ -187,7 +187,7 @@ module CheckmateManager
       column_has_space_for_move?(piece.location[0], piece.location[1], dest_square) &&
         row_has_space_for_move?(piece.location[0], piece.location[1], dest_square)
     else
-      diagonal_path_unobstructed?(piece.location[0], piece.location[1], dest_square)
+      diagonal_has_space_for_move?(piece.location[0], piece.location[1], dest_square)
     end
   end
 

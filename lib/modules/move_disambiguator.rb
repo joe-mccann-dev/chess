@@ -21,7 +21,7 @@
     end
     # prevents a nil error when disambiguate_move gets called
     # prevent getting prompted when cpu selects a move that requires disambiguation
-    response = 1 if disambiguated || (@cpu_mode && @cpu_color == pieces[0].symbolic_color)
+    response = 1 if disambiguated || cpu_move_requires_disambiguation?(pieces)
     loop do
       break if response.between?(1, pieces.length)
 
@@ -32,6 +32,10 @@
     end
     @@disambiguated = true
     disambiguate_move(response, pieces)
+  end
+
+  def cpu_move_requires_disambiguation?(pieces)
+    (@cpu_mode && @cpu_color == pieces[0].symbolic_color)
   end
 
   def request_disambiguation(pieces, piece_type)

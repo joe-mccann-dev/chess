@@ -6,11 +6,17 @@ class Game
   include Serializer
   include Display
   include InputValidator
+  include GameCommandManager
 
   def initialize(board = Board.new, player1 = Player.new, player2 = Player.new)
     @player1 = player1
     @player2 = player2
     @board = board
+    @cpu_mode = false
+    @checkmate = false
+    @stalemate = false
+    @resigned = false
+    @draw = false
   end
 
   def start_game
@@ -45,27 +51,29 @@ class Game
 
   def player1_goes_first
     loop do
+      break if game_over?
+
       player1_turn
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
-      break if @checkmate || @stalemate
+      break if game_over?
 
       @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
-      break if @checkmate || @stalemate
     end
   end
 
   def player2_goes_first
     loop do
+      break if game_over?
+
       @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
-      break if @checkmate || @stalemate
+      break if game_over?
 
       player1_turn
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
-      break if @checkmate || @stalemate
     end
   end
 
@@ -77,13 +85,13 @@ class Game
   # loop breaks if piece is found and square is available
   def player1_turn
     @current_player = @player1
-    player1_move = validate_player1_move
+    player1_move = validate_player_move(@player1)
     loop do
       @board.assign_target_variables(player1_move, @player1.symbolic_color)
       break if move_follows_rules?(player1_move, @player1.symbolic_color)
 
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
-      player1_move = validate_player1_move
+      player1_move = validate_player_move(@player1)
     end
     update_and_display_board(player1_move, @player1.symbolic_color)
     @checkmate = checkmate?(@player1.symbolic_color, @board, @board.found_piece)
@@ -92,14 +100,14 @@ class Game
   # loop breaks if piece is found and square is available
   def player2_turn
     @current_player = @player2
-    player2_move = @cpu_mode ? @board.cpu_moves[(rand * @board.cpu_moves.length).floor] : validate_player2_move
+    player2_move = @cpu_mode ? @board.cpu_moves[(rand * @board.cpu_moves.length).floor] : validate_player_move(@player2)
     @board.assign_piece_type(player2_move) if @cpu_mode
     loop do
       @board.assign_target_variables(player2_move, @player2.symbolic_color)
       break if move_follows_rules?(player2_move, @player2.symbolic_color)
 
       puts " move not allowed for #{@board.piece_type}. please try again...".colorize(:red) unless @cpu_mode
-      player2_move = @cpu_mode ? @board.cpu_moves.pop : validate_player2_move
+      player2_move = @cpu_mode ? @board.cpu_moves.pop : validate_player_move(@player2)
       # player2_move will occasionally return nil in near stalemate situations
       if player2_move.nil?
         player2_move = @board.generate_cpu_moves(@player2.symbolic_color)[(rand * @board.cpu_moves.length).floor]
@@ -195,45 +203,31 @@ class Game
     puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
   end
 
-  # loop breaks if input string is valid algebraic notation
-  def validate_player1_move
-    player1_move = request_player1_move
-    @save_load_requested = player1_move.match?(/^(save|load)$/)
+ # loop breaks if input string is valid algebraic notation
+  def validate_player_move(player)
+    move = request_player_move(player)
     loop do
-      break if valid_input?(player1_move)
-
-      puts ' invalid input. please try again...'.colorize(:red) unless @save_load_requested
-      player1_move = request_player1_move
+      exit if game_over?
+      break if valid_input?(move)
+      puts " invalid input. enter help for available commands".colorize(:red) unless non_move_command?(player1_move)
+      
+      move = request_player_move(player)
     end
-    @board.assign_piece_type(player1_move)
-    player1_move
+    @board.assign_piece_type(move)
+    move
   end
 
-  # loop breaks if input string is valid algebraic notation
-  def validate_player2_move
-    player2_move = request_player2_move
-    @save_load_requested = player2_move.match?(/^(save|load)$/) unless @cpu_mode
-    loop do
-      break if valid_input?(player2_move)
-
-      puts ' invalid input. please try again...'.colorize(:red) unless @save_load_requested
-      player2_move = request_player2_move
-    end
-    @board.assign_piece_type(player2_move)
-    player2_move
-  end
-
-  def request_player1_move
+  def request_player_move(player)
     puts
-    print " #{@player1.name} (#{@player1.symbolic_color.capitalize}), please enter a move: "
+    print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
-    gets.chomp
+    move = gets.chomp
+    return manage_other_commands(move) if non_move_command?(move)
+
+    move
   end
 
-  def request_player2_move
-    puts
-    print " #{@player2.name} (#{@player2.symbolic_color.capitalize}), please enter a move: "
-      .colorize(:magenta)
-    gets.chomp
+  def game_over?
+    @stalemate || @checkmate || @resigned || @draw
   end
 end

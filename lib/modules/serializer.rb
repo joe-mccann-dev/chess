@@ -29,7 +29,9 @@ module Serializer
       'player1' => @player1,
       'player2' => @player2,
       'current_player' => @current_player,
-      'cpu_mode' => @cpu_mode
+      'cpu_mode' => @cpu_mode,
+      'checkmate' => @checkmate,
+      'stalemate' => @stalemate
     )
   end
 
@@ -39,6 +41,7 @@ module Serializer
     if saved_games.empty?
       puts 'no games found!'
       return
+
     end
 
     saved_games.each_with_index { |game, index| puts " [#{index + 1}]#{game}" }
@@ -65,8 +68,10 @@ module Serializer
     @board = game_data['board']
     @player1 = game_data['player1']
     @player2 = game_data['player2']
-    @current_player = game_data['current_player'],
+    @current_player = game_data['current_player']
     @cpu_mode = game_data['cpu_mode']
+    @checkmate = game_data['checkmate']
+    @stalemate = game_data['stalemate']
     play_game
   end
 end

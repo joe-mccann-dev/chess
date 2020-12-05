@@ -38,7 +38,7 @@ module MoveValidator
     elsif horizontal_vertical_move?(start_row, start_column, target)
       horizontal_vertical_unobstructed?(start_row, start_column, target)
     else
-      diagonal_path_unobstructed?(start_row, start_column, target)
+      diagonal_has_space_for_move?(start_row, start_column, target)
     end
   end
 
@@ -111,28 +111,27 @@ module MoveValidator
 
   def path_to_diagonal_attack_clear?(start_row, start_column, player_color, target)
     if target.is_a?(EmptySquare)
-      diagonal_path_unobstructed?(start_row, start_column, target)
+      diagonal_has_space_for_move?(start_row, start_column, target)
     else
       target.symbolic_color != player_color &&
-        diagonal_path_unobstructed?(start_row, start_column, target)
+        diagonal_has_space_for_move?(start_row, start_column, target)
     end
   end
 
   # vertical movement
   def column_has_space_for_move?(start_row, _start_column, target)
     if start_row < target.location[0]
-      return check_space_between_rows(start_row + 1, target.location[0] - 1, target) if @attack_move
+      return vertical_path_clear?(start_row + 1, target.location[0] - 1, target) if @attack_move
 
-      check_space_between_rows(start_row + 1, target.location[0], target)
+      vertical_path_clear?(start_row + 1, target.location[0], target)
     else
-      return check_space_between_rows(target.location[0] + 1, start_row - 1, target) if @attack_move
+      return vertical_path_clear?(target.location[0] + 1, start_row - 1, target) if @attack_move
 
-      check_space_between_rows(target.location[0], start_row - 1, target)
+      vertical_path_clear?(target.location[0], start_row - 1, target)
     end
   end
 
-  # vertical movement
-  def check_space_between_rows(starting_place, destination, target)
+  def vertical_path_clear?(starting_place, destination, target)
     starting_place.upto(destination) do |r|
       current_square = @squares[r][target.location[1]]
       return false unless current_square.is_a?(EmptySquare) ||
@@ -144,22 +143,40 @@ module MoveValidator
   # horizontal movement
   def row_has_space_for_move?(start_row, start_column, target)
     if start_column < target.location[1]
-      return check_space_between_columns(start_row, start_column + 1, target.location[1] - 1) if @attack_move
+      return horizontal_path_clear?(start_row, start_column + 1, target.location[1] - 1) if @attack_move
 
-      check_space_between_columns(start_row, start_column + 1, target.location[1])
+      horizontal_path_clear?(start_row, start_column + 1, target.location[1])
     else
-      return check_space_between_columns(start_row, target.location[1] + 1, start_column - 1) if @attack_move
+      return horizontal_path_clear?(start_row, target.location[1] + 1, start_column - 1) if @attack_move
 
-      check_space_between_columns(start_row, target.location[1], start_column - 1)
+      horizontal_path_clear?(start_row, target.location[1], start_column - 1)
     end
   end
 
-  # horizontal movement
-  def check_space_between_columns(start_row, starting_place, destination)
+  def horizontal_path_clear?(start_row, starting_place, destination)
     starting_place.upto(destination) do |c|
       current_square = @squares[start_row][c]
       return false unless current_square.is_a?(EmptySquare) ||
         current_square_defending_king?(destination, current_square)
+    end
+    true
+  end
+
+  def diagonal_has_space_for_move?(start_row, start_column, target)
+    move_distance = (target.location[1] - start_column).abs
+    # pieces at bottom have a larger start_row value d/t array index
+    objects_in_path = if start_row > target.location[0]
+                        ne_nw_diagonal_objects(start_row, start_column, move_distance, target)
+                      else
+                        se_sw_diagonal_objects(start_row, start_column, move_distance, target)
+                      end
+    diagonal_path_clear?(objects_in_path, target)
+  end
+
+  def diagonal_path_clear?(objects_in_path, target)
+    # if any pieces in path are NOT EmptySquares or the defending king (when @checking_for_check), then the path is NOT clear
+    objects_in_path.each do |s|
+      return false unless s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s)
     end
     true
   end
@@ -175,21 +192,6 @@ module MoveValidator
       current_square.is_a?(King) &&
         current_square.symbolic_color == @target.symbolic_color
     end
-  end
-
-  def diagonal_path_unobstructed?(start_row, start_column, target)
-    move_distance = (target.location[1] - start_column).abs
-    # pieces at bottom have a larger start_row value d/t array index
-    objects_in_path = if start_row > target.location[0]
-                        ne_nw_diagonal_objects(start_row, start_column, move_distance, target)
-                      else
-                        se_sw_diagonal_objects(start_row, start_column, move_distance, target)
-                      end
-    # if any pieces in path are NOT EmptySquares or are NOT defending king, then the path is NOT unobstructed
-    objects_in_path.each do |s|
-      return false unless s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s)
-    end
-    true
   end
 
   def ne_nw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])
