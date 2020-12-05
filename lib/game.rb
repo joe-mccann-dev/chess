@@ -15,7 +15,6 @@ class Game
 
   def start_game
     @board.display
-    show_welcome_message
     print " first player's name: ".colorize(:magenta)
     @player1.request_name
     unless @player2.name == 'CPU'
@@ -51,7 +50,6 @@ class Game
       break if @checkmate || @stalemate
 
       @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
-      p @board.cpu_moves
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
@@ -60,6 +58,7 @@ class Game
 
   def player2_goes_first
     loop do
+      @board.generate_cpu_moves(@player2.symbolic_color) if @cpu_mode
       player2_turn
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
       break if @checkmate || @stalemate
@@ -115,8 +114,9 @@ class Game
     @board.update_board(move, player_color)
     if @board.pawn_promotable?(@board.found_piece, player_color)
       @board.prompt_for_pawn_promotion(player_color)
-      bug_preventing_placeholder = Board.new(@board.duplicate_board(@board.squares))
-      determine_check_status(player_color, bug_preventing_placeholder, @board.found_piece)
+      # necessary to accurately determine check status after a pawn is promoted
+      placeholder = Board.new(@board.duplicate_board(@board.squares))
+      determine_check_status(player_color, placeholder, @board.found_piece)
     end
     @board.display
     announce_check(player_color, @duplicate)

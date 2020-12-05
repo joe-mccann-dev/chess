@@ -24,21 +24,24 @@ require_relative './queen'
 require_relative './pawn'
 
 puts
-puts "Welcome to my Chess game!"
-puts "What would you like to do?"
+puts " Welcome to my Chess game!"
+puts " What would you like to do?"
 puts
-choices = ['two_player   ', 'one_player   ', 'load_previous']
+choices = ['play a friend', 'play against the computer', 'play a saved game']
 choices.each_with_index do |_c, i|
-  puts " #{choices[i]} => enter[#{i + 1}] "
+  puts " enter[#{i + 1}] to #{choices[i]}  ".colorize(:green)
 end
-
+puts
+print " game mode: ".colorize(:magenta)
 selection = gets.chomp
 loop do
   break if selection.to_i.between?(1, 3)
 
   choices.each_with_index do |_c, i|
-    puts " #{choices[i]} => enter[#{i + 1}] \n"
+    puts " enter[#{i + 1}] to #{choices[i]}  ".colorize(:green)
   end
+  puts
+  print " game mode: ".colorize(:magenta)
   selection = gets.chomp
 end
 

@@ -25,7 +25,8 @@
     loop do
       break if response.between?(1, pieces.length)
 
-      puts '** please select a piece to move by choosing a number **'
+      puts " ** please select a piece to move by choosing a valid number **".colorize(:red)
+      print "#{piece_type} to move: ".colorize(:magenta)
       request_disambiguation(pieces, piece_type)
       response = gets.chomp.to_i
     end
@@ -35,13 +36,15 @@
 
   def request_disambiguation(pieces, piece_type)
     coordinates = []
-    puts " ** #{pieces.length} #{piece_type}s can go to that location ** \n".colorize(:magenta)
+    puts
+    puts " ** #{pieces.length} #{piece_type}s can go to that location ** \n".colorize(:green)
     pieces.each_with_index do |piece, index|
       row = translate_row_index_to_displayed_row(piece.location[0])
       col = translate_column_index(piece.location[1])
       coordinates << "#{col}#{row}"
-      puts " enter[#{index + 1}] to move the #{piece_type} at #{coordinates[index]}"
+      puts " enter[#{index + 1}] to move the #{piece_type} at #{coordinates[index]}".colorize(:green)
     end
+    print " #{piece_type} to move: ".colorize(:magenta)
   end
 
   def translate_row_index_to_displayed_row(row)

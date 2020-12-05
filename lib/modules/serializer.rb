@@ -41,19 +41,20 @@ module Serializer
       return
     end
 
-    saved_games.each_with_index { |game, index| puts "[#{index + 1}]#{game}" }
+    saved_games.each_with_index { |game, index| puts " [#{index + 1}]#{game}" }
     selection = verify_selection(saved_games)
     game_file = File.open("saved_games/#{saved_games[selection - 1]}", 'r')
     extract_yaml_data(game_file)
   end
 
   def verify_selection(saved_games)
-    print "Select a number to load a game "
+    print " enter a number to load a game: ".colorize(:magenta)
     selection = gets.chomp
     loop do
       break if selection.to_i.between?(1, saved_games.length)
 
-      puts 'please enter a valid number'
+      puts " ** please enter a valid number **".colorize(:red)
+      print " enter a number to load a game: ".colorize(:magenta)
       selection = gets.chomp
     end
     selection.to_i
