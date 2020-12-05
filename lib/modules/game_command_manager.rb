@@ -32,32 +32,4 @@ module GameCommandManager
     puts " Game ends in a draw".colorize(:green)
     puts thanks_for_playing
   end
-
-  def thanks_for_playing
-    " Thanks for playing! Have a great day!".colorize(:green)
-  end
-
-  def show_help
-    puts <<-HEREDOC
-    
-    available commands: save|load|help|quit|resign|draw
-
-    Quick Start Guide:
-
-    This game uses traditional algebraic notation to enter moves.
-
-    Each piece, except the Pawn, is assigned a piece prefix:
-    King, Queen, Rook, Knight, Bishop = K, Q, R, N, B
-
-      Move examples:
-
-        Pawns: e5, exd6, a5, axb6, etc . . .
-        Main Pieces: Ke7, Kxe7, Nc3, Nxc6, etc . . .
-        Castles: 0-0, 0-0-0
-    
-    Moves are case sensitive.
-    If more than one piece can go to a location, you'll be prompted to select one.
-
-    HEREDOC
-  end
 end

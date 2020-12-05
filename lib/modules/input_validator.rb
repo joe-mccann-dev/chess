@@ -2,8 +2,8 @@
 
 module InputValidator
   def valid_input?(input)
-    return false unless input.length.between?(2, 5)
     return valid_castle_move?(input) if input.include?('0')
+    return false unless input.length.between?(2, 4)
     
     if input.length == 4
       valid_attack_move?(input) || valid_pawn_attack?(input)

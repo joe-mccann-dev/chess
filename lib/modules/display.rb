@@ -65,4 +65,35 @@ module Display
       end
     end
   end
+
+  def announce_checkmate_or_stalemate(player, _checkmate, _stalemate)
+    puts "  ** Checkmate! #{player.symbolic_color.capitalize} wins! ** ".colorize(:green) if @checkmate
+    puts '  ** Stalemate. Game ends in a draw **'.colorize(:green) if @stalemate
+  end
+
+  def thanks_for_playing
+    " Thanks for playing! Have a great day!".colorize(:green)
+  end
+
+  def show_help
+    puts <<-HEREDOC
+    
+    available commands: save|load|help|quit|resign|draw
+    Move examples:
+      Pawns: e5, exd6, a5, axb6, etc . . .
+      Main Pieces: Ke7, Kxe7, Nc3, Nxc6, etc . . .
+      Castles: 0-0, 0-0-0
+
+    This game uses traditional algebraic notation to enter moves.
+    Attack moves must preface destination square with 'x'
+    
+
+    Each piece, except the Pawn, is assigned a piece prefix:
+    King, Queen, Rook, Knight, Bishop = K, Q, R, N, B
+
+    Moves are case sensitive.
+    If more than one piece can go to a location, you'll be prompted to select one.
+
+    HEREDOC
+  end
 end
