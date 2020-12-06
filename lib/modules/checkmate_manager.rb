@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# contains methods that evaluate check and check-escapability
 module CheckmateManager
   def white_king
     white_pieces.select { |piece| piece.is_a?(King) }[0]
@@ -13,21 +14,6 @@ module CheckmateManager
     white_king.in_check || black_king.in_check
   end
 
-  def mark_king_as_in_check?(player_color)
-    mark_kings_as_not_in_check
-    if player_color == :white
-      black_king.mark_as_in_check if white_puts_black_in_check?(player_color)
-    else
-      white_king.mark_as_in_check if black_puts_white_in_check?(player_color)
-    end
-    check?
-  end
-
-  def mark_kings_as_not_in_check
-    white_king.mark_as_not_in_check
-    black_king.mark_as_not_in_check
-  end
-
   def move_puts_player_in_check?(player_color)
     assign_king_as_target(player_color)
     mark_king_as_in_check?(player_color)
@@ -36,10 +22,6 @@ module CheckmateManager
   def move_puts_self_in_check?(player_color)
     assign_king_as_target(opposite(player_color))
     mark_king_as_in_check?(opposite(player_color))
-  end
-
-  def opposite(player_color)
-    player_color == :white ? :black : :white
   end
 
   def assign_king_as_target(player_color)
@@ -55,28 +37,28 @@ module CheckmateManager
     @target = @squares[@dest_row][@dest_column]
   end
 
-  def white_puts_black_in_check?(player_color, target = @target)
-    white_pieces.any? do |piece|
-      attacker_row = piece.location[0]
-      attacker_col = piece.location[1]
-      # need extra method for en_passant moves to prevent an en_passant move from putting self in check
-      if @en_passant
-        en_passant_move_results_in_check?(player_color, attacker_row, attacker_col, piece, black_king)
-      else
-        attack_rules_followed?(attacker_row, attacker_col, player_color, piece, target)
-      end
-    end
+  def mark_king_as_in_check?(player_color)
+    mark_kings_as_not_in_check
+    king = player_color == :white ? black_king : white_king
+    pieces = player_color == :white ? white_pieces : black_pieces
+    king.mark_as_in_check if results_in_check?(player_color, pieces, king)
+    check?
   end
 
-  def black_puts_white_in_check?(player_color, target = @target)
-    black_pieces.any? do |piece|
+  def mark_kings_as_not_in_check
+    white_king.mark_as_not_in_check
+    black_king.mark_as_not_in_check
+  end
+
+  def results_in_check?(player_color, pieces, king, target = @target)
+    pieces.any? do |piece|
       attacker_row = piece.location[0]
       attacker_col = piece.location[1]
       # need extra method for en_passant moves to prevent an en_passant move from putting self in check
       if @en_passant
-        en_passant_move_results_in_check?(player_color, attacker_row, attacker_col, piece, white_king)
+        en_passant_move_results_in_check?(player_color, attacker_row, attacker_col, piece, king)
       else
-        attack_rules_followed?(piece.location[0], piece.location[1], player_color, piece, target)
+        attack_rules_followed?(attacker_row, attacker_col, player_color, piece, target)
       end
     end
   end
@@ -93,11 +75,11 @@ module CheckmateManager
     king.available_squares.each do |location|
       row = translate_row_index_to_displayed_row(location[0])
       col = translate_column_index(location[1])
-      if @squares[location[0]][location[1]].symbolic_color == player_color
+      king_dest_square = @squares[location[0]][location[1]]
+      if king_dest_square.symbolic_color == player_color
         # include in x since attack mode should be on to simulate king attacking its way out of check
-        # @attack_mode boolean switch in SetupBoardVariables
         algebraic_notations << "Kx#{col}#{row}"
-      elsif available_location?(location[0], location[1], king, @squares[location[0]][location[1]])
+      elsif available_location?(location[0], location[1], king, king_dest_square)
         algebraic_notations << "K#{col}#{row}"
       end
     end
@@ -307,5 +289,9 @@ module CheckmateManager
       end
     end
     false
+  end
+
+  def opposite(player_color)
+    player_color == :white ? :black : :white
   end
 end
