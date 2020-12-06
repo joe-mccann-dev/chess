@@ -121,13 +121,13 @@ class Game
     @move = generate_random_cpu_move if @move.nil?
   end
 
-   # loop breaks if input string is valid algebraic notation
-   def validate_player_move(player)
+  # loop breaks if input string is valid algebraic notation
+  def validate_player_move(player)
     move = request_player_move(player)
     loop do
       break if valid_input?(move)
-      puts " invalid input. enter help for available commands".colorize(:red) unless non_move_command?(move)
-      
+
+      puts ' invalid input. enter help for available commands'.colorize(:red) unless non_move_command?(move)
       move = request_player_move(player)
     end
     move
