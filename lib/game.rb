@@ -89,7 +89,7 @@ class Game
     validate_move_assign_piece_type(current_player)
     loop do
       assign_board_target_variables(@move, current_player.symbolic_color)
-      break if move_follows_rules?(@move, current_player)
+      break if move_follows_rules?(@move, current_player.symbolic_color)
 
       puts move_not_allowed_message
       validate_move_assign_piece_type(current_player)
@@ -100,6 +100,7 @@ class Game
 
   def cpu_turn
     validate_move_assign_piece_type(@player2)
+    show_ellipsis
     loop do
       assign_board_target_variables(@move, @player2.symbolic_color)
       break if move_follows_rules?(@move, @player2.symbolic_color)
@@ -125,7 +126,6 @@ class Game
    def validate_player_move(player)
     move = request_player_move(player)
     loop do
-      exit if game_over?
       break if valid_input?(move)
       puts " invalid input. enter help for available commands".colorize(:red) unless non_move_command?(move)
       
@@ -159,14 +159,18 @@ class Game
 
   def update_and_display_board(move, player_color)
     @board.update_board(move, player_color)
-    if @board.pawn_promotable?(@board.found_piece, player_color)
-      @board.prompt_for_pawn_promotion(player_color)
-      # necessary to accurately determine check status after a pawn is promoted
-      placeholder = Board.new(@board.duplicate_board(@board.squares))
-      determine_check_status(player_color, placeholder, @board.found_piece)
-    end
+    evaluate_board_for_pawn_promotion(player_color)
     @board.display
     announce_check(player_color, @duplicate)
+  end
+
+  def evaluate_board_for_pawn_promotion(player_color)
+    return unless @board.pawn_promotable?(@board.found_piece, player_color)
+
+    @board.prompt_for_pawn_promotion(player_color)
+    # necessary to accurately determine check status after a pawn is promoted
+    placeholder = Board.new(@board.duplicate_board(@board.squares))
+    determine_check_status(player_color, placeholder, @board.found_piece)
   end
 
   def move_follows_rules?(move, player_color)
@@ -243,13 +247,11 @@ class Game
   end
 
   def request_player_move(player)
+    exit if game_over?
     puts
     print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
-    move = gets.chomp
-    return manage_other_commands(move) if non_move_command?(move)
-
-    move
+    gets.chomp
   end
 
   def move_not_allowed_message

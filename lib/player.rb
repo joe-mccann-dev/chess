@@ -3,13 +3,11 @@
 class Player
   include Display
   attr_reader :displayed_color, :symbolic_color, :name
-  attr_accessor :winner
 
   def initialize(name = '')
     @name = name
     @displayed_color = ''
     @symbolic_color = nil
-    @winner = false
   end
 
   def request_info
@@ -21,7 +19,7 @@ class Player
     name = gets.chomp
     loop do
       break if valid_name?(name)
-      puts "name 'cpu' reserved for computer player" if name.downcase == 'cpu'
+      puts "name 'CPU' reserved for computer player" if name == 'CPU'
       print ' please enter a valid name: '
       name = gets.chomp
     end
@@ -34,7 +32,9 @@ class Player
     loop do
       break if valid_color?(choice)
 
-      print ' please enter 1 or 2: '
+      puts " enter[1] for White".colorize(:red)
+      puts " enter[2] for Black \n".colorize(:red)
+      print " color choice: ".colorize(:magenta)
       choice = gets.chomp.to_i
     end
     assign_color(choice)
@@ -42,8 +42,11 @@ class Player
 
   def show_color_choices
     puts
-    puts " #{@name}, would you like to be White or Black?\n"
-    print "\n enter 1 for White, or 2 for Black: ".colorize(:magenta)
+    puts " #{@name}, would you like to be White or Black?"
+    puts
+    puts " enter[1] for White".colorize(:green)
+    puts " enter[2] for Black \n".colorize(:green)
+    print " color choice: ".colorize(:magenta)
   end
 
   def assign_color(choice)

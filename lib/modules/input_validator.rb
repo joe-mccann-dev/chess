@@ -2,6 +2,7 @@
 
 module InputValidator
   def valid_input?(input)
+    return manage_other_commands(input) if non_move_command?(input)
     return valid_castle_move?(input) if input.include?('0')
     return false unless input.length.between?(2, 4)
     

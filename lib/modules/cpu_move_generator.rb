@@ -31,11 +31,12 @@ module CPUMoveGenerator
     empty_squares.each do |square|
       dest_row = square.location[0]
       dest_col = square.location[1]
-      pieces.each do |piece|
+      pieces.each do |p|
         display_row = translate_row_index_to_displayed_row(dest_row)
         display_col = translate_column_index(dest_col)
-        if regular_move_rules_followed?(piece.location[0], piece.location[1], piece, @squares[dest_row][dest_col])
-          moves << "#{piece.prefix}#{display_col}#{display_row}"
+        p.toggle_attack_mode(@squares, p.location[0], p.location[1], dest_row, dest_col) if p.is_a?(Pawn)
+        if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[dest_row][dest_col])
+          moves << "#{p.prefix}#{display_col}#{display_row}"
         end
       end
     end

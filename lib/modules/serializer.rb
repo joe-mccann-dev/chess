@@ -8,16 +8,17 @@ module Serializer
     Dir.mkdir 'saved_games' unless Dir.exist? 'saved_games'
     filename = "#{verify_filename}.yaml"
     File.open("saved_games/#{filename}", 'w') { |file| file.write save_to_yaml }
-    puts "#{filename} saved in chess/saved_games"
+    puts
+    puts " ** #{filename} saved in chess/saved_games **"
   end
 
   def verify_filename
-    print "please enter a filename for your game: "
+    print " please enter a filename for your game: ".colorize(:green)
     filename = gets.chomp.strip
     loop do
       break if filename.match?(/\w/)
 
-      puts 'please only enter letters, digits, or underscores'
+      puts " please only enter letters, digits, or underscores".colorize(:red)
       filename = gets.chomp.strip
     end
     filename
@@ -39,7 +40,7 @@ module Serializer
     yaml_files = File.join('**', '*.yaml')
     saved_games = Dir.glob(yaml_files, base: 'saved_games')
     if saved_games.empty?
-      puts 'no games found!'
+      puts ' no games found!'.colorize(:red)
       return
 
     end
@@ -51,13 +52,13 @@ module Serializer
   end
 
   def verify_selection(saved_games)
-    print " enter a number to load a game: ".colorize(:magenta)
+    print " enter a number to load a game: ".colorize(:green)
     selection = gets.chomp
     loop do
       break if selection.to_i.between?(1, saved_games.length)
 
       puts " ** please enter a valid number **".colorize(:red)
-      print " enter a number to load a game: ".colorize(:magenta)
+      print " enter a number to load a game: ".colorize(:green)
       selection = gets.chomp
     end
     selection.to_i

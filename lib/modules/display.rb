@@ -78,22 +78,28 @@ module Display
   def show_help
     puts <<-HEREDOC
     
-    available commands: save|load|help|quit|resign|draw
-    Move examples:
+    Available Commands: save|load|help|quit|resign|draw
+
+    Move Examples:
       Pawns: e5, exd6, a5, axb6, etc . . .
       Main Pieces: Ke7, Kxe7, Nc3, Nxc6, etc . . .
       Castles: 0-0, 0-0-0
 
     This game uses traditional algebraic notation to enter moves.
     Attack moves must preface destination square with 'x'
-    
+
 
     Each piece, except the Pawn, is assigned a piece prefix:
     King, Queen, Rook, Knight, Bishop = K, Q, R, N, B
 
-    Moves are case sensitive.
+    Moves are case sensitive . . . use Qe7, not qe7. use e5, not E5
     If more than one piece can go to a location, you'll be prompted to select one.
 
     HEREDOC
+  end
+
+  def show_ellipsis
+    puts "  . . . . . ".colorize(:green)
+    sleep(0.4)
   end
 end
