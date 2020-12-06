@@ -23,10 +23,8 @@ class Game
     @board.display
     print " first player's name: ".colorize(:magenta)
     @player1.request_name
-    unless @player2.name == 'CPU'
-      print "\n other player's name: ".colorize(:magenta)
-      @player2.request_name
-    end
+    print "\n other player's name: ".colorize(:magenta) unless @player2.name == 'CPU'
+    @player2.request_name
     @player1.request_color
     assign_color(@player1.displayed_color)
   end
@@ -63,6 +61,7 @@ class Game
       @cpu_mode ? cpu_turn : player_turn(@current_player)
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
     end
+    puts thanks_for_playing
   end
 
   def player2_goes_first
@@ -78,6 +77,7 @@ class Game
       player_turn(@current_player)
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
     end
+    puts thanks_for_playing
   end
 
   def game_over?
@@ -90,7 +90,7 @@ class Game
       assign_board_target_variables(@move, current_player.symbolic_color)
       break if move_follows_rules?(@move, current_player.symbolic_color)
 
-      puts move_not_allowed_message
+      puts move_not_allowed_message(@board.piece_type)
       validate_move_assign_piece_type(current_player)
     end
     update_and_display_board(@move, current_player.symbolic_color)
@@ -213,7 +213,6 @@ class Game
 
   def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
-      # binding.pry
       row = board.find_dest_row(move)
       col = board.determine_dest_column(move)
       escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)
@@ -253,9 +252,5 @@ class Game
     print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
     gets.chomp
-  end
-
-  def move_not_allowed_message
-    " move not allowed for #{@board.piece_type}. please try again...".colorize(:red)
   end
 end

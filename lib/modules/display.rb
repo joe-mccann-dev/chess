@@ -100,7 +100,7 @@ module Display
 
   def show_ellipsis
     puts "  . . . . . ".colorize(:green)
-    sleep(0.6)
+    sleep(0.45)
   end
 
   def show_pawn_promotion_choices(choices, current_player)
@@ -118,5 +118,9 @@ module Display
 
     puts " \n** CPU promoted its pawn to a #{choices[choice.to_i - 1]} **".colorize(:green)
     sleep(1.2)
+  end
+
+  def move_not_allowed_message(piece_type)
+    " move not allowed for #{piece_type}. please try again...".colorize(:red)
   end
 end

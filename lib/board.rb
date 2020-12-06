@@ -150,7 +150,7 @@ class Board
   end
 
   def update_board(move, player_color)
-    # necessary for occassional bug
+    # necessary for occassional bug when playing computer
     return if @found_piece.is_a?(EmptySquare)
 
     push_captured_pieces

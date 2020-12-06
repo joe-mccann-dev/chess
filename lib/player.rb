@@ -17,6 +17,8 @@ class Player
   end
 
   def request_name
+    return if @name == 'CPU'
+    
     name = gets.chomp
     loop do
       break if valid_name?(name)

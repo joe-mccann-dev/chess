@@ -23,13 +23,13 @@ module GameCommandManager
   def resign_match
     @resigned = true
     winner = @current_player == @player1 ? @player2 : @player1
-    puts "#{@current_player.name} resigns. #{winner.name} wins!"
+    puts " ** #{@current_player.name} resigns. #{winner.name} wins! **"
     puts thanks_for_playing
   end
 
   def request_draw
     @draw = true
-    puts " Game ends in a draw".colorize(:green)
+    puts " ** Game ends in a draw **".colorize(:green)
     puts thanks_for_playing
   end
 end
