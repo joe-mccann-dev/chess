@@ -37,6 +37,7 @@ class Game
 
   def play_game
     @board.display
+    # maintains turn order when resuming a loaded game
     return player1_goes_first if @current_player == @player1
     return player2_goes_first if @current_player == @player2
 
@@ -58,7 +59,6 @@ class Game
       announce_checkmate_or_stalemate(@player1, @checkmate, @stalemate)
       break if game_over?
 
-      generate_available_cpu_moves if @cpu_mode
       @current_player = @player2
       @cpu_mode ? cpu_turn : player_turn(@current_player)
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
@@ -69,7 +69,6 @@ class Game
     loop do
       break if game_over?
 
-      generate_available_cpu_moves if @cpu_mode
       @current_player = @player2
       @cpu_mode ? cpu_turn : player_turn(@current_player)
       announce_checkmate_or_stalemate(@player2, @checkmate, @stalemate)
@@ -95,10 +94,11 @@ class Game
       validate_move_assign_piece_type(current_player)
     end
     update_and_display_board(@move, current_player.symbolic_color)
-    @checkmate = checkmate?(current_player.symbolic_color, @board, @board.found_piece)
+    determine_check_status(current_player.symbolic_color, @board, @board.found_piece)
   end
 
   def cpu_turn
+    generate_available_cpu_moves
     validate_move_assign_piece_type(@player2)
     show_ellipsis
     loop do
@@ -109,7 +109,6 @@ class Game
       assign_board_piece_type(@move)
     end
     update_and_display_board(@move, @player2.symbolic_color)
-    @checkmate = checkmate?(@player2.symbolic_color, @board, @board.found_piece)
   end
 
   def validate_move_assign_piece_type(current_player)
@@ -167,7 +166,7 @@ class Game
   def evaluate_board_for_pawn_promotion(player_color)
     return unless @board.pawn_promotable?(@board.found_piece, player_color)
 
-    @board.prompt_for_pawn_promotion(player_color)
+    @board.prompt_for_pawn_promotion(player_color, @current_player)
     # necessary to accurately determine check status after a pawn is promoted
     placeholder = Board.new(@board.duplicate_board(@board.squares))
     determine_check_status(player_color, placeholder, @board.found_piece)
@@ -190,6 +189,7 @@ class Game
     @opponent_in_check = board.move_puts_player_in_check?(player_color)
     @self_in_check = board.move_puts_self_in_check?(player_color)
     @stalemate = stalemate?(player_color, board, found_piece)
+    @checkmate = checkmate?(player_color, board, found_piece)
   end
 
   def checkmate?(player_color, board, found_piece)
@@ -213,6 +213,7 @@ class Game
 
   def count_moves_that_result_in_check(player_color, king_moves, board, count = 0)
     king_moves.each do |move|
+      # binding.pry
       row = board.find_dest_row(move)
       col = board.determine_dest_column(move)
       escape_attempt_puts_in_check = board.pieces_can_attack_king_moves?(row, col, player_color)

@@ -76,7 +76,7 @@ class Board
   def re_ambiguate
     @@disambiguated = false
   end
-  
+
   def white_pieces(white_pieces = [])
     @squares.each do |row|
       row.each do |square|
@@ -178,16 +178,13 @@ class Board
     piece.location[0] == (player_color == :white ? 0 : 7)
   end
 
-  def prompt_for_pawn_promotion(player_color)
-    puts " ** pawn promotion! ** \n".colorize(:magenta)
-    puts " select which piece you'd like your Pawn to become. "
+  def prompt_for_pawn_promotion(player_color, current_player)
     choices = %w[Queen Rook Knight Bishop]
-    choices.each_with_index do |_c, i|
-      puts " enter[#{i + 1}] for #{choices[i]}"
-    end
-    choice = gets.chomp.to_i
-    choice = 1 unless choice.between?(1, 4)
-    choice = 1 if @cpu_mode
+    show_pawn_promotion_choices(choices, current_player)
+    choice = current_player.name == 'CPU' ? [*1..4][rand * 4] : gets.chomp
+    # prevents getting prompted twice
+    choice = 1 unless choice.to_i.between?(1, 4)
+    show_cpu_pawn_promotion(choices, choice, current_player)
     @found_piece = promote_pawn(choice, player_color)
     @active_piece = @found_piece
   end
@@ -195,9 +192,9 @@ class Board
   def promote_pawn(choice, player_color)
     choices = [Queen, Rook, Knight, Bishop]
     @squares[@dest_row][@dest_column] = if player_color == :white
-                                          choices[choice - 1].new(1, [@dest_row, @dest_column])
+                                          choices[choice.to_i - 1].new(1, [@dest_row, @dest_column])
                                         else
-                                          choices[choice - 1].new(2, [@dest_row, @dest_column])
+                                          choices[choice.to_i - 1].new(2, [@dest_row, @dest_column])
                                         end
   end
 

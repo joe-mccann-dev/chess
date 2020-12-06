@@ -40,10 +40,7 @@ module CPUMoveGenerator
         end
       end
     end
-    # include castle_moves as possibility, except when checking for stalemate
-    # if king or rook can legally move, that is enough to determine stalemate is false.
-    # add moves onto castle array so they are selected last in 'moves.pop' situation
-    checking_for_stalemate ? moves : ['0-0', '0-0-0'] + moves
+    moves
   end
 
   def find_attack_moves(cpu_color, opposite_color_pieces, pieces, moves = [])

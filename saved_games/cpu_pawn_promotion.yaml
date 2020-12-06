@@ -1,0 +1,666 @@
+---
+board: !ruby/object:Board
+  squares:
+  - - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 0
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 1
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 2
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 0
+      - 5
+      symbolic_color: 
+    - !ruby/object:Queen
+      captured: false
+      location:
+      - 0
+      - 6
+      displayed_color: "\e[0;93;49m♛\e[0m"
+      unicode: "♛"
+      symbolic_color: :white
+      prefix: Q
+    - &3 !ruby/object:EmptySquare
+      location:
+      - 0
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 0
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 1
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 2
+      symbolic_color: 
+    - !ruby/object:King
+      captured: false
+      location:
+      - 1
+      - 3
+      in_check: false
+      num_moves: 7
+      displayed_color: "\e[0;36;49m♚\e[0m"
+      unicode: "♚"
+      symbolic_color: :black
+      prefix: K
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 1
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 0
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 1
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 2
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 2
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 0
+      symbolic_color: 
+    - !ruby/object:Pawn
+      num_moves: 2
+      location:
+      - 3
+      - 1
+      captured: false
+      attack_mode: true
+      en_passant: false
+      just_moved_two: false
+      displayed_color: "\e[0;36;49m♟\e[0m"
+      unicode: "♟"
+      symbolic_color: :black
+      prefix: ''
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 2
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 3
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 0
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 1
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 2
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 4
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 0
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 1
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 2
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 3
+      symbolic_color: 
+    - !ruby/object:King
+      captured: false
+      location:
+      - 5
+      - 4
+      in_check: false
+      num_moves: 3
+      displayed_color: "\e[0;93;49m♚\e[0m"
+      unicode: "♚"
+      symbolic_color: :white
+      prefix: K
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 5
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 0
+      symbolic_color: 
+    - !ruby/object:Pawn
+      num_moves: 0
+      location:
+      - 6
+      - 1
+      captured: false
+      attack_mode: false
+      en_passant: false
+      just_moved_two: false
+      displayed_color: "\e[0;93;49m♟\e[0m"
+      unicode: "♟"
+      symbolic_color: :white
+      prefix: ''
+    - &2 !ruby/object:Pawn
+      num_moves: 5
+      location:
+      - 6
+      - 2
+      captured: false
+      attack_mode: true
+      en_passant: false
+      just_moved_two: true
+      displayed_color: "\e[0;36;49m♟\e[0m"
+      unicode: "♟"
+      symbolic_color: :black
+      prefix: ''
+    - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 4
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 5
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 6
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 6
+      - 7
+      symbolic_color: 
+  - - !ruby/object:EmptySquare
+      location:
+      - 7
+      - 0
+      symbolic_color: 
+    - !ruby/object:Rook
+      captured: false
+      location:
+      - 7
+      - 1
+      num_moves: 1
+      displayed_color: "\e[0;93;49m♜\e[0m"
+      unicode: "♜"
+      symbolic_color: :white
+      prefix: R
+    - !ruby/object:Bishop
+      captured: false
+      location:
+      - 7
+      - 2
+      displayed_color: "\e[0;93;49m♝\e[0m"
+      unicode: "♝"
+      symbolic_color: :white
+      prefix: B
+    - !ruby/object:EmptySquare
+      location:
+      - 7
+      - 3
+      symbolic_color: 
+    - !ruby/object:EmptySquare
+      location:
+      - 7
+      - 4
+      symbolic_color: 
+    - !ruby/object:Bishop
+      captured: false
+      location:
+      - 7
+      - 5
+      displayed_color: "\e[0;93;49m♝\e[0m"
+      unicode: "♝"
+      symbolic_color: :white
+      prefix: B
+    - !ruby/object:Rook
+      captured: false
+      location:
+      - 7
+      - 6
+      num_moves: 1
+      displayed_color: "\e[0;93;49m♜\e[0m"
+      unicode: "♜"
+      symbolic_color: :white
+      prefix: R
+    - !ruby/object:EmptySquare
+      location:
+      - 7
+      - 7
+      symbolic_color: 
+  captured_by_white:
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 1
+    - 7
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: true
+    displayed_color: "\e[0;36;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :black
+    prefix: ''
+  - !ruby/object:Rook
+    captured: true
+    location:
+    - 0
+    - 7
+    num_moves: 0
+    displayed_color: "\e[0;36;49m♜\e[0m"
+    unicode: "♜"
+    symbolic_color: :black
+    prefix: R
+  - !ruby/object:Knight
+    captured: true
+    location:
+    - 0
+    - 6
+    displayed_color: "\e[0;36;49m♞\e[0m"
+    unicode: "♞"
+    symbolic_color: :black
+    prefix: N
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 1
+    - 6
+    captured: true
+    attack_mode: true
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;36;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :black
+    prefix: ''
+  - !ruby/object:Queen
+    captured: true
+    location:
+    - 0
+    - 3
+    displayed_color: "\e[0;36;49m♛\e[0m"
+    unicode: "♛"
+    symbolic_color: :black
+    prefix: Q
+  - !ruby/object:Bishop
+    captured: true
+    location:
+    - 1
+    - 6
+    displayed_color: "\e[0;36;49m♝\e[0m"
+    unicode: "♝"
+    symbolic_color: :black
+    prefix: B
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 1
+    - 5
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;36;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :black
+    prefix: ''
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 1
+    - 4
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;36;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :black
+    prefix: ''
+  - !ruby/object:Rook
+    captured: true
+    location:
+    - 0
+    - 3
+    num_moves: 3
+    displayed_color: "\e[0;36;49m♜\e[0m"
+    unicode: "♜"
+    symbolic_color: :black
+    prefix: R
+  - !ruby/object:Bishop
+    captured: true
+    location:
+    - 7
+    - 1
+    displayed_color: "\e[0;36;49m♝\e[0m"
+    unicode: "♝"
+    symbolic_color: :black
+    prefix: B
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 1
+    - 0
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;36;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :black
+    prefix: ''
+  - !ruby/object:Knight
+    captured: true
+    location:
+    - 1
+    - 2
+    displayed_color: "\e[0;36;49m♞\e[0m"
+    unicode: "♞"
+    symbolic_color: :black
+    prefix: N
+  - !ruby/object:Queen
+    captured: true
+    location:
+    - 7
+    - 6
+    displayed_color: "\e[0;36;49m♛\e[0m"
+    unicode: "♛"
+    symbolic_color: :black
+    prefix: Q
+  captured_by_black:
+  - !ruby/object:Pawn
+    num_moves: 1
+    location:
+    - 4
+    - 4
+    captured: true
+    attack_mode: true
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;93;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :white
+    prefix: ''
+  - !ruby/object:Queen
+    captured: true
+    location:
+    - 0
+    - 3
+    displayed_color: "\e[0;93;49m♛\e[0m"
+    unicode: "♛"
+    symbolic_color: :white
+    prefix: Q
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 6
+    - 0
+    captured: true
+    attack_mode: true
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;93;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :white
+    prefix: ''
+  - !ruby/object:Knight
+    captured: true
+    location:
+    - 7
+    - 1
+    displayed_color: "\e[0;93;49m♞\e[0m"
+    unicode: "♞"
+    symbolic_color: :white
+    prefix: N
+  - !ruby/object:Queen
+    captured: true
+    location:
+    - 1
+    - 2
+    displayed_color: "\e[0;93;49m♛\e[0m"
+    unicode: "♛"
+    symbolic_color: :white
+    prefix: Q
+  - !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 6
+    - 5
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;93;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :white
+    prefix: ''
+  - !ruby/object:Knight
+    captured: true
+    location:
+    - 7
+    - 6
+    displayed_color: "\e[0;93;49m♞\e[0m"
+    unicode: "♞"
+    symbolic_color: :white
+    prefix: N
+  - !ruby/object:Pawn
+    num_moves: 1
+    location:
+    - 4
+    - 3
+    captured: true
+    attack_mode: true
+    en_passant: false
+    just_moved_two: true
+    displayed_color: "\e[0;93;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :white
+    prefix: ''
+  - &1 !ruby/object:Pawn
+    num_moves: 0
+    location:
+    - 6
+    - 2
+    captured: true
+    attack_mode: false
+    en_passant: false
+    just_moved_two: false
+    displayed_color: "\e[0;93;49m♟\e[0m"
+    unicode: "♟"
+    symbolic_color: :white
+    prefix: ''
+  cpu_moves:
+  - 0-0
+  - 0-0-0
+  - Kc8
+  - Kd8
+  - Ke8
+  - Kc7
+  - Ke7
+  - Kc6
+  - Kd6
+  - Ke6
+  - b4
+  - d2
+  cpu_mode: true
+  cpu_color: :black
+  piece_prefix: ''
+  piece_type: !ruby/class 'Pawn'
+  checking_for_check: false
+  castle_move: false
+  en_passant: false
+  attack_move: true
+  dest_row: 6
+  dest_column: 2
+  target: *1
+  piece_found: true
+  start_row: 5
+  start_column: 3
+  found_piece: *2
+  active_piece: *2
+  castle_type: :king_side
+  relevant_rook: *3
+player1: &4 !ruby/object:Player
+  name: e4
+  displayed_color: "\e[0;93;49m♟\e[0m"
+  symbolic_color: :white
+player2: !ruby/object:Player
+  name: CPU
+  displayed_color: "\e[0;36;49m♟\e[0m"
+  symbolic_color: :black
+current_player: *4
+cpu_mode: true
+checkmate: false
+stalemate: false
