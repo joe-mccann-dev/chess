@@ -177,23 +177,27 @@ class Game
     return false if @board.castle_move && @opponent_in_check
 
     @duplicate = Board.new(@board.duplicate_board(@board.squares))
+    # duplicate current board, then make the move, regardless of check
     simulate_and_examine_board_state(move, player_color, @duplicate)
+    # see if that move results in check, checkmate, or stalemate
     determine_check_status(player_color, @duplicate, @duplicate.found_piece)
     announce_check(player_color, @duplicate)
+    # move doesn't follow rules if it puts your king in check
+    # otherwise, it's okay to put opponent king in check (@opponent_in_check)
     follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
     @board.mark_target_as_captured(follows_rules)
     follows_rules
   end
 
   def determine_check_status(player_color, board, found_piece)
-    @opponent_in_check = board.move_puts_player_in_check?(player_color)
-    @self_in_check = board.move_puts_self_in_check?(player_color)
+    @opponent_in_check = board.other_player_in_check?(player_color)
+    @self_in_check = board.self_in_check?(player_color)
     @stalemate = stalemate?(player_color, board, found_piece)
     @checkmate = checkmate?(player_color, board, found_piece)
   end
 
   def checkmate?(player_color, board, found_piece)
-    board.move_puts_player_in_check?(player_color) &&
+    board.other_player_in_check?(player_color) &&
       every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end

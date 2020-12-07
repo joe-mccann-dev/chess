@@ -10,16 +10,12 @@ module CheckmateManager
     black_pieces.select { |piece| piece.is_a?(King) }[0]
   end
 
-  def check?
-    white_king.in_check || black_king.in_check
-  end
-
-  def move_puts_player_in_check?(player_color)
+  def other_player_in_check?(player_color)
     assign_king_as_target(player_color)
     mark_king_as_in_check?(player_color)
   end
 
-  def move_puts_self_in_check?(player_color)
+  def self_in_check?(player_color)
     assign_king_as_target(opposite(player_color))
     mark_king_as_in_check?(opposite(player_color))
   end
@@ -43,6 +39,10 @@ module CheckmateManager
     pieces = player_color == :white ? white_pieces : black_pieces
     king.mark_as_in_check if results_in_check?(player_color, pieces, king)
     check?
+  end
+
+  def check?
+    white_king.in_check || black_king.in_check
   end
 
   def mark_kings_as_not_in_check
