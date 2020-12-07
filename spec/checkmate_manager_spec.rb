@@ -308,81 +308,74 @@ describe CheckmateManager do
   end
 
   describe '#self_in_check?' do
-    
-    let(:current_player_color) { :white }
-    let(:white_king_in_check) { instance_double(King, symbolic_color: :white, location: [7, 4] ) }
-    let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 4] ) }
-    let(:black_queen) { instance_double(Queen, symbolic_color: :black, location: [1, 4]) }
-    let(:white_pawn_tries_to_capture_d6) { instance_double(Pawn, symbolic_color: :white, location: [2, 3]) }
-
-    let(:white_puts_self_in_check) {[
-      Array.new(8) { |c| c == 4 ? black_king : EmptySquare.new([0, c]) },
-      Array.new(8) { |c| c == 4 ? black_queen : EmptySquare.new([1, c]) },
-      Array.new(8) { |c| c == 3 ? white_pawn_tries_to_capture_d6 : EmptySquare.new([2, c]) },
-      Array.new(8) { |c| EmptySquare.new([3, c]) },
-      Array.new(8) { |c| EmptySquare.new([4, c])},
-      Array.new(8) { |c| EmptySquare.new([5, c])},
-      Array.new(8) { |c| EmptySquare.new([6, c])},
-      Array.new(8) { |c| c == 4 ? white_king_in_check : EmptySquare.new([7, c])}
-    ]}
-    
-    let(:white_king_not_in_check) { instance_double(King, symbolic_color: :white, location: [3, 2]) }
-    let(:bishop_limiting_king_movement) { instance_double(Bishop, symbolic_color: :black, location: [2, 2])}
-
-    let(:white_does_not_put_self_in_check) {[
-      Array.new(8) { |c| c == 4 ? black_king : EmptySquare.new([0, c]) },
-      Array.new(8) { |c| EmptySquare.new([1, c]) },
-      Array.new(8) { |c| c == 2 ? bishop_limiting_king_movement : EmptySquare.new([2, c]) },
-      Array.new(8) { |c| EmptySquare.new([3, c]) },
-      Array.new(8) { |c| EmptySquare.new([4, c]) },
-      Array.new(8) { |c| EmptySquare.new([5, c]) },
-      Array.new(8) { |c| EmptySquare.new([6, c]) },
-      Array.new(8) { |c| EmptySquare.new([7, c]) },
-    ]}
-    
-    subject(:board) { Board.new(white_puts_self_in_check) }
-
-    before do
-      allow(board).to receive(:white_king).and_return(white_king_in_check)
-      allow(board).to receive(:black_king).and_return(black_king)
-      allow(board).to receive(:mark_kings_as_not_in_check)
-    end
 
     context 'when a move is simulated to see if white puts itself in check' do
 
-      before do
-        allow(board).to receive(:black_king).and_return(black_king)
-        allow(board).to receive(:mark_kings_as_not_in_check)
-      end
+      let(:current_player_color) { :white }
 
-      context 'when an attempted white move puts itself in check' do
+      context 'when an attempted white move results in check' do
+        let(:white_king_in_check) { instance_double(King, symbolic_color: :white, location: [7, 4] ) }
+        let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 4] ) }
+        let(:black_queen) { instance_double(Queen, symbolic_color: :black, location: [1, 4]) }
+        let(:white_pawn_tries_to_capture_d6) { instance_double(Pawn, symbolic_color: :white, location: [2, 3]) }
+        let(:white_puts_self_in_check) {[
+          Array.new(8) { |c| c == 4 ? black_king : EmptySquare.new([0, c]) },
+          Array.new(8) { |c| c == 4 ? black_queen : EmptySquare.new([1, c]) },
+          Array.new(8) { |c| c == 3 ? white_pawn_tries_to_capture_d6 : EmptySquare.new([2, c]) },
+          Array.new(8) { |c| EmptySquare.new([3, c]) },
+          Array.new(8) { |c| EmptySquare.new([4, c])},
+          Array.new(8) { |c| EmptySquare.new([5, c])},
+          Array.new(8) { |c| EmptySquare.new([6, c])},
+          Array.new(8) { |c| c == 4 ? white_king_in_check : EmptySquare.new([7, c])}
+        ]}
+    
+        subject(:board_king_in_check) { Board.new(white_puts_self_in_check) }
 
         before do
-          allow(board).to receive(:white_king).and_return(white_king_in_check)
-          allow(black_king).to receive(:allowed_move?).with(7, 4).and_return(false) 
-          allow(black_queen).to receive(:allowed_move?).with(7, 4).and_return(true)
+          allow(board_king_in_check).to receive(:black_king).and_return(black_king)
+          allow(board_king_in_check).to receive(:white_king).and_return(white_king_in_check)
+          allow(board_king_in_check).to receive(:mark_kings_as_not_in_check)
+          expect(black_queen).to receive(:allowed_move?).with(7, 4).and_return(true)
           expect(black_king).not_to receive(:mark_as_in_check)
           expect(white_king_in_check).to receive(:mark_as_in_check).and_return(true)
           expect(white_king_in_check).to receive(:in_check).and_return(true)
         end
 
         it 'returns true' do
-          result = board.self_in_check?(current_player_color)
+          result = board_king_in_check.self_in_check?(current_player_color)
           expect(result).to be(true)
         end
       end
 
-      context 'when an attempted white move does not put itself in check' do
+      context 'when an attempted white move does not result in check' do
+        let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 4] ) }
+        let(:bishop_limiting_king_movement) { instance_double(Bishop, symbolic_color: :black, location: [2, 2])}
+        let(:white_king_not_in_check) { instance_double(King, symbolic_color: :white, location: [3, 2]) }
+        let(:white_does_not_put_self_in_check) {[
+          Array.new(8) { |c| c == 4 ? black_king : EmptySquare.new([0, c]) },
+          Array.new(8) { |c| EmptySquare.new([1, c]) },
+          Array.new(8) { |c| c == 2 ? bishop_limiting_king_movement : EmptySquare.new([2, c]) },
+          Array.new(8) { |c| c == 2 ? white_king_not_in_check : EmptySquare.new([3, c]) },
+          Array.new(8) { |c| EmptySquare.new([4, c]) },
+          Array.new(8) { |c| EmptySquare.new([5, c]) },
+          Array.new(8) { |c| EmptySquare.new([6, c]) },
+          Array.new(8) { |c| EmptySquare.new([7, c]) },
+        ]}
+    
+        subject(:board_king_not_in_check) { Board.new(white_does_not_put_self_in_check) }
 
         before do
-          allow(board).to receive(:white_king).and_return(white_king_not_in_check)
+          allow(board_king_not_in_check).to receive(:mark_kings_as_not_in_check)
+          allow(board_king_not_in_check).to receive(:white_king).and_return(white_king_not_in_check)
+          expect(black_king).to receive(:allowed_move?).and_return(false)
+          expect(bishop_limiting_king_movement).to receive(:allowed_move?).and_return(false)
           expect(black_king).not_to receive(:mark_as_in_check)
           expect(white_king_not_in_check).not_to receive(:mark_as_in_check)
-          expect(board).to receive(:check?).and_return(false)
+          expect(board_king_not_in_check).to receive(:check?).and_return(false)
         end
 
         it 'returns false' do
-          result = board.self_in_check?(current_player_color)
+          result = board_king_not_in_check.self_in_check?(current_player_color)
           expect(result).to be(false)
         end
       end
