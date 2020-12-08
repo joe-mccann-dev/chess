@@ -364,6 +364,7 @@ describe CheckmateManager do
       let(:current_player_color) { :white }
 
       context 'when an attempted white move results in check' do
+        
         let(:white_king_in_check) { instance_double(King, symbolic_color: :white, location: [7, 4] ) }
         let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 4] ) }
         let(:black_queen) { instance_double(Queen, symbolic_color: :black, location: [1, 4]) }
@@ -442,8 +443,8 @@ describe CheckmateManager do
         let(:black_king) { instance_double(King, symbolic_color: :black, location: [0, 5] ) }
         let(:white_queen) { instance_double(Queen, symbolic_color: :white, location: [0, 7]) }
         let(:white_rook) { instance_double(Rook, symbolic_color: :white, location: [3, 6]) }
-        let(:white_can_attack_king_moves) {[
-          Array.new(4) { |c| EmptySquare.new(0, c) } + [black_king, EmptySquare.new([0, 6]), white_queen],
+        let(:white_can_attack_king_moves) {[ 
+          Array.new(5) { |c| EmptySquare.new(0, c) } + [black_king, EmptySquare.new([0, 6]), white_queen],
           Array.new(8) { |c| EmptySquare.new([1, c]) },
           Array.new(8) { |c| EmptySquare.new([2, c]) },
           Array.new(8) { |c| c == 6 ? white_rook : EmptySquare.new([3, c]) },
@@ -453,13 +454,21 @@ describe CheckmateManager do
           Array.new(8) { |c| EmptySquare.new([7, c]) }
         ]}
 
-        subject(:board_white_can_attack_king_moves) { Board.new(:white_can_attack_king_moves) }
+        subject(:board_white_can_attack_king_moves) { Board.new(white_can_attack_king_moves) }
+        
+        let(:king_dest_row) { 0 }
+        let(:king_dest_col) { 6 }
+        let(:king_dest) { EmptySquare.new([king_dest_row, king_dest_col]) }
+
+        before do
+          # the method being tested uses an #any? block which will return true as soon as one block returns true
+          # therefore, don't need to 'expect' white_rook to receive(:allowed_move?)
+          expect(white_queen).to receive(:allowed_move?).with(0, 6).and_return(true)
+          allow(board_white_can_attack_king_moves).to receive(:white_pieces).and_return([white_queen, white_rook])
+        end
 
         it 'returns true' do
-          king_dest_row = 0
-          king_dest_col = 6
-          board_white_can_attack_king_moves.instance_variable_set(:@squares, white_can_attack_king_moves)
-          result = board_white_can_attack_king_moves.pieces_can_attack_king_moves?(king_dest_row, king_dest_col, current_player_color)
+          result = board_white_can_attack_king_moves.pieces_can_attack_king_moves?(king_dest_row, king_dest_col, current_player_color, king_dest)
           expect(result).to be(true)
         end
       end
@@ -469,27 +478,30 @@ describe CheckmateManager do
         let(:white_queen) { instance_double(Queen, symbolic_color: :white, location: [4, 3]) }
         let(:white_rook) { instance_double(Rook, symbolic_color: :white, location: [3, 7]) }
         let(:white_unable_to_attack_king_moves) {[
-          Array.new(4) { |c| EmptySquare.new(0, c) } + [black_king, EmptySquare.new([0, 6]), EmptySquare.new(0, 7)],
+          Array.new(8) { |c| c == 5 ? black_king : EmptySquare.new([0, 5]) },
           Array.new(8) { |c| EmptySquare.new([1, c]) },
           Array.new(8) { |c| EmptySquare.new([2, c]) },
-          Array.new(8) { |c| EmptySquare.new([3, c]) },
-          Array.new(8) { |c| c == 3 ? white_rook : EmptySquare.new([4, c]) },
+          Array.new(8) { |c| c == 7 ? white_rook : EmptySquare.new([3, c]) },
+          Array.new(8) { |c| c == 3 ? white_queen : EmptySquare.new([4, c]) },
           Array.new(8) { |c| EmptySquare.new([5, c]) },
           Array.new(8) { |c| EmptySquare.new([6, c]) },
           Array.new(8) { |c| EmptySquare.new([7, c]) }
         ]}
 
-        subject(:board_white_unable_attack_king_moves) { Board.new(:white_unable_to_attack_king_moves) }
+        subject(:board_white_unable_attack_king_moves) { Board.new(white_unable_to_attack_king_moves) }
+
+        let(:king_dest_row) { 1 }
+        let(:king_dest_col) { 5 }
+        let(:king_dest) { EmptySquare.new([king_dest_row, king_dest_col])}
 
         before do
+          expect(white_queen).to receive(:allowed_move?).with(1, 5).and_return(false)
           expect(white_rook).to receive(:allowed_move?).with(1, 5).and_return(false)
+          allow(board_white_unable_attack_king_moves).to receive(:white_pieces).and_return([white_queen, white_rook])
         end
 
         it 'returns false' do
-          king_dest_row = 1
-          king_dest_col = 5
-          board_white_unable_attack_king_moves.instance_variable_set(:@squares, white_unable_to_attack_king_moves)
-          result = board_white_unable_attack_king_moves.pieces_can_attack_king_moves?(king_dest_row, king_dest_col, current_player_color)
+          result = board_white_unable_attack_king_moves.pieces_can_attack_king_moves?(king_dest_row, king_dest_col, current_player_color, king_dest)
           expect(result).to be(false)
         end
       end

@@ -139,9 +139,8 @@ module CheckmateManager
   end
 
   # all King_moves will either be EmptySquares or opponent pieces that he can attack
-  def pieces_can_attack_king_moves?(row, col, player_color)
+  def pieces_can_attack_king_moves?(row, col, player_color, dest_square = @squares[row][col])
     @checking_for_check = true
-    dest_square = @squares[row][col]
     pieces = player_color == :white ? white_pieces : black_pieces
     pieces.any? do |p|
       # check if any White pieces can attack blank_square King destination
