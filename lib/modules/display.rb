@@ -14,7 +14,7 @@ module Display
       starting_row -= 1
       puts "\n"
     end
-    print "     a   b   c   d   e   f   g   h\n\n"
+    print "     a  b  c  d  e  f  g  h\n\n"
     print_captured_black_pieces
   end
 
@@ -45,23 +45,23 @@ module Display
   end
 
   def print_on_light_black(square)
-    print "    ".on_light_black if square.is_a?(EmptySquare)
+    print "   ".on_light_black if square.is_a?(EmptySquare)
     unless square.is_a?(EmptySquare)
       if square == @active_piece 
-        print " #{square.displayed_color}  ".on_magenta
+        print " #{square.displayed_color} ".on_magenta
       else
-        print " #{square.displayed_color}  ".on_light_black
+        print " #{square.displayed_color} ".on_light_black
       end
     end
   end
 
   def print_on_black(square)
-    print "    ".on_black if square.is_a?(EmptySquare)
+    print "   ".on_black if square.is_a?(EmptySquare)
     unless square.is_a?(EmptySquare)
       if square == @active_piece 
-        print " #{square.displayed_color}  ".on_magenta
+        print " #{square.displayed_color} ".on_magenta
       else
-        print " #{square.displayed_color}  ".on_black
+        print " #{square.displayed_color} ".on_black
       end
     end
   end
