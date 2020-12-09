@@ -5,7 +5,7 @@ class Pawn
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, 
               :just_moved_two, :num_moves, :prefix
 
-  def initialize(color, location, unicode = "\u265F")
+  def initialize(color, location, unicode = "♟")
     @num_moves = 0
     @location = location
     @captured = false

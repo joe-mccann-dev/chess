@@ -4,7 +4,7 @@ class Rook
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :prefix
 
-  def initialize(color, location, unicode = "\u265C")
+  def initialize(color, location, unicode = "♜")
     @captured = false
     @location = location
     @num_moves = 0

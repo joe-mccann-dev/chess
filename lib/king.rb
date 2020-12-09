@@ -4,7 +4,7 @@ class King
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :in_check, :prefix
 
-  def initialize(color, location, unicode = "\u265A")
+  def initialize(color, location, unicode = "♚")
     @captured = false
     @location = location
     @in_check = false

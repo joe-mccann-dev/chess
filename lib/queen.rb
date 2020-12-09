@@ -4,7 +4,7 @@ class Queen
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
 
-  def initialize(color, location, unicode = "\u265B")
+  def initialize(color, location, unicode = "♛")
     @captured = false
     @location = location
     color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
