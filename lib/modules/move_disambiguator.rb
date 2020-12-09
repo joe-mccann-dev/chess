@@ -44,7 +44,7 @@
     puts " ** #{pieces.length} #{piece_type}s can go to that location ** \n".colorize(:green)
     pieces.each_with_index do |piece, index|
       row = translate_row_index_to_displayed_row(piece.location[0])
-      col = translate_column_index(piece.location[1])
+      col = translate_col_index_to_displayed_col(piece.location[1])
       coordinates << "#{col}#{row}"
       puts " enter[#{index + 1}] to move the #{piece_type} at #{coordinates[index]}".colorize(:green)
     end
@@ -56,7 +56,7 @@
     chess_rows[row]
   end
 
-  def translate_column_index(column_index)
+  def translate_col_index_to_displayed_col(column_index)
     ('a'..'h').each_with_index { |l, i| return l if i == column_index }
   end
 

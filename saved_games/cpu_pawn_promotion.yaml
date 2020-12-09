@@ -653,7 +653,7 @@ board: !ruby/object:Board
   castle_type: :king_side
   relevant_rook: *3
 player1: &4 !ruby/object:Player
-  name: e4
+  name: joe
   displayed_color: "\e[0;93;49m♟\e[0m"
   symbolic_color: :white
 player2: !ruby/object:Player

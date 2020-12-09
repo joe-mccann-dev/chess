@@ -181,17 +181,15 @@ module MoveValidator
     true
   end
 
-  # prevents defending king from being in the way of a horizontal or vertical determination of check, 
+  # prevents defending king from being in the way of a determination of check, 
   # e.g. Queen to the right, potential move to the left 
   # => he is in the way and it won't register as the move putting himself in check
   def current_square_defending_king?(destination, current_square)
     return false unless @checking_for_check
-
-    # unless condition necessary for when defending king is directly next to an attacker
-    # unless (destination - current_square.location[1]).abs == 0
-      current_square.is_a?(King) &&
-        current_square.symbolic_color == @target.symbolic_color # it's not the attacker's king
-    # end
+    
+    current_square.is_a?(King) &&
+      #ensure it's not the attacker's king
+      current_square.symbolic_color == @target.symbolic_color
   end
 
   def ne_nw_diagonal_objects(_start_row, start_column, move_distance, target, diagonal = [])

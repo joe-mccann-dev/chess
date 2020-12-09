@@ -8,6 +8,7 @@ require_relative '../lib/modules/move_disambiguator'
 require_relative '../lib/modules/castle_manager'
 require_relative '../lib/modules/checkmate_manager'
 require_relative '../lib/modules/cpu_move_generator'
+require_relative '../lib/modules/pawn_promotion'
 require_relative '../lib/board'
 require_relative '../lib/empty_square.rb'
 require_relative '../lib/player'
@@ -478,7 +479,7 @@ describe CheckmateManager do
         let(:white_queen) { instance_double(Queen, symbolic_color: :white, location: [4, 3]) }
         let(:white_rook) { instance_double(Rook, symbolic_color: :white, location: [3, 7]) }
         let(:white_unable_to_attack_king_moves) {[
-          Array.new(8) { |c| c == 5 ? black_king : EmptySquare.new([0, 5]) },
+          Array.new(8) { |c| c == 5 ? black_king : EmptySquare.new([0, c]) },
           Array.new(8) { |c| EmptySquare.new([1, c]) },
           Array.new(8) { |c| EmptySquare.new([2, c]) },
           Array.new(8) { |c| c == 7 ? white_rook : EmptySquare.new([3, c]) },

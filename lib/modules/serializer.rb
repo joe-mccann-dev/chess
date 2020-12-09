@@ -49,6 +49,7 @@ module Serializer
     selection = verify_selection(saved_games)
     game_file = File.open("saved_games/#{saved_games[selection - 1]}", 'r')
     extract_yaml_data(game_file)
+    play_game
   end
 
   def verify_selection(saved_games)
@@ -73,6 +74,5 @@ module Serializer
     @cpu_mode = game_data['cpu_mode']
     @checkmate = game_data['checkmate']
     @stalemate = game_data['stalemate']
-    play_game
   end
 end

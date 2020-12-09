@@ -7,6 +7,7 @@ class Board
   include InputValidator
   include SetupBoardVariables
   include CastleManager
+  include PawnPromoter
   include CheckmateManager
   include MoveDisambiguator
   include CPUMoveGenerator
@@ -58,19 +59,21 @@ class Board
     ]
   end
 
-  def duplicate_board(squares)
-    board = Array.new(8) { [] }
+  def duplicate_board(squares, board = Array.new(8) { [] })
     squares.each_with_index do |row, row_idx|
       row.each_with_index do |square, col_idx|
-        if square.is_a?(EmptySquare)
-          board[row_idx] << EmptySquare.new([row_idx, col_idx])
-        else
-          color_arg = square.symbolic_color == :white ? 1 : 2
-          board[row_idx] << square.class.new(color_arg, [row_idx, col_idx])
-        end
+        board[row_idx] << if square.is_a?(EmptySquare)
+                            EmptySquare.new([row_idx, col_idx])
+                          else
+                            square.class.new(color_arg(square.symbolic_color), [row_idx, col_idx])
+                          end
       end
     end
     board
+  end
+
+  def color_arg(piece_color)
+    piece_color == :white ? 1 : 2
   end
 
   def re_ambiguate
@@ -170,43 +173,6 @@ class Board
   def update_found_piece
     @found_piece.update_num_moves if num_moves_relevant?(@found_piece)
     @found_piece.update_location(@dest_row, @dest_column)
-  end
-
-  def pawn_promotable?(piece, player_color)
-    return unless piece.is_a?(Pawn)
-
-    piece.location[0] == (player_color == :white ? 0 : 7)
-  end
-
-  def prompt_for_pawn_promotion(player_color, current_player)
-    choices = %w[Queen Rook Knight Bishop]
-    show_pawn_promotion_choices(choices, current_player)
-    choice = current_player.name == 'CPU' ? [*1..4][rand * 4] : gets.chomp
-    # prevents getting prompted twice
-    choice = 1 unless choice.to_i.between?(1, 4)
-    show_cpu_pawn_promotion(choices, choice, current_player)
-    @found_piece = promote_pawn(choice, player_color)
-    @active_piece = @found_piece
-  end
-
-  def promote_pawn(choice, player_color)
-    choices = [Queen, Rook, Knight, Bishop]
-    @squares[@dest_row][@dest_column] = if player_color == :white
-                                          choices[choice.to_i - 1].new(1, [@dest_row, @dest_column])
-                                        else
-                                          choices[choice.to_i - 1].new(2, [@dest_row, @dest_column])
-                                        end
-  end
-
-  def handle_en_passant_move(player_color)
-    attacker = @squares[@start_row][@start_column]
-    return unless attacker.is_a?(Pawn) && attacker.en_passant
-
-    if player_color == :white
-      @squares[@dest_row + 1][@dest_column] = EmptySquare.new([@dest_row + 1, @dest_column])
-    else
-      @squares[@dest_row - 1][@dest_column] = EmptySquare.new([@dest_row - 1, @dest_column])
-    end
   end
 
   def num_moves_relevant?(found_piece)

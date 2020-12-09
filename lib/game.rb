@@ -21,9 +21,11 @@ class Game
 
   def start_game
     @board.display
-    print " first player's name: ".colorize(:magenta)
+    print " player1's name: ".colorize(:magenta) unless @player2.name == 'CPU'
+    print " Please enter your name: ".colorize(:magenta) if @player2.name == 'CPU'
+    
     @player1.request_name
-    print "\n other player's name: ".colorize(:magenta) unless @player2.name == 'CPU'
+    print "\n player2's name: ".colorize(:magenta) unless @player2.name == 'CPU'
     @player2.request_name
     @player1.request_color
     assign_color(@player1.displayed_color)

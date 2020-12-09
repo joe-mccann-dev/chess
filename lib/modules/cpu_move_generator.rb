@@ -33,7 +33,7 @@ module CPUMoveGenerator
       dest_col = square.location[1]
       pieces.each do |p|
         display_row = translate_row_index_to_displayed_row(dest_row)
-        display_col = translate_column_index(dest_col)
+        display_col = translate_col_index_to_displayed_col(dest_col)
         p.toggle_attack_mode(@squares, p.location[0], p.location[1], dest_row, dest_col) if p.is_a?(Pawn)
         if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[dest_row][dest_col])
           moves << "#{p.prefix}#{display_col}#{display_row}"
@@ -50,10 +50,10 @@ module CPUMoveGenerator
       pieces.each do |piece|
         @attack_move = true
         display_row = translate_row_index_to_displayed_row(dest_row)
-        display_col = translate_column_index(dest_col)
+        display_col = translate_col_index_to_displayed_col(dest_col)
         if attack_rules_followed?(piece.location[0], piece.location[1], cpu_color, piece, @squares[dest_row][dest_col])
           if piece.is_a?(Pawn)
-            pawn_start_column = translate_column_index(piece.location[1])
+            pawn_start_column = translate_col_index_to_displayed_col(piece.location[1])
             moves << "#{pawn_start_column}#{piece.prefix}x#{display_col}#{display_row}"
           else
             moves << "#{piece.prefix}x#{display_col}#{display_row}"

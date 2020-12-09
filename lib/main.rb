@@ -9,6 +9,7 @@ require_relative './modules/input_validator'
 require_relative './modules/move_validator'
 require_relative './modules/move_disambiguator'
 require_relative './modules/castle_manager'
+require_relative './modules/pawn_promotion'
 require_relative './modules/checkmate_manager'
 require_relative './modules/serializer'
 require_relative './modules/cpu_move_generator'
@@ -24,36 +25,56 @@ require_relative './king'
 require_relative './queen'
 require_relative './pawn'
 
-puts
-puts " Welcome to my Chess game!"
-puts " What would you like to do?"
-puts
-choices = ['play a friend', 'play against the computer', 'play a saved game']
-choices.each_with_index do |_c, i|
-  puts " enter[#{i + 1}] to #{choices[i]}  ".colorize(:green)
-end
-puts
-print " game mode: ".colorize(:magenta)
-selection = gets.chomp
-loop do
-  break if selection.to_i.between?(1, 3)
+puts '
 
-  choices.each_with_index do |_c, i|
-    puts " enter[#{i + 1}] to #{choices[i]}  ".colorize(:green)
+  ▒█░░▒█ █▀▀ █░░ █▀▀ █▀▀█ █▀▄▀█ █▀▀ 　 ▀▀█▀▀ █▀▀█ 
+  ▒█▒█▒█ █▀▀ █░░ █░░ █░░█ █░▀░█ █▀▀ 　 ░░█░░ █░░█ 
+  ▒█▄▀▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░░▀ ▀▀▀ 　 ░░▀░░ ▀▀▀▀
+
+  ▄▀▄▀▄▀▄▀▄▀    ▄▀      ▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀
+  ▄▀            ▄▀      ▄▀      ▄▀              ▄▀              ▄▀
+  ▄▀            ▄▀      ▄▀      ▄▀              ▄▀              ▄▀
+  ▄▀            ▄▀      ▄▀      ▄▀              ▄▀              ▄▀
+  ▄▀            ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀
+  ▄▀            ▄▀      ▄▀      ▄▀                      ▄▀              ▄▀
+  ▄▀            ▄▀      ▄▀      ▄▀                      ▄▀              ▄▀
+  ▄▀      ▄▀    ▄▀      ▄▀      ▄▀                      ▄▀              ▄▀
+  ▄▀▄▀▄▀▄▀▄▀    ▄▀      ▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀      ▄▀▄▀▄▀▄▀▄▀
+
+'
+
+puts
+puts " 𝘞 𝘩𝘢𝘵 𝘸𝘰𝘶𝘭𝘥 𝘺𝘰𝘶 𝘭𝘪𝘬𝘦 𝘵𝘰 𝘥𝘰?"
+puts
+
+def player_choice
+  choice = ''
+  loop do
+    break if choice.to_i.between?(1, 3)
+
+    choices = ['play a friend', 'play the computer', 'play a saved game']
+    choices.each_with_index do |c, i|
+      puts " enter[#{i + 1}] to #{c}  ".colorize(:green)
+    end
+    puts
+    print " game mode: ".colorize(:magenta)
+    choice = gets.chomp
   end
-  puts
-  print " game mode: ".colorize(:magenta)
-  selection = gets.chomp
+  choice
 end
+
 
 game = Game.new
-if selection == '1'
+choice = player_choice
+
+case choice
+when '1'
   game.start_game
   game.play_game
-elsif selection == '2'
+when '2'
   game = Game.new(Board.new, Player.new, Player.new('CPU'))
   game.start_game
   game.play_game
-else
+when '3'
   game.load_game
 end

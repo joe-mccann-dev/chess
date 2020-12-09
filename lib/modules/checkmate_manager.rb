@@ -74,7 +74,7 @@ module CheckmateManager
     king = player_color == :white ? black_king : white_king
     king.available_squares.each do |location|
       row = translate_row_index_to_displayed_row(location[0])
-      col = translate_column_index(location[1])
+      col = translate_col_index_to_displayed_col(location[1])
       king_dest_square = @squares[location[0]][location[1]]
       if king_dest_square.symbolic_color == player_color
         # include in x since attack mode should be on to simulate king attacking its way out of check

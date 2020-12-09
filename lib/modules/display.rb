@@ -108,8 +108,9 @@ module Display
 
     puts " ** pawn promotion! ** \n".colorize(:magenta)
     puts " select which piece you'd like your Pawn to become. "
-    choices.each_with_index do |_c, i|
-      puts " enter[#{i + 1}] for #{choices[i]}"
+    puts
+    choices.each_with_index do |c, i|
+      puts " enter[#{i + 1}] for #{c}".colorize(:green)
     end
   end
   

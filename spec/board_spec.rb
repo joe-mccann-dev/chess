@@ -7,6 +7,7 @@ require_relative '../lib/modules/move_validator'
 require_relative '../lib/modules/move_disambiguator'
 require_relative '../lib/modules/castle_manager'
 require_relative '../lib/modules/checkmate_manager'
+require_relative '../lib/modules/pawn_promotion.rb'
 require_relative '../lib/modules/cpu_move_generator'
 require_relative '../lib/board'
 require_relative '../lib/empty_square.rb'
@@ -21,6 +22,7 @@ require_relative '../lib/pawn'
 describe Board do
   describe '#initialize' do
     context 'when no board state is give' do
+
       subject(:board) { described_class.new }
 
       it 'makes the initial board' do
@@ -110,6 +112,26 @@ describe Board do
         white_knight = board.squares[7][6]
         allow(board).to receive(:white_pieces_that_go_to_dest).and_return([white_knight])
         expect(board.find_white_piece(move, piece_type)).to eq(white_knight)
+      end
+    end
+  end
+
+  describe '#update_board' do
+    context 'after piece type and target variables are assigned' do
+      subject(:board) { described_class.new }
+      move = 'e4'
+      player_color = :white
+
+      before do
+        board.assign_piece_type(move)
+        # necessary to assign @dest_row and @dest_col to the relevant squares
+        board.assign_target_variables(move, player_color)
+      end
+
+      it 'updates an available square to be the found piece' do
+        result = board.update_board(move, player_color)
+        new_pawn_location = board.squares[4][4]
+        expect(result).to eq(new_pawn_location)
       end
     end
   end
