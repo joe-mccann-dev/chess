@@ -27,15 +27,4 @@ module PawnPromoter
                                           choices[choice.to_i - 1].new(2, [@dest_row, @dest_column])
                                         end
   end
-
-  def handle_en_passant_move(player_color)
-    attacker = @squares[@start_row][@start_column]
-    return unless attacker.is_a?(Pawn) && attacker.en_passant
-
-    if player_color == :white
-      @squares[@dest_row + 1][@dest_column] = EmptySquare.new([@dest_row + 1, @dest_column])
-    else
-      @squares[@dest_row - 1][@dest_column] = EmptySquare.new([@dest_row - 1, @dest_column])
-    end
-  end
 end

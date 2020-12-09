@@ -8,6 +8,7 @@ class Board
   include SetupBoardVariables
   include CastleManager
   include PawnPromoter
+  include EnPassantManager
   include CheckmateManager
   include MoveDisambiguator
   include CPUMoveGenerator
@@ -159,7 +160,7 @@ class Board
     push_captured_pieces
     # move piece to new square
     @squares[@dest_row][@dest_column] = @squares[@start_row][@start_column]
-    handle_en_passant_move(player_color)
+    update_board_if_en_passant_move(player_color)
     # move piece to new square in the same column. make previous location an empty string
     @squares[@start_row][@dest_column]  = EmptySquare.new([@start_row, @dest_column]) if @start_column == @dest_column
     # move piece to new square in a different column. make previous location an empty string

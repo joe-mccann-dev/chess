@@ -2,6 +2,8 @@
 
 class Pawn
   include AdjacencyListGenerator
+  include EnPassantManager
+
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, 
               :just_moved_two, :num_moves, :prefix
 
@@ -68,27 +70,7 @@ class Pawn
     available_squares.include?([dest_row, dest_column])
   end
 
-  def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
-    if @symbolic_color == :white && (dest_row + 1).between?(0, 7)
-      target = squares[dest_row + 1][dest_column]
-      valid_white_en_passant?(start_row, target)
-    elsif @symbolic_color == :black && (dest_row - 1).between?(0, 7)
-      target = squares[dest_row - 1][dest_column]
-      valid_black_en_passant?(start_row, target)
-    end
-  end
 
-  def valid_white_en_passant?(start_row, target)
-    start_row == 3 &&
-      target.symbolic_color != @symbolic_color &&
-      target.is_a?(Pawn)
-  end
-
-  def valid_black_en_passant?(start_row, target)
-    start_row == 4 &&
-      target.symbolic_color != @symbolic_color &&
-      target.is_a?(Pawn)
-  end
 
   def update_num_moves
     @num_moves += 1

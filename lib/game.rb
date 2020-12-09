@@ -249,7 +249,7 @@ class Game
     # prevent spamming of message as cpu cycles thru random moves
     return if @cpu_mode && @current_player == @player2
 
-    puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:magenta) if @self_in_check
+    puts "\n ** that move leaves #{player_color.capitalize} in check! **".colorize(:red) if @self_in_check
   end
 
   def request_player_move(player)

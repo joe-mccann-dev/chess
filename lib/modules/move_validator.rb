@@ -14,9 +14,9 @@ module MoveValidator
   end
 
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
-    return true if piece.is_a?(Pawn) && piece.en_passant && en_passant_conditions_met?
-
     if piece.is_a?(Pawn)
+      return true if piece.en_passant && en_passant_conditions_met?
+
       piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1])
     end
     attack_available?(start_row, start_column, player_color, piece, target) &&
@@ -69,28 +69,6 @@ module MoveValidator
     else
       piece.attack_mode && target.symbolic_color != player_color
     end
-  end
-
-  def manage_en_passant_attack(piece, player_color, target)
-    assign_en_passant_target(player_color, target)
-    # force attacking pawn to be @found_piece
-    @found_piece = @squares[piece.location[0]][piece.location[1]]
-    en_passant_conditions_met?
-  end
-
-  def assign_en_passant_target(player_color, target)
-    return unless target.is_a?(EmptySquare)
-
-    @target = if player_color == :white
-                @squares[target.location[0] + 1][target.location[1]]
-              else
-                @squares[target.location[0] - 1][target.location[1]]
-              end
-  end
-
-  def en_passant_conditions_met?
-    @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) &&
-      @target.just_moved_two && @target == @active_piece
   end
 
   def horizontal_vertical_move?(start_row, start_column, target)
@@ -174,6 +152,8 @@ module MoveValidator
   end
 
   def diagonal_path_clear?(objects_in_path, target)
+    return false unless objects_in_path
+
     # if any pieces in path are NOT EmptySquares or the defending king (when @checking_for_check), then the path is NOT clear
     objects_in_path.each do |s|
       return false unless s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s)
