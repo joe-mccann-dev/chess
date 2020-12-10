@@ -10,6 +10,14 @@ module CheckmateManager
     black_pieces.select { |piece| piece.is_a?(King) }[0]
   end
 
+  def opponent_king(current_player_color)
+    current_player_color == :white ? black_king : white_king
+  end
+
+  def current_player_pieces(current_player_color)
+    current_player_color == :white ? white_pieces : black_pieces
+  end
+
   def other_player_in_check?(player_color)
     assign_king_as_target(player_color)
     mark_king_as_in_check?(player_color)

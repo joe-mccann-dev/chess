@@ -99,6 +99,10 @@ class Game
     determine_check_status(current_player.symbolic_color, @board, @board.found_piece)
   end
 
+  def check_for_check_or_stalemate_again
+
+  end
+
   def cpu_turn
     generate_available_cpu_moves
     validate_move_assign_piece_type(@player2)
@@ -111,6 +115,7 @@ class Game
       assign_board_piece_type(@move)
     end
     update_and_display_board(@move, @player2.symbolic_color)
+    determine_check_status(@player2.symbolic_color, @board, @board.found_piece)
   end
 
   def validate_move_assign_piece_type(current_player)
@@ -210,6 +215,27 @@ class Game
   end
 
   def rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
+    board.turn_attack_move_on
+    row = found_piece.location[0]
+    col = found_piece.location[1]
+    # necessary for if the active piece doesn't threaten king
+    # but moves out of the way of a piece that does threaten king
+    # and that line of attack results in a check
+    # in that case, find the piece that CAN attack the king and 
+    # use it to determing if board.can_block_or_capture?
+    if !board.attack_rules_followed?(row, col, player_color, found_piece, board.opponent_king(player_color))
+      board.current_player_pieces(player_color).each do |piece|
+        piece_row = piece.location[0]
+        piece_col = piece.location[1]
+        if board.attack_rules_followed?(piece_row, piece_col, player_color, piece, board.black_king)
+          found_piece = piece
+          puts "found_piece: #{found_piece}"
+          puts "found_piece_location: #{found_piece.location}"
+          break
+
+        end
+      end
+    end
     every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end

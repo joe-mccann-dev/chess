@@ -13,7 +13,7 @@ class Board
   include MoveDisambiguator
   include CPUMoveGenerator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
-              :piece_type, :piece_found, :castle_move, :cpu_moves
+              :piece_type, :piece_found, :castle_move, :cpu_moves, :attack_move
 
   @@disambiguated = false
 
@@ -29,6 +29,10 @@ class Board
   def turn_cpu_mode_on(mode, color)
     @cpu_mode = mode
     @cpu_color = color if @cpu_mode
+  end
+
+  def turn_attack_move_on
+    @attack_move = true
   end
 
   def make_initial_board
