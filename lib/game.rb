@@ -200,14 +200,17 @@ class Game
 
   def checkmate?(player_color, board, found_piece)
     board.other_player_in_check?(player_color) &&
-      every_king_move_results_in_check?(player_color, board) &&
-      !board.can_block_or_capture?(player_color, found_piece)
+      rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
   end
 
   def stalemate?(player_color, board, found_piece)
-    !@opponent_in_check &&
+    !board.other_player_in_check?(player_color) &&
       board.no_legal_moves?(player_color) &&
-      every_king_move_results_in_check?(player_color, board) &&
+      rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
+  end
+
+  def rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
+    every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end
 
