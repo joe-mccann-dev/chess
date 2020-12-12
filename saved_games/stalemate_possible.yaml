@@ -21,13 +21,13 @@ board: !ruby/object:Board
       - 0
       - 3
       symbolic_color: 
-    - &1 !ruby/object:King
+    - &2 !ruby/object:King
       captured: false
       location:
       - 0
       - 4
       in_check: false
-      num_moves: 2
+      num_moves: 4
       displayed_color: "\e[0;36;49m♚\e[0m"
       unicode: "♚"
       symbolic_color: :black
@@ -190,11 +190,19 @@ board: !ruby/object:Board
       - 4
       - 2
       symbolic_color: 
-    - !ruby/object:EmptySquare
+    - !ruby/object:Pawn
+      num_moves: 2
       location:
       - 4
       - 3
-      symbolic_color: 
+      captured: false
+      attack_mode: true
+      en_passant: false
+      just_moved_two: false
+      displayed_color: "\e[0;93;49m♟\e[0m"
+      unicode: "♟"
+      symbolic_color: :white
+      prefix: ''
     - !ruby/object:EmptySquare
       location:
       - 4
@@ -234,19 +242,11 @@ board: !ruby/object:Board
       unicode: "♝"
       symbolic_color: :white
       prefix: B
-    - !ruby/object:Pawn
-      num_moves: 1
+    - !ruby/object:EmptySquare
       location:
       - 5
       - 3
-      captured: false
-      attack_mode: true
-      en_passant: false
-      just_moved_two: false
-      displayed_color: "\e[0;93;49m♟\e[0m"
-      unicode: "♟"
-      symbolic_color: :white
-      prefix: ''
+      symbolic_color: 
     - !ruby/object:EmptySquare
       location:
       - 5
@@ -260,7 +260,7 @@ board: !ruby/object:Board
       captured: false
       attack_mode: true
       en_passant: false
-      just_moved_two: false
+      just_moved_two: true
       displayed_color: "\e[0;93;49m♟\e[0m"
       unicode: "♟"
       symbolic_color: :white
@@ -270,15 +270,15 @@ board: !ruby/object:Board
       - 5
       - 6
       symbolic_color: 
-    - &2 !ruby/object:Pawn
+    - !ruby/object:Pawn
       num_moves: 1
       location:
       - 5
       - 7
       captured: false
-      attack_mode: true
+      attack_mode: false
       en_passant: false
-      just_moved_two: false
+      just_moved_two: true
       displayed_color: "\e[0;93;49m♟\e[0m"
       unicode: "♟"
       symbolic_color: :white
@@ -363,7 +363,7 @@ board: !ruby/object:Board
       - 7
       - 3
       symbolic_color: 
-    - !ruby/object:King
+    - &1 !ruby/object:King
       captured: false
       location:
       - 7
@@ -605,27 +605,97 @@ board: !ruby/object:Board
     unicode: "♟"
     symbolic_color: :white
     prefix: ''
+  cpu_moves:
+  - Qd8
+  - Qg8
+  - Qg8
+  - Qh8
+  - Qa7
+  - Qb7
+  - Qc7
+  - Qd7
+  - Qe7
+  - Qe7
+  - Qf7
+  - Qg7
+  - Qg7
+  - Ba6
+  - Qf6
+  - Qg6
+  - Qg6
+  - Qh6
+  - Qh6
+  - Qa5
+  - Ba5
+  - Qb5
+  - Bb5
+  - Qc5
+  - Qd5
+  - d5
+  - Qe5
+  - Qf5
+  - Qf5
+  - Qh5
+  - Qh5
+  - Bb4
+  - Bc4
+  - Qe4
+  - Qf4
+  - f4
+  - Qg4
+  - g4
+  - Qh4
+  - Qh4
+  - h4
+  - Na3
+  - Qd3
+  - Bd3
+  - Qe3
+  - Qg3
+  - g3
+  - Bb2
+  - Qd2
+  - Bd2
+  - Nd2
+  - Be2
+  - Ne2
+  - Rh2
+  - Ba1
+  - Qc1
+  - Bxd4
+  - Nxc3
+  - gxf3
+  - Nxf3
+  - Qxh3
+  - gxh3
+  - Nxh3
+  - Rxh3
+  - Qxc2
+  - Qxg2
+  - Bxg2
+  - Bxe1
+  - Rxg1
   cpu_mode: false
-  piece_prefix: ''
-  piece_type: !ruby/class 'Pawn'
+  piece_prefix: K
+  piece_type: !ruby/class 'King'
   checking_for_check: true
   castle_move: false
   en_passant: false
   attack_move: true
-  dest_row: 0
+  dest_row: 7
   dest_column: 4
   target: *1
   piece_found: true
-  start_row: 6
-  start_column: 7
+  start_row: 0
+  start_column: 5
   found_piece: *2
   active_piece: *2
-player1: !ruby/object:Player
+player1: &3 !ruby/object:Player
   name: joe
   displayed_color: "\e[0;93;49m♟\e[0m"
   symbolic_color: :white
   winner: false
-player2: &3 !ruby/object:Player
+player2: !ruby/object:Player
   name: kat
   displayed_color: "\e[0;36;49m♟\e[0m"
   symbolic_color: :black
