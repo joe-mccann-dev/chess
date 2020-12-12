@@ -168,7 +168,7 @@ module MoveValidator
     return false unless @checking_for_check
     
     current_square.is_a?(King) &&
-      #ensure it's not the attacker's king
+      #ensure it's not the attacker's king, @target will always be enemy king when @checking_for_check
       current_square.symbolic_color == @target.symbolic_color
   end
 

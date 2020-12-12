@@ -3,6 +3,8 @@
 # validates en_passant moves and handles board update when there is an en passant move
 module EnPassantManager
   def en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
+    return false unless squares[dest_row][dest_column].is_a?(EmptySquare)
+
     if @symbolic_color == :white && (dest_row + 1).between?(0, 7)
       target = squares[dest_row + 1][dest_column]
       valid_white_en_passant?(start_row, target)

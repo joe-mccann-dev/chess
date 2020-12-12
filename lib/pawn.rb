@@ -70,8 +70,6 @@ class Pawn
     available_squares.include?([dest_row, dest_column])
   end
 
-
-
   def update_num_moves
     @num_moves += 1
   end

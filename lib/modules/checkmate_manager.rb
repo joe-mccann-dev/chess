@@ -18,14 +18,18 @@ module CheckmateManager
     current_player_color == :white ? white_pieces : black_pieces
   end
 
-  def other_player_in_check?(player_color)
-    assign_king_as_target(player_color)
-    mark_king_as_in_check?(player_color)
+  def opposite(player_color)
+    player_color == :white ? :black : :white
   end
 
-  def self_in_check?(player_color)
+  def other_player_in_check?(player_color, piece_found_and_valid_move)
+    assign_king_as_target(player_color)
+    mark_king_as_in_check?(player_color, piece_found_and_valid_move)
+  end
+
+  def self_in_check?(player_color, piece_found_and_valid_move)
     assign_king_as_target(opposite(player_color))
-    mark_king_as_in_check?(opposite(player_color))
+    mark_king_as_in_check?(opposite(player_color), piece_found_and_valid_move)
   end
 
   def assign_king_as_target(player_color)
@@ -41,11 +45,11 @@ module CheckmateManager
     @target = @squares[@dest_row][@dest_column]
   end
 
-  def mark_king_as_in_check?(player_color)
+  def mark_king_as_in_check?(player_color, piece_found_and_valid_move)
     mark_kings_as_not_in_check
     king = player_color == :white ? black_king : white_king
     pieces = player_color == :white ? white_pieces : black_pieces
-    king.mark_as_in_check if results_in_check?(player_color, pieces, king)
+    king.mark_as_in_check if results_in_check?(piece_found_and_valid_move, player_color, pieces, king)
     check?
   end
 
@@ -58,22 +62,28 @@ module CheckmateManager
     black_king.mark_as_not_in_check
   end
 
-  def results_in_check?(player_color, pieces, king, target = @target)
+  def results_in_check?(piece_found_and_valid_move, player_color, pieces, king, target = @target)
     pieces.any? do |piece|
       attacker_row = piece.location[0]
       attacker_col = piece.location[1]
       # need extra method for en_passant moves to prevent an en_passant move from putting self in check
       if @en_passant
-        en_passant_move_results_in_check?(player_color, attacker_row, attacker_col, piece, king)
+        en_passant_move_results_in_check?(piece_found_and_valid_move, player_color, attacker_row, attacker_col, piece, king)
       else
         attack_rules_followed?(attacker_row, attacker_col, player_color, piece, target)
       end
     end
   end
 
-  def en_passant_move_results_in_check?(player_color, attacker_row, attacker_col, piece, king)
-    return unless piece.allowed_move?(king.location[0], king.location[1])
+  def en_passant_move_results_in_check?(piece_found_and_valid_move, player_color, attacker_row, attacker_col, piece, king)
+    # an en passant attacker and opponent king will be on the same column prior to attacker putting opponent king in check
+    # en_passant attacker and opponent king will have one square between them prior to attacker putting opponent king in check
+    # prevent an invalid move from erroneously causing method to return true
+    return true if piece.is_a?(Pawn) && attacker_col == king.location[1] &&
+      (attacker_row - king.location[0]).abs == 2 && piece_found_and_valid_move
 
+    return unless piece.allowed_move?(king.location[0], king.location[1])
+    
     path_to_horiz_vert_attack_clear?(attacker_row, attacker_col, player_color, king) ||
       path_to_diagonal_attack_clear?(attacker_row, attacker_col, player_color, king)
   end
@@ -296,9 +306,5 @@ module CheckmateManager
       end
     end
     false
-  end
-
-  def opposite(player_color)
-    player_color == :white ? :black : :white
   end
 end

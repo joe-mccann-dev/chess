@@ -336,7 +336,8 @@ describe CheckmateManager do
         expect(black_king).to receive(:mark_as_in_check)
         expect(black_king).to receive(:in_check).and_return(true)
         expect(white_king).to receive(:in_check).and_return(false)
-        result = board.other_player_in_check?(attacking_color)
+        piece_found_and_valid_move = true
+        result = board.other_player_in_check?(attacking_color, piece_found_and_valid_move)
         expect(result).to be(true)
       end
 
@@ -351,7 +352,8 @@ describe CheckmateManager do
         expect(black_king).not_to receive(:mark_as_in_check)
         expect(black_king).to receive(:in_check).and_return(false)
         expect(white_king).to receive(:in_check).and_return(false)
-        result = board.other_player_in_check?(attacking_color)
+        piece_found_and_valid_move = true
+        result = board.other_player_in_check?(attacking_color, piece_found_and_valid_move)
         expect(result).to be(false)
       end
     end
@@ -395,7 +397,8 @@ describe CheckmateManager do
         end
 
         it 'returns true' do
-          result = board_king_in_check.self_in_check?(current_player_color)
+          piece_found_and_valid_move = true
+          result = board_king_in_check.self_in_check?(current_player_color, piece_found_and_valid_move)
           expect(result).to be(true)
         end
       end
@@ -429,7 +432,8 @@ describe CheckmateManager do
         end
 
         it 'returns false' do
-          result = board_king_not_in_check.self_in_check?(current_player_color)
+          piece_found_and_valid_move = true
+          result = board_king_not_in_check.self_in_check?(current_player_color, piece_found_and_valid_move)
           expect(result).to be(false)
         end
       end

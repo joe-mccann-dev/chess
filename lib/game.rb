@@ -99,10 +99,6 @@ class Game
     determine_check_status(current_player.symbolic_color, @board, @board.found_piece)
   end
 
-  def check_for_check_or_stalemate_again
-
-  end
-
   def cpu_turn
     generate_available_cpu_moves
     validate_move_assign_piece_type(@player2)
@@ -187,57 +183,62 @@ class Game
     # duplicate current board, then make the move, regardless of check
     simulate_and_examine_board_state(move, player_color, @duplicate)
     # see if that move results in check, checkmate, or stalemate
+    @piece_found_and_valid_move = piece_found_and_valid_move?(player_color, @board)
     determine_check_status(player_color, @duplicate, @duplicate.found_piece)
-    announce_check(player_color, @duplicate)
     # move doesn't follow rules if it puts your king in check
-    # otherwise, it's okay to put opponent king in check (@opponent_in_check)
-    follows_rules = !@self_in_check && basic_conditions_met?(player_color, @board)
-    @board.mark_target_as_captured(follows_rules)
-    follows_rules
+    announce_check(player_color, @duplicate)
+    @follows_rules = !@self_in_check && @piece_found_and_valid_move
+    @board.mark_target_as_captured(@follows_rules)
+    @follows_rules
   end
 
   def determine_check_status(player_color, board, found_piece)
-    @opponent_in_check = board.other_player_in_check?(player_color)
-    @self_in_check = board.self_in_check?(player_color)
+    @opponent_in_check = board.other_player_in_check?(player_color, @piece_found_and_valid_move)
+    @self_in_check = board.self_in_check?(player_color, @piece_found_and_valid_move)
     @stalemate = stalemate?(player_color, board, found_piece)
     @checkmate = checkmate?(player_color, board, found_piece)
   end
 
   def checkmate?(player_color, board, found_piece)
-    board.other_player_in_check?(player_color) &&
+    board.other_player_in_check?(player_color, @piece_found_and_valid_move) &&
       rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
   end
 
   def stalemate?(player_color, board, found_piece)
-    !board.other_player_in_check?(player_color) &&
+    !board.other_player_in_check?(player_color, @piece_found_and_valid_move) &&
       board.no_legal_moves?(player_color) &&
       rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
   end
 
   def rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
+    return if found_piece.nil?
+    
     board.turn_attack_move_on
     row = found_piece.location[0]
     col = found_piece.location[1]
-    # necessary for if the active piece doesn't threaten king
-    # but moves out of the way of a piece that does threaten king
-    # and that line of attack results in a check
-    # in that case, find the piece that CAN attack the king and 
-    # use it to determing if board.can_block_or_capture?
     if !board.attack_rules_followed?(row, col, player_color, found_piece, board.opponent_king(player_color))
-      board.current_player_pieces(player_color).each do |piece|
-        piece_row = piece.location[0]
-        piece_col = piece.location[1]
-        if board.attack_rules_followed?(piece_row, piece_col, player_color, piece, board.black_king)
-          found_piece = piece
-          puts "found_piece: #{found_piece}"
-          puts "found_piece_location: #{found_piece.location}"
-          break
-
-        end
-      end
+      found_piece = find_revealed_attacker_piece(row, col, player_color, found_piece, board)
     end
+    
     every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
+  end
+
+  # necessary for if the active piece doesn't threaten king
+  # but moves out of the way of a piece that does threaten king,
+  # and that line of attack results in a check
+  # in that case, find the piece that CAN attack the king and 
+  # use it to determine if board.can_block_or_capture?
+  def find_revealed_attacker_piece(row, col, player_color, found_piece, board)
+    board.current_player_pieces(player_color).each do |piece|
+      piece_row = piece.location[0]
+      piece_col = piece.location[1]
+      opponent_king = board.opponent_king(player_color)
+      return piece if board.attack_rules_followed?(piece_row, piece_col, player_color, piece, opponent_king)
+
+    end
+    # ensure a piece (not an array) is returned
+    found_piece
   end
 
   def every_king_move_results_in_check?(player_color, board)
@@ -261,20 +262,21 @@ class Game
   def simulate_and_examine_board_state(move, player_color, duplicate)
     duplicate.assign_piece_type(move)
     duplicate.assign_target_variables(move, player_color)
-    return false unless basic_conditions_met?(player_color, duplicate)
+    return false unless piece_found_and_valid_move?(player_color, duplicate)
 
     duplicate.re_ambiguate
     duplicate.update_board(move, player_color)
   end
 
-  def basic_conditions_met?(player_color, board)
+  def piece_found_and_valid_move?(player_color, board)
     board.piece_found &&
       board.valid_move?(board.start_row, board.start_column, player_color, board.found_piece)
   end
 
   def announce_check(player_color, duplicate)
     puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check &&
-                                                                                                !@self_in_check
+                                                                                                !@self_in_check && 
+                                                                                                @follows_rules
     # prevent spamming of message as cpu cycles thru random moves
     return if @cpu_mode && @current_player == @player2
 
