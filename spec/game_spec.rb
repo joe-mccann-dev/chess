@@ -97,7 +97,7 @@ describe Game do
 
     end
 
-    context 'when white moves a piece and that move results in checkmate' do
+    context 'when white moves a piece that reveals a check, leading to checkmate' do
     
 
       let(:king_almost_in_checkmate) {[

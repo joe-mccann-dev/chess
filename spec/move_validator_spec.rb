@@ -399,7 +399,7 @@ describe '#non_pawn_attack_available?' do
       Array.new(8) { |c| Pawn.new(2, [1, c]) },
       Array.new(8) { |c| EmptySquare.new([2, c]) },
       Array.new(8) { |c| EmptySquare.new([3, c]) },
-      Array.new(8) { |c| EmptySquare.new([4, c]) },
+      Array.new(8) { |c| c == 4 ? Pawn.new(1, [4, 4]) : EmptySquare.new([4, c]) },
       Array.new(8) { |c| EmptySquare.new([5, c]) },
       Array.new(8) { |c| Pawn.new(1, [6, c]) },
       [Rook.new(1, [7, 0]), Queen.new(2, [7,1]), EmptySquare.new([7,2]), Rook.new(1, [7,3]), King.new(1, [7, 4]), Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7]) ]
@@ -407,19 +407,41 @@ describe '#non_pawn_attack_available?' do
 
     subject(:board) { Board.new(queen_attacks) }
 
-    before do
-      move = 'Qxc2'
-      board.assign_piece_type(move)
-      board.assign_target_variables(move, :black)
+
+    context 'the path is clear' do
+
+      before do
+        move = 'Qxc2'
+        board.assign_piece_type(move)
+        board.assign_target_variables(move, :black)
+      end
+  
+      it 'returns true' do
+        start_row = 7
+        start_col = 1
+        starting_piece = board.squares[start_row][start_col]
+        target = board.squares[6][2]
+        result = board.non_pawn_attack_available?(start_row, start_col, :black, starting_piece, target)
+        expect(result).to be(true)
+      end
     end
 
-    it 'returns true if path is clear' do
-      start_row = 7
-      start_col = 1
-      starting_piece = board.squares[start_row][start_col]
-      target = board.squares[6][2]
-      result = board.non_pawn_attack_available?(start_row, start_col, :black, starting_piece, target)
-      expect(result).to be(true)
+    context 'the path is not clear' do
+
+      before do
+        move = 'Qxe4'
+        board.assign_piece_type(move)
+        board.assign_target_variables(move, :black)
+      end
+
+      it 'returns false' do
+        start_row = 7
+        start_col = 1
+        starting_piece = board.squares[start_row][start_col]
+        target = board.squares[4][4]
+        result = board.non_pawn_attack_available?(start_row, start_col, :black, starting_piece, target)
+        expect(result).to be(false)
+      end
     end
   end
 end

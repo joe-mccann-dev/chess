@@ -78,22 +78,28 @@ module Display
   def show_help
     puts <<-HEREDOC
     
-    Available Commands: save|load|help|quit|resign|draw
+    #{'commands'.colorize(:green)}: #{'save'.colorize(:green)}|#{'load'.colorize(:green)}|#{'help'.colorize(:green)}|#{'save'.colorize(:green)}|#{'resign'.colorize(:green)}|#{'draw'.colorize(:green)}
 
-    Move Examples:
-      Pawns: e5, exd6, a5, axb6, etc . . .
-      Main Pieces: Ke7, Kxe7, Nc3, Nxc6, etc . . .
-      Castles: 0-0, 0-0-0
+    #{'move Examples'.colorize(:green)}:
 
     This game uses traditional algebraic notation to enter moves.
-    Attack moves must preface destination square with 'x'
+    Attack moves must preface destination square with an #{'x'.colorize(:green)}
 
+    Every piece except the pawn is assigned a piece prefix:
 
-    Each piece, except the Pawn, is assigned a piece prefix:
-    King, Queen, Rook, Knight, Bishop = K, Q, R, N, B
+      #{'King'.colorize(:green)}   => K
+      #{'Queen'.colorize(:green)}  => Q
+      #{'Rook'.colorize(:green)}   => R
+      #{'Knight'.colorize(:green)} => N
+      #{'Bishop'.colorize(:green)} => B
 
-    Moves are case sensitive . . . use Qe7, not qe7. use e5, not E5
-    If more than one piece can go to a location, you'll be prompted to select one.
+      (moves are case sensitive)
+
+      #{'pawns'.colorize(:green)}    =>   e5, exd6, a5, axb6 . . .
+      #{'other'.colorize(:green)}    =>   Ke7, Kxe7, Nc3, Nxc6 . . .
+      #{'castling'.colorize(:green)} =>   0-0, 0-0-0
+
+    If disambiguation is required, you'll be prompted to choose which piece you'd like to move.
 
     HEREDOC
   end

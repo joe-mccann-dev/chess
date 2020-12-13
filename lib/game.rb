@@ -286,6 +286,8 @@ class Game
   def request_player_move(player)
     exit if game_over?
     puts
+    puts " enter[#{'help'.colorize(:green)}] to see available commands"
+    puts
     print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
     gets.chomp
