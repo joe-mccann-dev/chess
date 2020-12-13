@@ -31,11 +31,7 @@ Attack moves must preface destination square with an "x".
 
 Every piece except the pawn is assigned a piece prefix:
 
-  - King   => K
-  - Queen  => Q
-  - Rook   => R
-  - Knight => N
-  - Bishop => B
+  King, Queen, Rook, Knight, Bishop == K, Q, R, N, B
 
   - pawns      =>   e5, exd6, a5, axb6 . . .
   - others     =>   Ke7, Kxe7, Nc3, Nxc6 . . .
