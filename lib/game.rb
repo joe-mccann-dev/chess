@@ -130,7 +130,7 @@ class Game
     loop do
       break if valid_input?(move)
 
-      puts ' invalid input. enter help for available commands'.colorize(:red) unless non_move_command?(move)
+      puts ' invalid input. please try again.'.colorize(:red) unless non_move_command?(move)
       move = request_player_move(player)
     end
     move
@@ -285,11 +285,7 @@ class Game
 
   def request_player_move(player)
     exit if game_over?
-    puts
-    puts " enter[#{'help'.colorize(:green)}] to see available commands"
-    puts
-    print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
-      .colorize(:magenta)
+    ask_for_move(player)
     gets.chomp
   end
 end

@@ -382,7 +382,7 @@ describe '#non_pawn_attack_available?' do
       board.assign_target_variables(move, :black)
     end
 
-    it 'returns true if path is clear' do
+    it 'returns true' do
       start_row = 7
       start_col = 1
       starting_piece = board.squares[start_row][start_col]

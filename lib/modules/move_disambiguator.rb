@@ -15,7 +15,7 @@
   # when checking for check, thereby prompting the user a second time unnecessarily.
   # the use of @@disambiguated prevents this from happening.
   def decide_which_piece_to_move(pieces, piece_type, disambiguated)
-    unless disambiguated
+    unless disambiguated || cpu_move_requires_disambiguation?(pieces)
       request_disambiguation(pieces, piece_type)
       response = gets.chomp.to_i
     end

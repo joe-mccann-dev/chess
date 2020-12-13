@@ -78,14 +78,14 @@ module Display
   def show_help
     puts <<-HEREDOC
     
-    #{'commands'.colorize(:green)}: #{'save'.colorize(:green)}|#{'load'.colorize(:green)}|#{'help'.colorize(:green)}|#{'save'.colorize(:green)}|#{'resign'.colorize(:green)}|#{'draw'.colorize(:green)}
-
-    #{'move Examples'.colorize(:green)}:
+    #{'commands'.colorize(:green)}: #{'save'.colorize(:green)}|#{'load'.colorize(:green)}|#{'help'.colorize(:green)}|#{'quit'.colorize(:green)}|#{'resign'.colorize(:green)}|#{'draw'.colorize(:green)}
 
     This game uses traditional algebraic notation to enter moves.
     Attack moves must preface destination square with an #{'x'.colorize(:green)}
 
-    Every piece except the pawn is assigned a piece prefix:
+    #{'how to move'.colorize(:green)}:
+
+      Every piece except the pawn is assigned a piece prefix:
 
       #{'King'.colorize(:green)}   => K
       #{'Queen'.colorize(:green)}  => Q
@@ -93,11 +93,12 @@ module Display
       #{'Knight'.colorize(:green)} => N
       #{'Bishop'.colorize(:green)} => B
 
-      (moves are case sensitive)
+      #{'pawns'.colorize(:green)}      =>   e5, exd6, a5, axb6 . . .
+      #{'other'.colorize(:green)}      =>   Ke7, Kxe7, Nc3, Nxc6 . . .
+      #{'castling'.colorize(:green)}   =>   0-0, 0-0-0 (zeroes)
+      #{'en passant'.colorize(:green)} =>   exd6 (attack as if enemy has just moved one square)
 
-      #{'pawns'.colorize(:green)}    =>   e5, exd6, a5, axb6 . . .
-      #{'other'.colorize(:green)}    =>   Ke7, Kxe7, Nc3, Nxc6 . . .
-      #{'castling'.colorize(:green)} =>   0-0, 0-0-0
+      (moves are case sensitive)
 
     If disambiguation is required, you'll be prompted to choose which piece you'd like to move.
 
@@ -129,5 +130,13 @@ module Display
 
   def move_not_allowed_message(piece_type)
     " move not allowed for #{piece_type}. please try again...".colorize(:red)
+  end
+
+  def ask_for_move(player)
+    puts
+    puts " enter[#{'help'.colorize(:green)}] to see available commands"
+    puts
+    print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
+      .colorize(:magenta)
   end
 end
