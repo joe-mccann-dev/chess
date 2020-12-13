@@ -362,4 +362,53 @@ describe Game do
       end
     end
   end
+
+  describe '#every_king_move_results_in_check?' do
+
+    let(:attacking_color) { :white }
+
+    context 'when every move puts king in check' do
+
+      let(:king_cannot_escape) {[
+        [EmptySquare.new([0,0]), EmptySquare.new([0,1]), EmptySquare.new([0, 2]), EmptySquare.new([0,3]), EmptySquare.new([0,4]), Queen.new(2, [0, 5]), Bishop.new(2, [0,6]), EmptySquare.new([0,7])],
+        [Pawn.new(2, [1, 0]), Pawn.new(2, [1, 1]), Pawn.new(2, [1, 2]), EmptySquare.new([1, 3]), Pawn.new(2, [1, 4]), Pawn.new(2, [1, 5]), Pawn.new(2, [1, 6]), Pawn.new(2, [1, 7])],
+        [EmptySquare.new([2,0]), EmptySquare.new([2, 1]), King.new(2, [2,2]), EmptySquare.new([2,3]), EmptySquare.new([2, 4]), Knight.new(1, [2,5]), EmptySquare.new([2,6]), Knight.new(2, [2,7])],
+        [Pawn.new(1, [3,0]), EmptySquare.new([3, 1]), Pawn.new(1, [3, 2]), EmptySquare.new([3,3]), Pawn.new(1, [3,4]), EmptySquare.new([3,5]), EmptySquare.new([3,6]), EmptySquare.new([3,7])],
+        [EmptySquare.new([4, 0]), EmptySquare.new([4, 1]), Queen.new(1, [4, 2]), EmptySquare.new([4,3]), EmptySquare.new([4,4]), EmptySquare.new([4,5]), EmptySquare.new([4,6]), EmptySquare.new([4,7])],
+        [EmptySquare.new([5, 0]), Pawn.new(1, [5,1]), EmptySquare.new([5,2]), Pawn.new(2, [5,3]), EmptySquare.new([5,4]), Bishop.new(1, [5,5]), EmptySquare.new([5,6]), EmptySquare.new([5,7])],
+        Array.new(8) { |c| EmptySquare.new([6, c])},
+        Array.new(8) { |c| c == 4 ? King.new(1, [7,4]) : EmptySquare.new([7, c])}
+      ]}
+
+      subject(:board) { Board.new(king_cannot_escape) }
+      subject(:game) { described_class.new(board) }
+
+      it 'returns true' do
+        result = game.every_king_move_results_in_check?(attacking_color, board)
+        expect(result).to be(true)
+      end
+    end
+
+    context 'when king has escape move available' do
+      # queen above replaced with empty square
+      let(:king_can_escape) {[
+        [EmptySquare.new([0,0]), EmptySquare.new([0,1]), EmptySquare.new([0, 2]), EmptySquare.new([0,3]), EmptySquare.new([0,4]), Queen.new(2, [0, 5]), Bishop.new(2, [0,6]), EmptySquare.new([0,7])],
+        [Pawn.new(2, [1, 0]), Pawn.new(2, [1, 1]), Pawn.new(2, [1, 2]), EmptySquare.new([1, 3]), Pawn.new(2, [1, 4]), Pawn.new(2, [1, 5]), Pawn.new(2, [1, 6]), Pawn.new(2, [1, 7])],
+        [EmptySquare.new([2,0]), EmptySquare.new([2, 1]), King.new(2, [2,2]), EmptySquare.new([2,3]), EmptySquare.new([2, 4]), Knight.new(1, [2,5]), EmptySquare.new([2,6]), Knight.new(2, [2,7])],
+        [Pawn.new(1, [3,0]), EmptySquare.new([3, 1]), Pawn.new(1, [3,2]), EmptySquare.new([3,3]), Pawn.new(1, [3,4]), EmptySquare.new([3,5]), EmptySquare.new([3,6]), EmptySquare.new([3,7])],
+        [EmptySquare.new([4, 0]), EmptySquare.new([4, 1]), EmptySquare.new([4,2]), EmptySquare.new([4,3]), EmptySquare.new([4,4]), EmptySquare.new([4,5]), EmptySquare.new([4,6]), EmptySquare.new([4,7])],
+        [EmptySquare.new([5, 0]), Pawn.new(1, [5,1]), EmptySquare.new([5,2]), Pawn.new(2, [5,3]), EmptySquare.new([5,4]), Bishop.new(1, [5,5]), EmptySquare.new([5,6]), EmptySquare.new([5,7])],
+        Array.new(8) { |c| EmptySquare.new([6, c])},
+        Array.new(8) { |c| c == 4 ? King.new(1, [7,4]) : EmptySquare.new([7, c])}
+      ]}
+
+      subject(:board) { Board.new(king_can_escape) }
+      subject(:game) { described_class.new(board) }
+
+      it 'returns false' do
+        result = game.every_king_move_results_in_check?(attacking_color, board)
+        expect(result).to be(false)
+      end
+    end
+  end
 end

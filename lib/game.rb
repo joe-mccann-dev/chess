@@ -224,7 +224,7 @@ class Game
       !board.can_block_or_capture?(player_color, found_piece)
   end
 
-  # necessary for if the active piece doesn't threaten king
+  # necessary for when the active piece doesn't threaten king
   # but moves out of the way of a piece that does threaten king,
   # and that line of attack results in a check
   # in that case, find the piece that CAN attack the king and 

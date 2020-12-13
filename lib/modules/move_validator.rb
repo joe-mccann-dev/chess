@@ -44,13 +44,21 @@ module MoveValidator
 
   def attack_available?(start_row, start_column, player_color, piece, target)
     if piece.is_a?(Pawn)
-      manage_pawn_attack(piece, player_color, target)
+      pawn_attack_available?(piece, player_color, target)
     else
-      manage_non_pawn_attacks(start_row, start_column, player_color, piece, target)
+      non_pawn_attack_available?(start_row, start_column, player_color, piece, target)
     end
   end
 
-  def manage_non_pawn_attacks(start_row, start_column, player_color, piece, target)
+  def pawn_attack_available?(piece, player_color, target)
+    if piece.en_passant
+      manage_en_passant_attack(piece, player_color, target)
+    else
+      piece.attack_mode && target.symbolic_color != player_color
+    end
+  end
+
+  def non_pawn_attack_available?(start_row, start_column, player_color, piece, target)
     # can't attack an empty square unless you're a pawn making an en_passant attack
     return false if @target.is_a?(EmptySquare)
 
@@ -60,14 +68,6 @@ module MoveValidator
       path_to_horiz_vert_attack_clear?(start_row, start_column, player_color, target)
     else
       path_to_diagonal_attack_clear?(start_row, start_column, player_color, target)
-    end
-  end
-
-  def manage_pawn_attack(piece, player_color, target)
-    if piece.en_passant
-      manage_en_passant_attack(piece, player_color, target)
-    else
-      piece.attack_mode && target.symbolic_color != player_color
     end
   end
 
