@@ -31,11 +31,11 @@ Attack moves must preface destination square with an "x".
 
 Every piece except the pawn is assigned a piece prefix:
 
-  King   => K
-  Queen  => Q
-  Rook   => R
-  Knight => N
-  Bishop => B
+  - King   => K
+  - Queen  => Q
+  - Rook   => R
+  - Knight => N
+  - Bishop => B
 
   - pawns      =>   e5, exd6, a5, axb6 . . .
   - others     =>   Ke7, Kxe7, Nc3, Nxc6 . . .
@@ -59,7 +59,7 @@ Moves are case sensitive.
 
 ##### Castling
 
-Castling is only possible if the following are true
+Castling is only possible if the following are true:
 
 - Your King is not currently in check
 - Neither your King nor your relevant Rook has moved previously
