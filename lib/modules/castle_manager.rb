@@ -144,7 +144,7 @@ module CastleManager
 
   def reposition_queen_side_rook
     return unless @relevant_rook.is_a?(Rook)
-    
+
     rook_row = @relevant_rook.location[0]
     rook_col = @relevant_rook.location[1]
     @squares[@dest_row][@dest_column + 1] = @relevant_rook

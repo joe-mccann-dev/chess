@@ -84,10 +84,10 @@ module CheckmateManager
     # en_passant attacker and opponent king will have one square between them prior to attacker putting opponent king in check
     # prevent an invalid move from erroneously causing method to return true
     return true if piece.is_a?(Pawn) && attacker_col == king.location[1] &&
-      (attacker_row - king.location[0]).abs == 2 && piece_found_and_valid_move
+                   (attacker_row - king.location[0]).abs == 2 && piece_found_and_valid_move
 
     return unless piece.allowed_move?(king.location[0], king.location[1])
-    
+
     path_to_horiz_vert_attack_clear?(attacker_row, attacker_col, player_color, king) ||
       path_to_diagonal_attack_clear?(attacker_row, attacker_col, player_color, king)
   end

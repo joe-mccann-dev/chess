@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module Display
-  
   WHITE = "\u265F".colorize(:light_yellow).freeze
   BLACK = "\u265F".colorize(:cyan).freeze
 
   def display(starting_row = 8)
-    puts `clear` if !@self_in_check
+    puts `clear` unless @self_in_check
     print_captured_white_pieces
     @squares.each_with_index do |row, index|
       print "  #{starting_row} "
@@ -19,16 +18,12 @@ module Display
   end
 
   def print_captured_white_pieces
-    if @captured_by_black.any?
-      @captured_by_black.each { |piece| print "  #{piece.displayed_color}"}
-    end
+    @captured_by_black.each { |piece| print "  #{piece.displayed_color}"} if @captured_by_black.any?
     puts "\n\n"
   end
 
   def print_captured_black_pieces
-    if @captured_by_white.any?
-      @captured_by_white.each { |piece| print "  #{piece.displayed_color}"}
-    end
+    @captured_by_white.each { |piece| print "  #{piece.displayed_color}"} if @captured_by_white.any?
     puts
   end
 
@@ -45,9 +40,9 @@ module Display
   end
 
   def print_on_light_black(square)
-    print "   ".on_light_black if square.is_a?(EmptySquare)
+    print '   '.on_light_black if square.is_a?(EmptySquare)
     unless square.is_a?(EmptySquare)
-      if square == @active_piece 
+      if square == @active_piece
         print " #{square.displayed_color} ".on_magenta
       else
         print " #{square.displayed_color} ".on_light_black
@@ -56,9 +51,9 @@ module Display
   end
 
   def print_on_black(square)
-    print "   ".on_black if square.is_a?(EmptySquare)
+    print '   '.on_black if square.is_a?(EmptySquare)
     unless square.is_a?(EmptySquare)
-      if square == @active_piece 
+      if square == @active_piece
         print " #{square.displayed_color} ".on_magenta
       else
         print " #{square.displayed_color} ".on_black
@@ -72,7 +67,7 @@ module Display
   end
 
   def thanks_for_playing
-    " Thanks for playing! Have a great day!".colorize(:green)
+    ' Thanks for playing! Have a great day!'.colorize(:green)
   end
 
   def show_help
@@ -106,7 +101,7 @@ module Display
   end
 
   def show_ellipsis
-    puts "  . . . . . ".colorize(:green)
+    puts '  . . . . . '.colorize(:green)
     sleep(0.45)
   end
 
@@ -120,7 +115,7 @@ module Display
       puts " enter[#{i + 1}] for #{c}".colorize(:green)
     end
   end
-  
+
   def show_cpu_pawn_promotion(choices, choice, current_player)
     return unless current_player.name == 'CPU'
 

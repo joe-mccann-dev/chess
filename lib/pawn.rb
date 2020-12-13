@@ -4,17 +4,17 @@ class Pawn
   include AdjacencyListGenerator
   include EnPassantManager
 
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant, 
+  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :attack_mode, :en_passant,
               :just_moved_two, :num_moves, :prefix
 
-  def initialize(color, location, unicode = "♟")
+  def initialize(color, location, unicode = '♟')
     @num_moves = 0
     @location = location
     @captured = false
     @attack_mode = false
     @en_passant = false
     @just_moved_two = false
-    color == 1 ? @displayed_color = unicode.colorize(:light_yellow) : @displayed_color = unicode.colorize(:cyan)
+    @displayed_color = color == 1 ? unicode.colorize(:light_yellow) : unicode.colorize(:cyan)
     @unicode = unicode
     @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
     @prefix = ''
@@ -52,7 +52,7 @@ class Pawn
   def attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
     if en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
       @en_passant = true
-      if @symbolic_color == :white 
+      if @symbolic_color == :white
         start_column != dest_column && !squares[dest_row + 1][dest_column].is_a?(EmptySquare)
       else
         start_column != dest_column && !squares[dest_row - 1][dest_column].is_a?(EmptySquare)
@@ -61,7 +61,7 @@ class Pawn
       start_column != dest_column && !squares[dest_row][dest_column].is_a?(EmptySquare)
     end
   end
-    
+
   def assign_symbolic_color(displayed_color, unicode)
     displayed_color == unicode.colorize(:light_yellow) ? :white : :black
   end

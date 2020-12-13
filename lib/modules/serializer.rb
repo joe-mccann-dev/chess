@@ -13,12 +13,12 @@ module Serializer
   end
 
   def verify_filename
-    print " please enter a filename for your game: ".colorize(:green)
+    print ' please enter a filename for your game: '.colorize(:green)
     filename = gets.chomp.strip
     loop do
       break if filename.match?(/\w/)
 
-      puts " please only enter letters, digits, or underscores".colorize(:red)
+      puts ' please only enter letters, digits, or underscores'.colorize(:red)
       filename = gets.chomp.strip
     end
     filename
@@ -53,13 +53,13 @@ module Serializer
   end
 
   def verify_selection(saved_games)
-    print " enter a number to load a game: ".colorize(:green)
+    print ' enter a number to load a game: '.colorize(:green)
     selection = gets.chomp
     loop do
       break if selection.to_i.between?(1, saved_games.length)
 
-      puts " ** please enter a valid number **".colorize(:red)
-      print " enter a number to load a game: ".colorize(:green)
+      puts ' ** please enter a valid number **'.colorize(:red)
+      print ' enter a number to load a game: '.colorize(:green)
       selection = gets.chomp
     end
     selection.to_i

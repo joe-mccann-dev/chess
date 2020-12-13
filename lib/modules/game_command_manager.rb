@@ -29,7 +29,7 @@ module GameCommandManager
 
   def request_draw
     @draw = true
-    puts " ** Game ends in a draw **".colorize(:green)
+    puts ' ** Game ends in a draw **'.colorize(:green)
     puts thanks_for_playing
   end
 end

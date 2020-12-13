@@ -22,8 +22,8 @@ class Game
   def start_game
     @board.display
     print " player1's name: ".colorize(:magenta) unless @player2.name == 'CPU'
-    print " Please enter your name: ".colorize(:magenta) if @player2.name == 'CPU'
-    
+    print ' Please enter your name: '.colorize(:magenta) if @player2.name == 'CPU'
+
     @player1.request_name
     print "\n player2's name: ".colorize(:magenta) unless @player2.name == 'CPU'
     @player2.request_name
@@ -212,14 +212,14 @@ class Game
 
   def rules_common_to_stalemate_and_checkmate?(player_color, board, found_piece)
     return if found_piece.nil?
-    
+
     board.turn_attack_move_on
     row = found_piece.location[0]
     col = found_piece.location[1]
-    if !board.attack_rules_followed?(row, col, player_color, found_piece, board.opponent_king(player_color))
+    unless board.attack_rules_followed?(row, col, player_color, found_piece, board.opponent_king(player_color))
       found_piece = find_revealed_attacker_piece(row, col, player_color, found_piece, board)
     end
-    
+
     every_king_move_results_in_check?(player_color, board) &&
       !board.can_block_or_capture?(player_color, found_piece)
   end
@@ -227,15 +227,14 @@ class Game
   # necessary for when the active piece doesn't threaten king
   # but moves out of the way of a piece that does threaten king,
   # and that line of attack results in a check
-  # in that case, find the piece that CAN attack the king and 
+  # in that case, find the piece that CAN attack the king and
   # use it to determine if board.can_block_or_capture?
-  def find_revealed_attacker_piece(row, col, player_color, found_piece, board)
+  def find_revealed_attacker_piece(_row, _col, player_color, found_piece, board)
     board.current_player_pieces(player_color).each do |piece|
       piece_row = piece.location[0]
       piece_col = piece.location[1]
       opponent_king = board.opponent_king(player_color)
       return piece if board.attack_rules_followed?(piece_row, piece_col, player_color, piece, opponent_king)
-
     end
     # ensure a piece (not an array) is returned
     found_piece
@@ -275,7 +274,7 @@ class Game
 
   def announce_check(player_color, duplicate)
     puts "\n  ** #{duplicate.opposite(player_color).capitalize} in check! **".colorize(:red) if @opponent_in_check &&
-                                                                                                !@self_in_check && 
+                                                                                                !@self_in_check &&
                                                                                                 @follows_rules
     # prevent spamming of message as cpu cycles thru random moves
     return if @cpu_mode && @current_player == @player2

@@ -22,12 +22,12 @@ module CPUMoveGenerator
 
   def find_empty_squares(empty_squares = [])
     @squares.each do |row|
-      row.each { |s| empty_squares << s if s.is_a?(EmptySquare)}
+      row.each { |s| empty_squares << s if s.is_a?(EmptySquare) }
     end
     empty_squares
   end
 
-  def find_regular_moves(empty_squares, pieces, checking_for_stalemate, moves = [])
+  def find_regular_moves(empty_squares, pieces, _checking_for_stalemate, moves = [])
     empty_squares.each do |square|
       dest_row = square.location[0]
       dest_col = square.location[1]

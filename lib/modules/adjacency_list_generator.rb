@@ -11,9 +11,7 @@ module AdjacencyListGenerator
   def adj_squares(row, col)
     adj_list = []
     row_moves.length.times do |n|
-      if on_board?(row, row_moves[n], col, col_moves[n])
-        adj_list << [row + row_moves[n], col + col_moves[n]]
-      end
+      adj_list << [row + row_moves[n], col + col_moves[n]] if on_board?(row, row_moves[n], col, col_moves[n])
     end
     adj_list
   end

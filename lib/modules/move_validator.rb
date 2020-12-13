@@ -25,7 +25,9 @@ module MoveValidator
 
   def regular_move_rules_followed?(start_row, start_column, piece, target = @target)
     unless @checking_for_check
-      piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1]) if piece.is_a?(Pawn)
+      if piece.is_a?(Pawn)
+        piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1])
+      end
     end
     available_location?(start_row, start_column, piece, target) &&
       piece.allowed_move?(target.location[0], target.location[1])
@@ -113,7 +115,7 @@ module MoveValidator
     starting_place.upto(destination) do |r|
       current_square = @squares[r][target.location[1]]
       return false unless current_square.is_a?(EmptySquare) ||
-        current_square_defending_king?(destination, current_square)
+                          current_square_defending_king?(destination, current_square)
     end
     true
   end
@@ -135,7 +137,7 @@ module MoveValidator
     starting_place.upto(destination) do |c|
       current_square = @squares[start_row][c]
       return false unless current_square.is_a?(EmptySquare) ||
-        current_square_defending_king?(destination, current_square)
+                          current_square_defending_king?(destination, current_square)
     end
     true
   end
@@ -161,14 +163,14 @@ module MoveValidator
     true
   end
 
-  # prevents defending king from being in the way of a determination of check, 
-  # e.g. Queen to the right, potential move to the left 
+  # prevents defending king from being in the way of a determination of check,
+  # e.g. Queen to the right, potential move to the left
   # => he is in the way and it won't register as the move putting himself in check
-  def current_square_defending_king?(destination, current_square)
+  def current_square_defending_king?(_destination, current_square)
     return false unless @checking_for_check
-    
+
     current_square.is_a?(King) &&
-      #ensure it's not the attacker's king, @target will always be enemy king when @checking_for_check
+      # ensure it's not the attacker's king, @target will always be enemy king when @checking_for_check
       current_square.symbolic_color == @target.symbolic_color
   end
 

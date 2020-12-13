@@ -1,4 +1,4 @@
- module MoveDisambiguator
+module MoveDisambiguator
   def disambiguate_if_necessary(pieces, piece_type, disambiguated)
     if pieces.length > 1
       decide_which_piece_to_move(pieces, piece_type, disambiguated)
@@ -10,7 +10,7 @@
     end
   end
 
-  # d/t way code is structured, 
+  # d/t way code is structured,
   # (@duplicate) in Game, this method gets called twice
   # when checking for check, thereby prompting the user a second time unnecessarily.
   # the use of @@disambiguated prevents this from happening.
@@ -25,7 +25,7 @@
     loop do
       break if response.between?(1, pieces.length)
 
-      puts " ** please select a piece to move by choosing a valid number **".colorize(:red)
+      puts ' ** please select a piece to move by choosing a valid number **'.colorize(:red)
       print "#{piece_type} to move: ".colorize(:magenta)
       request_disambiguation(pieces, piece_type)
       response = gets.chomp.to_i

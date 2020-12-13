@@ -67,7 +67,7 @@ module SetupBoardVariables
       translate_letter_to_index(move[0].downcase)
     elsif move.length == 3
       translate_letter_to_index(move[1].downcase)
-    else 
+    else
       translate_letter_to_index(move[2].downcase)
     end
   end
