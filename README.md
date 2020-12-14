@@ -67,7 +67,7 @@ Castling is only possible if the following are true:
 - Stalemate => A player has no legal moves and their king is not in check.
 - Game will conclude upon either stalemate or checkmate
 
-#### Reflection
+### Reflection
 
 This project was very challenging. If I am honest, I think I struggled with organization and a lack of planning. I think those two things slowed me down and added unnecessary difficulty to an already difficult task. 
 
