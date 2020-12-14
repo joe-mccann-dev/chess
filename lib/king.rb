@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# contains code for legal king movements
 class King
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :num_moves, :in_check, :prefix

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# generates list of available squares to any given piece regardless of legality
 module AdjacencyListGenerator
   def available_squares
     row = @location[0]

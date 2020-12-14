@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# code for handling castle moves
 module CastleManager
   def assign_castle_targets(move, player_color)
     @castle_move = true
@@ -35,20 +36,26 @@ module CastleManager
     @piece_found = true
     if player_color == :white
       assign_start_location(@squares[7][4])
+      # white king
       @squares[7][4]
     else
       assign_start_location(@squares[0][4])
+      # black king
       @squares[0][4]
     end
   end
 
   def castle_rules_followed?(player_color)
     king_and_rook = if player_color == :white
-                      white_pieces.select { |piece| piece == @relevant_rook && @relevant_rook.is_a?(Rook) || piece.is_a?(King) }
+                      white_pieces.select { |piece| piece == @relevant_rook && castling_pair_legal?(piece) }
                     else
-                      black_pieces.select { |piece| piece == @relevant_rook && @relevant_rook.is_a?(Rook) || piece.is_a?(King) }
+                      black_pieces.select { |piece| piece == @relevant_rook && castling_pair_legal?(piece) }
                     end
     all_castle_conditions_true?(king_and_rook, player_color)
+  end
+
+  def castling_pair_legal?(piece)
+    @relevant_rook.is_a?(Rook) || piece.is_a?(King)
   end
 
   def all_castle_conditions_true?(king_and_rook, player_color)
@@ -60,17 +67,25 @@ module CastleManager
   def opponent_cannot_attack_castle_path?(player_color, castle_type)
     @attack_move = true
     if player_color == :white
-      if castle_type == :king_side
-        cannot_attack_castle_path?(player_color, 7, 5)
-      else
-        cannot_attack_castle_path?(player_color, 7, 3)
-      end
+      white_castle_path_safe?(player_color, castle_type)
     else
-      if castle_type == :king_side
-        cannot_attack_castle_path?(player_color, 0, 5)
-      else
-        cannot_attack_castle_path?(player_color, 0, 3)
-      end
+      black_castle_path_safe?(player_color, castle_type)
+    end
+  end
+
+  def white_castle_path_safe?(player_color, castle_type)
+    if castle_type == :king_side
+      cannot_attack_castle_path?(player_color, 7, 5)
+    else
+      cannot_attack_castle_path?(player_color, 7, 3)
+    end
+  end
+
+  def black_castle_path_safe?(player_color, castle_type)
+    if castle_type == :king_side
+      cannot_attack_castle_path?(player_color, 0, 5)
+    else
+      cannot_attack_castle_path?(player_color, 0, 3)
     end
   end
 
@@ -83,23 +98,26 @@ module CastleManager
   end
 
   def castle_path_free_from_attack?(pieces, player_color, row, col)
-    pieces.none? do |p|
-      p.turn_attack_mode_on if p.is_a?(Pawn)
-      if p.is_a?(Pawn) || p.is_a?(Knight)
-        p.allowed_move?(row, col)
+    pieces.none? do |piece|
+      piece.turn_attack_mode_on if piece.is_a?(Pawn)
+      if piece.is_a?(Pawn) || piece.is_a?(Knight)
+        piece.allowed_move?(row, col)
       else
-        path_from_opponent_to_castle_path_clear?(p, player_color, row, col)
+        path_from_opponent_to_castle_path_clear?(piece, player_color, row, col)
       end
     end
   end
 
-  def path_from_opponent_to_castle_path_clear?(p, player_color, row, col)
-    if p.allowed_move?(row, col)
-      if horizontal_vertical_move?(p.location[0], p.location[1], @squares[row][col])
-        path_to_horiz_vert_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
-      else
-        path_to_diagonal_attack_clear?(p.location[0], p.location[1], player_color, @squares[row][col])
-      end
+  def path_from_opponent_to_castle_path_clear?(piece, player_color, row, col)
+    return unless piece.allowed_move?(row, col)
+
+    piece_row = piece.location[0]
+    piece_col = piece.location[1]
+
+    if horizontal_vertical_move?(piece_row, piece_col, @squares[row][col])
+      path_to_horiz_vert_attack_clear?(piece_row, piece_col, player_color, @squares[row][col])
+    else
+      path_to_diagonal_attack_clear?(piece_row, piece_col, player_color, @squares[row][col])
     end
   end
 
@@ -139,7 +157,7 @@ module CastleManager
     @squares[@dest_row][@dest_column - 1] = @relevant_rook
     @squares[rook_row][rook_col] = EmptySquare.new([rook_row, rook_col])
     # new rook location is one column to the left of King's new position
-    @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] - 1)
+    update_rook_location(-1)
   end
 
   def reposition_queen_side_rook
@@ -150,6 +168,10 @@ module CastleManager
     @squares[@dest_row][@dest_column + 1] = @relevant_rook
     @squares[rook_row][rook_col] = EmptySquare.new([rook_row, rook_col])
     # new rook location is one column to the right of King's new position
-    @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + 1)
+    update_rook_location(1)
+  end
+
+  def update_rook_location(col_diff)
+    @relevant_rook.update_location(@found_piece.location[0], @found_piece.location[1] + col_diff)
   end
 end

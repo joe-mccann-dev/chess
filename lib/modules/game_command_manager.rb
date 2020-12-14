@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# handles non-move commands
 module GameCommandManager
   def manage_other_commands(command)
     # #save_game and #load_game located in Serializer

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# contains code for legal Bishop movements
 class Bishop
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix

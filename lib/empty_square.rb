@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# basic class to hold vacant square locations
 class EmptySquare
   attr_reader :location, :symbolic_color
 

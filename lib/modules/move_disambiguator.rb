@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# assists in disambiguating moves, prompts player if more than one piece of same type can go to location
 module MoveDisambiguator
   def disambiguate_if_necessary(pieces, piece_type, disambiguated)
     if pieces.length > 1

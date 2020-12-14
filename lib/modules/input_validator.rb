@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# verifies input at every move
 module InputValidator
   def valid_input?(input)
     return manage_other_commands(input) if non_move_command?(input)

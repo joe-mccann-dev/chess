@@ -20,13 +20,13 @@ At the welcome screen, you'll be prompted to select a game mode. Your choices ar
 3. play a saved game (load a saved game if any are available)
 
 During any player move, you have commands available to you.
-commands: save | load | help | quit | resign | draw
+- commands: save | load | help | quit | resign | draw
 
 Game will resume progress after saving.
 
 ### How to move pieces
 
-This game uses traditional [algebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) to enter moves. However, no extra characters are required when making special moves such as "+" for check or "e.p." to en passsant attack
+This game uses traditional [algebraic notation](https://en.wikipedia.org/wiki/Algebraic_notation_(chess)) to enter moves.
 Attack moves must preface destination square with an "x".
 
 Every piece except the pawn is assigned a piece prefix:
@@ -67,10 +67,12 @@ Castling is only possible if the following are true:
 - Stalemate => A player has no legal moves and their king is not in check.
 - Game will conclude upon either stalemate or checkmate
 
-***
+#### Reflection
 
-### Reflection
+This project was very challenging. If I am honest, I think I struggled with organization and a lack of planning. I think those two things slowed me down and added unnecessary difficulty to an already difficult task. 
 
-Coding this chess game was extremely challenging. I feel like I've become a better programmer in the process, and I've learned a lot about what I would do differently. I learned I need to pay more attention to overall OOP design principles. I will spend more time planning overall code structure in the future. 
+I remember when I was doing Web Dev 101. I had finished the Rock Paper Scissors assignment and thought, "How will I ever do chess?" And then I did it. There is definite room for improvement. I didn't write enough tests, and the code is kind of messy in places. But I finished it, a functional chess game. And I couldn't have done it without the fantastic support of The Odin Project community.
 
-I also learned the importance of testing. I made this a lot harder on myself by writing the majority of my tests after the basic functionality was written. This made it a lot harder than necessary to debug (although I did get good practice using pry-byebug).
+##### TODO
+
+- Learn more about OOP and design patterns.

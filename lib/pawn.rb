@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# contains code for legal Pawn movements
 class Pawn
   include AdjacencyListGenerator
   include EnPassantManager
@@ -22,9 +23,9 @@ class Pawn
 
   def row_moves
     if @symbolic_color == :white
-      @num_moves == 0 ? [-1, -2] : [-1, 0]
+      @num_moves.zero? ? [-1, -2] : [-1, 0]
     else
-      @num_moves == 0 ? [1, 2] : [1, 0]
+      @num_moves.zero? ? [1, 2] : [1, 0]
     end
   end
 
@@ -52,13 +53,17 @@ class Pawn
   def attack_prerequisites_met?(squares, start_row, start_column, dest_row, dest_column)
     if en_passant_move?(squares, start_row, start_column, dest_row, dest_column)
       @en_passant = true
-      if @symbolic_color == :white
-        start_column != dest_column && !squares[dest_row + 1][dest_column].is_a?(EmptySquare)
-      else
-        start_column != dest_column && !squares[dest_row - 1][dest_column].is_a?(EmptySquare)
-      end
+      attack_en_passant?(squares, start_column, dest_column, dest_row)
     else
       start_column != dest_column && !squares[dest_row][dest_column].is_a?(EmptySquare)
+    end
+  end
+
+  def attack_en_passant?(squares, start_column, dest_column, dest_row)
+    if @symbolic_color == :white
+      start_column != dest_column && !squares[dest_row + 1][dest_column].is_a?(EmptySquare)
+    else
+      start_column != dest_column && !squares[dest_row - 1][dest_column].is_a?(EmptySquare)
     end
   end
 

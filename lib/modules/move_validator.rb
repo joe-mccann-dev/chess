@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# examines Boards for obstacles in movement path. determines if attacks are allowed
 module MoveValidator
   def valid_move?(start_row, start_column, player_color, piece)
     return false if piece.nil?
@@ -100,14 +101,15 @@ module MoveValidator
 
   # vertical movement
   def column_has_space_for_move?(start_row, _start_column, target)
-    if start_row < target.location[0]
-      return vertical_path_clear?(start_row + 1, target.location[0] - 1, target) if @attack_move
+    target_row = target.location[0]
+    if start_row < target_row
+      return vertical_path_clear?(start_row + 1, target_row - 1, target) if @attack_move
 
-      vertical_path_clear?(start_row + 1, target.location[0], target)
+      vertical_path_clear?(start_row + 1, target_row, target)
     else
-      return vertical_path_clear?(target.location[0] + 1, start_row - 1, target) if @attack_move
+      return vertical_path_clear?(target_row + 1, start_row - 1, target) if @attack_move
 
-      vertical_path_clear?(target.location[0], start_row - 1, target)
+      vertical_path_clear?(target_row, start_row - 1, target)
     end
   end
 
@@ -122,14 +124,15 @@ module MoveValidator
 
   # horizontal movement
   def row_has_space_for_move?(start_row, start_column, target)
-    if start_column < target.location[1]
-      return horizontal_path_clear?(start_row, start_column + 1, target.location[1] - 1) if @attack_move
+    target_column = target.location[1]
+    if start_column < target_column
+      return horizontal_path_clear?(start_row, start_column + 1, target_column - 1) if @attack_move
 
-      horizontal_path_clear?(start_row, start_column + 1, target.location[1])
+      horizontal_path_clear?(start_row, start_column + 1, target_column)
     else
-      return horizontal_path_clear?(start_row, target.location[1] + 1, start_column - 1) if @attack_move
+      return horizontal_path_clear?(start_row, target_column + 1, start_column - 1) if @attack_move
 
-      horizontal_path_clear?(start_row, target.location[1], start_column - 1)
+      horizontal_path_clear?(start_row, target_column, start_column - 1)
     end
   end
 
@@ -156,7 +159,8 @@ module MoveValidator
   def diagonal_path_clear?(objects_in_path, target)
     return false unless objects_in_path
 
-    # if any pieces in path are NOT EmptySquares or the defending king (when @checking_for_check), then the path is NOT clear
+    # if any pieces in path are NOT EmptySquares or the defending king (when @checking_for_check),
+    # then the path is NOT clear
     objects_in_path.each do |s|
       return false unless s.is_a?(EmptySquare) || current_square_defending_king?(target.location[1], s)
     end

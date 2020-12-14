@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# controls display of Board and various puts methods
 module Display
   WHITE = "\u265F".colorize(:light_yellow).freeze
   BLACK = "\u265F".colorize(:cyan).freeze
@@ -18,12 +19,12 @@ module Display
   end
 
   def print_captured_white_pieces
-    @captured_by_black.each { |piece| print "  #{piece.displayed_color}"} if @captured_by_black.any?
+    @captured_by_black.each { |piece| print "  #{piece.displayed_color}" } if @captured_by_black.any?
     puts "\n\n"
   end
 
   def print_captured_black_pieces
-    @captured_by_white.each { |piece| print "  #{piece.displayed_color}"} if @captured_by_white.any?
+    @captured_by_white.each { |piece| print "  #{piece.displayed_color}" } if @captured_by_white.any?
     puts
   end
 
@@ -41,23 +42,23 @@ module Display
 
   def print_on_light_black(square)
     print '   '.on_light_black if square.is_a?(EmptySquare)
-    unless square.is_a?(EmptySquare)
-      if square == @active_piece
-        print " #{square.displayed_color} ".on_magenta
-      else
-        print " #{square.displayed_color} ".on_light_black
-      end
+    return if square.is_a?(EmptySquare)
+
+    if square == @active_piece
+      print " #{square.displayed_color} ".on_magenta
+    else
+      print " #{square.displayed_color} ".on_light_black
     end
   end
 
   def print_on_black(square)
     print '   '.on_black if square.is_a?(EmptySquare)
-    unless square.is_a?(EmptySquare)
-      if square == @active_piece
-        print " #{square.displayed_color} ".on_magenta
-      else
-        print " #{square.displayed_color} ".on_black
-      end
+    return if square.is_a?(EmptySquare)
+
+    if square == @active_piece
+      print " #{square.displayed_color} ".on_magenta
+    else
+      print " #{square.displayed_color} ".on_black
     end
   end
 
@@ -90,7 +91,7 @@ module Display
 
       #{'pawns'.colorize(:green)}      =>   e5, exd6, a5, axb6 . . .
       #{'other'.colorize(:green)}      =>   Ke7, Kxe7, Nc3, Nxc6 . . .
-      #{'castling'.colorize(:green)}   =>   0-0, 0-0-0 (zeroes)
+      #{'castling'.colorize(:green)}   =>   0-0, 0-0-0
       #{'en passant'.colorize(:green)} =>   exd6 (attack as if enemy has just moved one square)
 
       (moves are case sensitive)
@@ -133,5 +134,10 @@ module Display
     puts
     print " #{player.name} (#{player.symbolic_color.capitalize}), please enter a move: "
       .colorize(:magenta)
+  end
+
+  def ask_for_piece_number(piece_type)
+    puts ' ** please select a piece to move by choosing a valid number **'.colorize(:red)
+    print "#{piece_type} to move: ".colorize(:magenta)
   end
 end

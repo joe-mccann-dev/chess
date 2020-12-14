@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+# generates a list of regular and attack moves for the CPU player.
+# also used to generate list of legal moves to determine stalemate
 module CPUMoveGenerator
   def generate_cpu_moves(cpu_color, checking_for_stalemate = false)
     pieces = determine_piece_set(cpu_color, checking_for_stalemate)
-    opposite_color_pieces = cpu_color == :black ? white_pieces : black_pieces
-    king = cpu_color == :black ? black_king : white_king
+    opposite_color_pieces = opponent_pieces(cpu_color)
     empty_squares = find_empty_squares
     regular_moves = find_regular_moves(empty_squares, pieces, checking_for_stalemate)
     attack_moves = find_attack_moves(cpu_color, opposite_color_pieces, pieces)

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# creates and assigns board variables relevant to a desired move
 module SetupBoardVariables
   def assign_piece_type(move)
     @piece_prefix = assign_prefix(move)
@@ -8,8 +9,6 @@ module SetupBoardVariables
   end
 
   def assign_prefix(move)
-    binding.pry if move.nil?
-
     if move.length == 2 || valid_pawn_attack?(move)
       ''
     else

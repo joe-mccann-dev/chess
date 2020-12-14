@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# contains code for legal Queen movements
 class Queen
   include AdjacencyListGenerator
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
@@ -19,7 +20,7 @@ class Queen
 
   def row_moves
     # rook row_moves + bishop row_moves
-    (1..7).to_a + (-7..-1).to_a + Array.new(14) {0} +
+    (1..7).to_a + (-7..-1).to_a + Array.new(14) { 0} +
       (1..7).to_a + (-7..-1).to_a.reverse + (1..7).to_a + (-7..-1).to_a.reverse
   end
 
