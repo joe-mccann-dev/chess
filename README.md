@@ -15,9 +15,9 @@ This game is the [capstone project](https://www.theodinproject.com/courses/ruby-
 
 At the welcome screen, you'll be prompted to select a game mode. Your choices are
 
-1. play a friend (2P)
+1. play a friend
 2. play the computer (computer makes a random move or capture)
-3. play a saved game (load a saved game if any are available)
+3. play a saved game
 
 During any player move, you have commands available to you.
 - commands: save | load | help | quit | resign | draw
@@ -67,12 +67,12 @@ Castling is only possible if the following are true:
 - Stalemate => A player has no legal moves and their king is not in check.
 - Game will conclude upon either stalemate or checkmate
 
-#### Reflection
+### Reflection
 
-This project was very challenging. If I am honest, I think I struggled with organization and a lack of planning. I think those two things slowed me down and added unnecessary difficulty to an already difficult task. 
+This project was very challenging. If I am honest, I think I struggled with organization and a lack of planning. I think those two things slowed me down and added unnecessary difficulty to an already difficult task. Lesson learned though. Going forward, I will pay more attention to these things.
 
 I remember when I was doing Web Dev 101. I had finished the Rock Paper Scissors assignment and thought, "How will I ever do chess?" And then I did it. There is definite room for improvement. I didn't write enough tests, and the code is kind of messy in places. But I finished it, a functional chess game. And I couldn't have done it without the fantastic support of The Odin Project community.
 
-##### TODO
+#### TODO
 
 - Learn more about OOP and design patterns.
