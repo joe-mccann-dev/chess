@@ -48,14 +48,6 @@ class Board
     ]
   end
 
-  def flip_squares
-    @squares = @squares.reverse
-  end
-
-  def toggle_flipped
-    @flipped = true
-  end
-
   def black_row
     [
       Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),

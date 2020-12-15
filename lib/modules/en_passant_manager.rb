@@ -32,7 +32,7 @@ module EnPassantManager
     assign_en_passant_target(player_color, target)
     # force attacking pawn to be @found_piece
     @found_piece = @squares[piece.location[0]][piece.location[1]]
-    en_passant_conditions_met?
+    en_passant_conditions_met?(player_color)
   end
 
   def assign_en_passant_target(player_color, target)
@@ -45,18 +45,27 @@ module EnPassantManager
               end
   end
 
-  def en_passant_conditions_met?
+  def en_passant_conditions_met?(player_color)
     @found_piece.is_a?(Pawn) && @target.is_a?(Pawn) &&
-      @target.just_moved_two && @target == @active_piece
+      @target.just_moved_two && @target == @active_piece &&
+      target_is_actually_en_passant_target?(player_color)
   end
 
   def update_board_if_en_passant_move(player_color)
-    return unless en_passant_conditions_met?
+    return unless en_passant_conditions_met?(player_color)
 
     if player_color == :white
       @squares[@dest_row + 1][@dest_column] = EmptySquare.new([@dest_row + 1, @dest_column])
     else
       @squares[@dest_row - 1][@dest_column] = EmptySquare.new([@dest_row - 1, @dest_column])
+    end
+  end
+
+  def target_is_actually_en_passant_target?(player_color)
+    if player_color == :white
+      @squares[@dest_row + 1][@dest_column] == @target
+    else
+      @squares[@dest_row - 1][@dest_column] == @target
     end
   end
 end

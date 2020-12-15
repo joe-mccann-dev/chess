@@ -158,8 +158,8 @@ module Display
   end
 
   def draw_offer_message(other_player)
-    puts " **#{@current_player.name} offers #{other_player.name} a draw **"
+    puts " ** #{@current_player.name} offers #{other_player.name} a draw **"
     puts " #{other_player.name}, do you accept?"
-    print " Enter Y if you accept or N if you decline ".colorize(:magenta)
+    print ' Enter Y if you accept or N if you decline: '.colorize(:magenta)
   end
 end

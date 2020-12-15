@@ -168,7 +168,6 @@ module CheckmateManager
         # therefore I used #regular_move_rules_followed? instead of #attack_rules_followed?
         p.turn_attack_mode_on if p.is_a?(Pawn)
         regular_move_rules_followed?(p.location[0], p.location[1], p, dest_square)
-      # King destination is a White piece threatened by Black King
       else
         piece_can_attack_where_king_attacks?(p, dest_square, row, col)
       end

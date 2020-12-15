@@ -16,7 +16,7 @@ module MoveValidator
 
   def attack_rules_followed?(start_row, start_column, player_color, piece, target = @target)
     if piece.is_a?(Pawn)
-      return true if piece.en_passant && en_passant_conditions_met?
+      return true if piece.en_passant && en_passant_conditions_met?(player_color)
 
       piece.toggle_attack_mode(@squares, start_row, start_column, target.location[0], target.location[1])
     end
