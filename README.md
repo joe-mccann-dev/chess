@@ -20,13 +20,14 @@ At the welcome screen, you'll be prompted to select a game mode. Your choices ar
 3. play a saved game
 
 During any player move, you have commands available to you.
-- commands: flip | save | load | help | quit | resign | draw
+
+**commands**: flip | save | load | help | quit | resign | draw
 - **flip** - switches the view to the opposite board perspective
 - **save** - saves game with filename of your choice. resumes progress after saving
 - **load** - exits current game and loads a selected saved game
 - **help** - shows the help screen
 - **resign** - current player forfeits the match
-- **draw
+- **draw** - current player can offer a draw. CPU will always decline (It's easy to beat!)
 - **quit** - terminates the program
 
 ### How to move pieces
