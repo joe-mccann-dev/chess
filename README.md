@@ -48,7 +48,7 @@ At the welcome screen, you'll be prompted to select a game mode. Your choices ar
 
 During any player move, you have commands available to you.
 
-**commands**: flip | save | load | help | quit | resign | draw
+**commands**: `flip` | `save` | `load` | `help` | `quit` | `resign` | `draw`
 - **flip** - switches the view to the opposite board perspective
 - **save** - saves game with filename of your choice. resumes progress after saving
 - **load** - exits current game and loads a selected saved game
