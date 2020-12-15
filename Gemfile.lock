@@ -41,8 +41,7 @@ GEM
     ruby-progressbar (1.10.1)
     unicode-display_width (1.7.0)
 
-PLATFORMS
-  ruby
+yt  ruby
 
 DEPENDENCIES
   pry-byebug

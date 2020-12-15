@@ -49,7 +49,6 @@ module GameCommandManager
   def draw_requested_against_cpu
     puts
     puts ' ** Draw declined! You can beat this CPU!! ** '.colorize(:red)
-    # return
   end
 
   def after_draw_request_message(draw_accepted)

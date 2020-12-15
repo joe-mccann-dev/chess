@@ -11,6 +11,33 @@ This game is the [capstone project](https://www.theodinproject.com/courses/ruby-
 
 ***
 
+## How to Play
+
+For best visual results, install locally and play around with fonts that look good with the chess board. The demo above uses `Noto Mono Regular` in 14pt font.
+To just get a sense of the gameplay, play online using link below.
+
+### Play Online
+
+Play quickly and easily on my [repl.it](https://repl.it/@TenaciousQi/chess#README.md) page. After page loads, click the green "play" button in the top right corner. After a few seconds of loading, you should be on the welcome screen.
+
+### Install Locally
+
+#### Requirements
+
+- ruby >= 2.7.0
+- bundler >= 2.1.2
+
+#### Installation
+
+- clone this repo
+- cd into cloned directory `cd chess`
+- run `bundle install`
+
+#### How to Play
+
+- run `ruby lib/main.rb`
+- make a selection on the welcome screen
+
 ## Gameplay
 
 At the welcome screen, you'll be prompted to select a game mode. Your choices are

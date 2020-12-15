@@ -336,9 +336,11 @@ describe Game do
 
       before do
         allow(game).to receive(:puts)
+        allow(game).to receive(:gets).and_return('Y')
+        allow(game).to receive(:draw_offer_message)
       end
 
-      it 'returns true' do
+      it 'returns true if the other player accepts' do
         game.request_draw
         result = game.game_over?
         expect(result).to be(true)
