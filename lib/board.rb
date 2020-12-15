@@ -13,7 +13,7 @@ class Board
   include MoveDisambiguator
   include CPUMoveGenerator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
-              :piece_type, :piece_found, :castle_move, :cpu_moves, :attack_move
+              :piece_type, :piece_found, :castle_move, :cpu_moves, :attack_move, :flipped
 
   @@disambiguated = false
 
@@ -46,6 +46,14 @@ class Board
       Array.new(8) { |c| Pawn.new(1, [6, c]) },
       white_row
     ]
+  end
+
+  def flip_squares
+    @squares = @squares.reverse
+  end
+
+  def toggle_flipped
+    @flipped = true
   end
 
   def black_row

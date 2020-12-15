@@ -162,7 +162,8 @@ class Game
   def update_and_display_board(move, player_color)
     @board.update_board(move, player_color)
     evaluate_board_for_pawn_promotion(player_color)
-    @board.display
+    @board.display_flipped if @board.flipped
+    @board.display unless @board.flipped
     announce_check(player_color, @duplicate)
   end
 

@@ -6,6 +6,7 @@ module Display
   BLACK = "\u265F".colorize(:cyan).freeze
 
   def display(starting_row = 8)
+    @flipped = false
     puts `clear` unless @self_in_check
     print_captured_white_pieces
     @squares.each_with_index do |row, index|
@@ -18,6 +19,20 @@ module Display
     print_captured_black_pieces
   end
 
+  def display_flipped(starting_row = 1)
+    @flipped = true
+    puts `clear` unless @self_in_check
+    print_captured_black_pieces
+    @squares.reverse.each_with_index do |row, index|
+      print "  #{starting_row} "
+      index.even? ? print_even_row(row.reverse) : print_odd_row(row.reverse)
+      starting_row += 1
+      puts "\n"
+    end
+    print "     h  g  f  e  d  c  b  a\n\n"
+    print_captured_white_pieces
+  end
+
   def print_captured_white_pieces
     @captured_by_black.each { |piece| print "  #{piece.displayed_color}" } if @captured_by_black.any?
     puts "\n\n"
@@ -25,6 +40,7 @@ module Display
 
   def print_captured_black_pieces
     @captured_by_white.each { |piece| print "  #{piece.displayed_color}" } if @captured_by_white.any?
+    puts
     puts
   end
 
@@ -74,7 +90,7 @@ module Display
   def show_help
     puts <<-HEREDOC
     
-    #{'commands'.colorize(:green)}: #{'save'.colorize(:green)}|#{'load'.colorize(:green)}|#{'help'.colorize(:green)}|#{'quit'.colorize(:green)}|#{'resign'.colorize(:green)}|#{'draw'.colorize(:green)}
+    #{'commands'.colorize(:green)}: #{'flip'.colorize(:green)}|#{'save'.colorize(:green)}|#{'load'.colorize(:green)}|#{'help'.colorize(:green)}|#{'quit'.colorize(:green)}|#{'resign'.colorize(:green)}|#{'draw'.colorize(:green)}
 
     This game uses traditional algebraic notation to enter moves.
     Attack moves must preface destination square with an #{'x'.colorize(:green)}
@@ -139,5 +155,11 @@ module Display
   def ask_for_piece_number(piece_type)
     puts ' ** please select a piece to move by choosing a valid number **'.colorize(:red)
     print "#{piece_type} to move: ".colorize(:magenta)
+  end
+
+  def draw_offer_message(other_player)
+    puts " **#{@current_player.name} offers #{other_player.name} a draw **"
+    puts " #{other_player.name}, do you accept?"
+    print " Enter Y if you accept or N if you decline ".colorize(:magenta)
   end
 end
