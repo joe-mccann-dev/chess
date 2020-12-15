@@ -301,6 +301,7 @@ module CheckmateManager
         row = s.location[0]
         col = s.location[1]
         return true if regular_move_rules_followed?(p.location[0], p.location[1], p, @squares[row][col])
+        
       end
     end
     false

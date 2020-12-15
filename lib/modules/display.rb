@@ -119,7 +119,6 @@ module Display
 
   def show_ellipsis
     puts '  . . . . . '.colorize(:green)
-    sleep(0.45)
   end
 
   def show_pawn_promotion_choices(choices, current_player)
