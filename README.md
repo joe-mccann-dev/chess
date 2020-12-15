@@ -18,7 +18,7 @@ To just get a sense of the gameplay, play online using link below.
 
 ### Play Online
 
-Play quickly and easily on my [repl.it](https://repl.it/@TenaciousQi/chess#README.md) page. After page loads, click the green "play" button in the top right corner. After a few seconds of loading, you should be on the welcome screen.
+Play quickly and easily on my [repl.it](https://repl.it/@TenaciousQi/chess#README.md) page. After page loads, click the green "run" button. After a few seconds of loading, you should be on the welcome screen.
 
 ### Install Locally
 
