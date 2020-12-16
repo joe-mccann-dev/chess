@@ -19,8 +19,8 @@ class Piece
       available_squares.include?([dest_row, dest_column])
     end
   
-    def update_location(dest_row, column)
-      @location = [dest_row, column]
+    def update_location(dest_row, dest_column)
+      @location = [dest_row, dest_column]
     end
   
     def mark_as_captured
