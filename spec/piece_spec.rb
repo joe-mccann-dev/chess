@@ -26,21 +26,11 @@ require_relative '../lib/pieces/pawn'
 
 describe Piece do
   describe '#allowed_move?' do
+
     context 'when piece is a pawn' do
 
-      let(:initial_board) {[
-        [Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),Queen.new(2, [0, 3]), King.new(2, [0, 4]),Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])],
-        Array.new(8) { |c| Pawn.new(2, [1, c]) },
-        Array.new(8) { |c| EmptySquare.new([2, c]) },
-        Array.new(8) { |c| EmptySquare.new([3, c]) },
-        Array.new(8) { |c| EmptySquare.new([4, c]) },
-        Array.new(8) { |c| EmptySquare.new([5, c]) },
-        Array.new(8) { |c| Pawn.new(1, [6, c]) },
-        [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),Queen.new(1, [7, 3]), King.new(1, [7, 4]),Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])]
-      ]}
-
-      let(:board) { Board.new(initial_board) }
-      subject(:pawn) { board.squares[6][4] }
+      let(:pawn_at_start) { Pawn.new(1, [6, 4])}
+      subject(:pawn) { pawn_at_start }
       context 'move is allowed' do
         it 'returns true' do
           dest_row = 4
@@ -59,21 +49,10 @@ describe Piece do
         end
       end
 
-      context 'when pawn tries to move backwards' do
-
-        let(:board_pawn_moved_two) {[
-          [Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),Queen.new(2, [0, 3]), King.new(2, [0, 4]),Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])],
-          Array.new(8) { |c| Pawn.new(2, [1, c]) },
-          Array.new(8) { |c| EmptySquare.new([2, c]) },
-          Array.new(8) { |c| EmptySquare.new([3, c]) },
-          Array.new(8) { |c| c == 4 ? Pawn.new(1, [4,4]) : EmptySquare.new([4, c]) },
-          Array.new(8) { |c| EmptySquare.new([5, c]) },
-          Array.new(8) { |c| c == 4 ? EmptySquare.new([6,4]) : Pawn.new(1, [6, c]) },
-          [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),Queen.new(1, [7, 3]), King.new(1, [7, 4]),Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])]
-        ]}
+      context 'when pawn tries to move one space backwards' do
         
-        let(:board) { Board.new(board_pawn_moved_two) }
-        subject(:pawn) { board.squares[4][4] }
+        let(:pawn_in_middle) { Pawn.new(1, [4, 4])} 
+        subject(:pawn) { pawn_in_middle }
         
         it 'returns false' do
           dest_row = 5
@@ -83,9 +62,9 @@ describe Piece do
         end
       end
 
-      context 'when a pawn tries an attack move on an empty square' do
-        let(:board) { Board.new(initial_board) }
-        subject(:pawn) { board.squares[6][4] }
+      context 'when a pawn tries an attack move when attacking is inappropriate' do
+        let(:pawn_at_start) { Pawn.new(1, [6, 4])} 
+        subject(:pawn) { pawn_at_start }
         
         it 'returns false' do
           dest_row = 5
@@ -95,28 +74,17 @@ describe Piece do
         end
       end
 
-      context 'when a pawn tries an attack move on an enemy queen one diagonal away' do
-
-        let(:board_pawn_can_attack) {[
-          [Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),Queen.new(2, [0, 3]), King.new(2, [0, 4]),Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])],
-          Array.new(8) { |c| Pawn.new(2, [1, c]) },
-          Array.new(8) { |c| EmptySquare.new([2, c]) },
-          Array.new(8) { |c| EmptySquare.new([3, c]) },
-          Array.new(8) { |c| c == 4 ? Pawn.new(1, [4,4]) : EmptySquare.new([4, c]) },
-          Array.new(8) { |c| c == 5 ? Queen.new(2, [5, 5]) : EmptySquare.new([5, c]) },
-          Array.new(8) { |c| Pawn.new(1, [6, c]) },
-          [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),Queen.new(1, [7, 3]), King.new(1, [7, 4]),Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])]
-        ]}
+      context 'when a pawn tries an attack move on an enemy one diagonal away' do
         
-        let(:board) { Board.new(board_pawn_can_attack)}
-        subject(:pawn) { board.squares[6][4] }
+        let(:pawn_at_start) { Pawn.new(1, [6, 4])}
+        subject(:pawn) { pawn_at_start }
 
         before do
           start_row = 6
           start_col = 4
           dest_row = 5
           dest_column = 5
-          pawn.toggle_attack_mode(board_pawn_can_attack, start_row, start_col, dest_row, dest_column)
+          pawn.instance_variable_set(:@attack_mode, true)
         end
 
         it 'returns true' do
@@ -127,34 +95,143 @@ describe Piece do
         end
       end
 
-      context 'when a pawn tries an attack move on an enemy queen two diagonals away' do
+      context 'when a pawn tries an attack move on an enemy two diagonals away' do
 
-        let(:board_pawn_cannot_attack) {[
-          [Rook.new(2, [0, 0]), Knight.new(2, [0, 1]), Bishop.new(2, [0, 2]),Queen.new(2, [0, 3]), King.new(2, [0, 4]),Bishop.new(2, [0, 5]), Knight.new(2, [0, 6]), Rook.new(2, [0, 7])],
-          Array.new(8) { |c| Pawn.new(2, [1, c]) },
-          Array.new(8) { |c| EmptySquare.new([2, c]) },
-          Array.new(8) { |c| EmptySquare.new([3, c]) },
-          Array.new(8) { |c| c == 5 ? Queen.new(1, [4,c]) : EmptySquare.new([4, c]) },
-          Array.new(8) { |c| EmptySquare.new([5, c]) },
-          Array.new(8) { |c| Pawn.new(1, [6, c]) },
-          [Rook.new(1, [7, 0]), Knight.new(1, [7, 1]), Bishop.new(1, [7, 2]),Queen.new(1, [7, 3]), King.new(1, [7, 4]),Bishop.new(1, [7, 5]), Knight.new(1, [7, 6]), Rook.new(1, [7, 7])]
-        ]}
-
-        let(:board) { Board.new(board_pawn_cannot_attack) }
-        subject(:pawn) { board.squares[6][4] }
+        let(:pawn_in_middle) { Pawn.new(1, [6, 4]) }
+        subject(:pawn) { pawn_in_middle }
 
         before do
           start_row = 6
           start_col = 4
           dest_row = 4
           dest_column = 5
-          pawn.toggle_attack_mode(board_pawn_cannot_attack, start_row, start_col, dest_row, dest_column)
+          pawn.instance_variable_set(:@attack_mode, true)
         end
 
         it 'returns false' do
           dest_row = 4
           dest_col = 5
           result = pawn.allowed_move?(dest_row, dest_col)
+          expect(result).to be(false)
+        end
+      end
+    end
+
+    context 'when piece is a knight' do
+      let(:knight_at_starting_row) { Knight.new(1, [7, 6]) }
+      subject(:knight) { knight_at_starting_row }
+
+      context 'move is allowed' do
+        it 'returns true' do
+          dest_row = 5
+          dest_col = 5
+          result = knight.allowed_move?(dest_row, dest_col)
+          expect(result).to be(true)
+        end
+      end
+
+      context 'move is not allowed' do
+        it 'returns false' do
+          dest_row = 4
+          dest_col = 4
+          result = knight.allowed_move?(dest_row, dest_col)
+          expect(result).to be(false)
+        end
+      end
+    end
+
+    context 'when piece is a bishop' do
+
+      let(:bishop_at_starting_row) { Bishop.new(1, [7, 2]) }
+      subject(:bishop) { bishop_at_starting_row}
+      
+      context 'move is allowed' do
+        it 'returns true' do
+          dest_row = 5
+          dest_col = 0
+          result = bishop.allowed_move?(dest_row, dest_col)
+          expect(result).to be(true)
+        end
+      end
+
+      context 'move is not allowed' do
+        it 'returns false' do
+          dest_row = 5
+          dest_col = 2
+          result = bishop.allowed_move?(dest_row, dest_col)
+          expect(result).to be(false)
+        end
+      end
+    end
+
+    context 'when piece is a queen' do
+      let(:queen_in_middle) { Queen.new(1, [4, 4]) }
+
+      subject(:queen) { queen_in_middle}
+
+      context 'move is allowed' do
+        it 'returns true' do
+          dest_row = 4
+          dest_col = 7
+          result = queen.allowed_move?(dest_row, dest_col)
+          expect(result).to be(true)
+        end
+      end
+
+      context 'move is not allowed' do
+        it 'returns false' do
+          dest_row = 5
+          dest_col = 7
+          result = queen.allowed_move?(dest_row, dest_col)
+          expect(result).to be(false)
+        end
+      end
+    end
+
+    context 'when piece is a king' do
+
+
+      let(:king_in_middle) { King.new(1, [4, 4])}
+      subject(:king) { king_in_middle }
+
+      context 'move is allowed' do
+        it 'returns true' do
+          dest_row = 3
+          dest_col = 5
+          result = king.allowed_move?(dest_row, dest_col)
+          expect(result).to be(true)
+        end
+      end
+
+      context 'move is not allowed' do
+        it 'returns false' do
+          dest_row = 6
+          dest_col = 4
+          result = king.allowed_move?(dest_row, dest_col)
+          expect(result).to be(false)
+        end
+      end
+    end
+
+    context 'when piece is a rook' do
+
+      let(:rook_in_middle) { Rook.new(1, [4, 4]) }
+      subject(:rook) { rook_in_middle }
+
+      context 'move is allowed' do
+        it 'returns true' do
+          dest_row = 7
+          dest_col = 4
+          result = rook.allowed_move?(dest_row, dest_col)
+          expect(result).to be(true)
+        end
+      end
+
+      context 'move is not allowed' do
+        it 'returns true' do
+          dest_row = 7
+          dest_col = 7
+          result = rook.allowed_move?(dest_row, dest_col)
           expect(result).to be(false)
         end
       end
