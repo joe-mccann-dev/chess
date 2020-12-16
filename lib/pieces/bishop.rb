@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # contains code for legal Bishop movements
-class Bishop
-  include AdjacencyListGenerator
+class Bishop < Piece
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
 
   def initialize(color, location, unicode = '♝')
@@ -14,10 +13,6 @@ class Bishop
     @prefix = 'B'
   end
 
-  def assign_symbolic_color(displayed_color, unicode)
-    displayed_color == unicode.colorize(:light_yellow) ? :white : :black
-  end
-
   def row_moves
     # [1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7,  1,  2,  3,  4,  5,  6,  7, -1, -2, -3, -4, -5, -6, -7]
     (1..7).to_a + (-7..-1).to_a.reverse + (1..7).to_a + (-7..-1).to_a.reverse
@@ -26,17 +21,5 @@ class Bishop
   def col_moves
     # [1, 2, 3, 4, 5, 6, 7, -1, -2, -3, -4, -5, -6, -7, -1, -2, -3, -4, -5, -6, -7,  1,  2,  3,  4,  5,  6,  7]
     (1..7).to_a + (-7..-1).to_a.reverse + (-7..-1).to_a.reverse + (1..7).to_a
-  end
-
-  def allowed_move?(dest_row, dest_column)
-    available_squares.include?([dest_row, dest_column])
-  end
-
-  def update_location(dest_row, column)
-    @location = [dest_row, column]
-  end
-
-  def mark_as_captured
-    @captured = true
   end
 end
