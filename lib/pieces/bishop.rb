@@ -2,8 +2,6 @@
 
 # contains code for legal Bishop movements
 class Bishop < Piece
-  attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
-
   def initialize(color, location, unicode = '♝')
     super
     @prefix = 'B'
