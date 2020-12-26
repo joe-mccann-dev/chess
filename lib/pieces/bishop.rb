@@ -5,11 +5,7 @@ class Bishop < Piece
   attr_reader :displayed_color, :symbolic_color, :unicode, :captured, :location, :prefix
 
   def initialize(color, location, unicode = '♝')
-    @captured = false
-    @location = location
-    @displayed_color = color == 1 ? unicode.colorize(:light_yellow) : unicode.colorize(:cyan)
-    @unicode = unicode
-    @symbolic_color = assign_symbolic_color(@displayed_color, @unicode)
+    super
     @prefix = 'B'
   end
 
