@@ -7,11 +7,14 @@ class Knight < Piece
     @prefix = 'N'
   end
 
+  ROW_MOVES = [1, -1, 1, -1, 2, -2, 2, -2].freeze
+  COL_MOVES = [2, 2, -2, -2, 1, 1, -1, -1].freeze
+  
   def row_moves
-    [1, -1, 1, -1, 2, -2, 2, -2]
+    ROW_MOVES
   end
 
   def col_moves
-    [2, 2, -2, -2, 1, 1, -1, -1]
+    COL_MOVES
   end
 end

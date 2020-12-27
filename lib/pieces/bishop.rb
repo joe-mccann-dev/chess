@@ -7,21 +7,27 @@ class Bishop < Piece
     @prefix = 'B'
   end
 
-  def row_moves
+  ROW_MOVES = 
     [
       1,  2,  3,  4,  5,  6,  7,
      -1, -2, -3, -4, -5, -6, -7,
       1,  2,  3,  4,  5,  6,  7,
      -1, -2, -3, -4, -5, -6, -7
-    ]
-  end
+    ].freeze
 
-  def col_moves 
+  COL_MOVES = 
     [
       1,  2,  3,  4,  5,  6,  7,
      -1, -2, -3, -4, -5, -6, -7,
      -1, -2, -3, -4, -5, -6, -7,
       1,  2,  3,  4,  5,  6,  7
-    ]
+    ].freeze
+
+  def row_moves
+    ROW_MOVES
+  end
+
+  def col_moves
+    COL_MOVES
   end
 end

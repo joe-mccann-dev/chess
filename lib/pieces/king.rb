@@ -11,12 +11,15 @@ class King < Piece
     @prefix = 'K'
   end
 
-  def row_moves
-    [1, -1, 1, -1, 1, -1, 0, 0]
-  end
+  ROW_MOVES = [1, -1, 1, -1, 1, -1, 0, 0].freeze
+  COL_MOVES = [1, 1, -1, -1, 0, 0, 1, -1].freeze
 
+  def row_moves
+    ROW_MOVES
+  end
+  
   def col_moves
-    [1, 1, -1, -1, 0, 0, 1, -1]
+    COL_MOVES
   end
 
   def update_num_moves

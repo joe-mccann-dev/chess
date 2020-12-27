@@ -22,16 +22,19 @@ class Pawn < Piece
     end
   end
 
-  def col_moves
-    [0, 0]
-  end
-
-  def attack_row_moves
+    def attack_row_moves
     @symbolic_color == :white ? [-1, -1] : [1, 1]
   end
 
+  COL_MOVES = [0, 0].freeze
+  ATTACK_COL_MOVES = [1, -1].freeze
+
+  def col_moves
+    COL_MOVES
+  end
+
   def attack_col_moves
-    [1, -1]
+    ATTACK_COL_MOVES
   end
 
   def toggle_attack_mode(squares, start_row, start_column, dest_row, dest_column)
