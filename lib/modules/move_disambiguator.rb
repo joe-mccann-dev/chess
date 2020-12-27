@@ -2,6 +2,10 @@
 
 # assists in disambiguating moves, prompts player if more than one piece of same type can go to location
 module MoveDisambiguator
+
+  CHESS_ROWS = [8, 7, 6, 5, 4, 3, 2, 1].freeze
+  CHESS_COLUMNS = %w[a b c d e f g h].freeze
+
   def disambiguate_if_necessary(pieces, piece_type, disambiguated)
     if pieces.length > 1
       decide_which_piece_to_move(pieces, piece_type, disambiguated)
@@ -55,12 +59,11 @@ module MoveDisambiguator
   end
 
   def translate_row_index_to_displayed_row(row)
-    chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
-    chess_rows[row]
+    CHESS_ROWS[row]
   end
 
   def translate_col_index_to_displayed_col(column_index)
-    ('a'..'h').each_with_index { |l, i| return l if i == column_index }
+    CHESS_COLUMNS.each_with_index { |l, i| return l if i == column_index }
   end
 
   def disambiguate_move(response, pieces)

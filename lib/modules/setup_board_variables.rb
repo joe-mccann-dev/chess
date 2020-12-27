@@ -2,6 +2,10 @@
 
 # creates and assigns board variables relevant to a desired move
 module SetupBoardVariables
+
+  CHESS_ROWS = [8, 7, 6, 5, 4, 3, 2, 1].freeze
+  CHESS_COLUMNS = %w[a b c d e f g h].freeze
+
   def assign_piece_type(move)
     @piece_prefix = assign_prefix(move)
     @piece_type = determine_piece_class(@piece_prefix)
@@ -48,16 +52,15 @@ module SetupBoardVariables
   end
 
   def find_dest_row(move)
-    chess_rows = [8, 7, 6, 5, 4, 3, 2, 1]
     # regular pawn move
     if move.length == 2
-      chess_rows.index(move[1].to_i)
+      CHESS_ROWS.index(move[1].to_i)
     # regular character move
     elsif move.length == 3
-      chess_rows.index(move[2].to_i)
+      CHESS_ROWS.index(move[2].to_i)
     # attack move (character = Bxe5, pawn = exd5)
     else
-      chess_rows.index(move[3].to_i)
+      CHESS_ROWS.index(move[3].to_i)
     end
   end
 
@@ -72,6 +75,6 @@ module SetupBoardVariables
   end
 
   def translate_letter_to_index(letter)
-    ('a'..'h').select.each_with_index { |_x, index| index }.index(letter)
+    CHESS_COLUMNS.select.each_with_index { |_x, index| index }.index(letter)
   end
 end
