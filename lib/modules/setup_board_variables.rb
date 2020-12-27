@@ -2,9 +2,9 @@
 
 # creates and assigns board variables relevant to a desired move
 module SetupBoardVariables
-
   CHESS_ROWS = [8, 7, 6, 5, 4, 3, 2, 1].freeze
   CHESS_COLUMNS = %w[a b c d e f g h].freeze
+  PREFIXES = ['', 'R', 'N', 'B', 'Q', 'K'].freeze
 
   def assign_piece_type(move)
     @piece_prefix = assign_prefix(move)
@@ -20,11 +20,9 @@ module SetupBoardVariables
     end
   end
 
-  def determine_piece_class(prefix)
-    piece_objects = [Pawn, Rook, Knight, Bishop, Queen, King]
-    prefixes = ['', 'R', 'N', 'B', 'Q', 'K']
-    prefixes.each_with_index do |p, index|
-      return piece_objects[index] if p == prefix
+  def determine_piece_class(prefix, piece_objects = [Pawn, Rook, Knight, Bishop, Queen, King].freeze)
+    PREFIXES.each_with_index do |pre, index|
+      return piece_objects[index] if pre == prefix
     end
   end
 
