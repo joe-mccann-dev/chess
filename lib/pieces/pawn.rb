@@ -22,7 +22,7 @@ class Pawn < Piece
     end
   end
 
-    def attack_row_moves
+  def attack_row_moves
     @symbolic_color == :white ? [-1, -1] : [1, 1]
   end
 
