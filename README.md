@@ -27,13 +27,19 @@ Play quickly and easily on my [repl.it](https://repl.it/@TenaciousQi/chess#READM
 - ruby >= 2.7.0
 - bundler >= 2.1.2
 
-#### Installation
+### Installation
 
 - clone this repo
 - cd into cloned directory `cd chess`
 - run `bundle install`
 
-#### How to Play
+### Running the Tests
+
+#### To run the tests
+
+- `rspec spec/` from the `chess` directory.
+
+### How to Play
 
 - run `ruby lib/main.rb`
 - make a selection on the welcome screen
