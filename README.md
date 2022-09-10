@@ -114,4 +114,4 @@ I remember when I was doing Web Dev 101. I had finished the Rock Paper Scissors 
 
 #### TODO
 
-- Learn more about OOP and design patterns.
+- ~~Learn more about OOP and design patterns~~.
