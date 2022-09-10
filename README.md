@@ -106,12 +106,6 @@ Castling is only possible if the following are true:
 - Stalemate => A player has no legal moves and their king is not in check.
 - Game will conclude upon either stalemate or checkmate
 
-### Reflection
-
-This project was very challenging. If I am honest, I think I struggled with organization and a lack of planning. I think those two things slowed me down and added unnecessary difficulty to an already difficult task. Lesson learned though. Going forward, I will pay more attention to these things.
-
-I remember when I was doing Web Dev 101. I had finished the Rock Paper Scissors assignment and thought, "How will I ever do chess?" And then I did it. There is definite room for improvement. I didn't write enough tests, and the code is kind of messy in places. But I finished it, a functional chess game. And I couldn't have done it without the fantastic support of The Odin Project community.
-
 #### TODO
 
 - ~~Learn more about OOP and design patterns~~.
