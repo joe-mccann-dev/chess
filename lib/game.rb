@@ -20,6 +20,7 @@ class Game
   end
 
   def start_game
+    Board.ambiguate
     @board.display
     print " player1's name: ".colorize(:magenta) unless @player2.name == 'CPU'
     print ' Please enter your name: '.colorize(:magenta) if @player2.name == 'CPU'
@@ -180,7 +181,7 @@ class Game
     # @opponent_in_check will be true when next player attempts a castle move
     return false if @board.castle_move && @opponent_in_check
 
-    @duplicate = Board.new(@board.duplicate_board(@board.squares))
+    @duplicate = Board.new(@board.duplicate_board(@board.squares), true)
     # duplicate current board, then make the move, regardless of check
     simulate_and_examine_board_state(move, player_color, @duplicate)
     # see if that move results in check, checkmate, or stalemate
@@ -264,7 +265,7 @@ class Game
     duplicate.assign_target_variables(move, player_color)
     return false unless piece_found_and_valid_move?(player_color, duplicate)
 
-    duplicate.re_ambiguate
+    Board.disambiguate
     duplicate.update_board(move, player_color)
   end
 

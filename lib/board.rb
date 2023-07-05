@@ -13,16 +13,28 @@ class Board
   include MoveDisambiguator
   include CPUMoveGenerator
   attr_reader :start_row, :start_column, :dest_row, :dest_column, :squares, :found_piece,
-              :piece_type, :piece_found, :castle_move, :cpu_moves, :attack_move, :flipped
+              :piece_type, :piece_found, :castle_move, :cpu_moves, :attack_move, :flipped,
+              :duplicate
 
-  @@disambiguated = false
+  def self.disambiguated
+    @@disambiguated
+  end
 
-  def initialize(squares = make_initial_board)
+  def self.ambiguate
+    @@disambiguated = false;
+  end
+
+  def self.disambiguate
+    @@disambiguated = true
+  end
+
+  def initialize(squares = make_initial_board, duplicate = false)
     @squares = squares
     @captured_by_white = []
     @captured_by_black = []
     @cpu_moves = []
     @cpu_mode = false
+    @duplicate = duplicate
   end
 
   # necessary to prevent move_disambiguation prompt when playing against cpu
@@ -81,10 +93,6 @@ class Board
     piece_color == :white ? 1 : 2
   end
 
-  def re_ambiguate
-    @@disambiguated = false
-  end
-
   def white_pieces(white_pieces = [])
     @squares.each do |row|
       row.each do |square|
@@ -124,7 +132,7 @@ class Board
     if valid_pawn_attack?(move)
       find_attack_pawn(pieces, move)
     else
-      disambiguate_if_necessary(pieces, piece_type, @@disambiguated)
+      disambiguate_if_necessary(pieces, piece_type, duplicate)
     end
   end
 
@@ -133,7 +141,7 @@ class Board
     if valid_pawn_attack?(move)
       find_attack_pawn(pieces, move)
     else
-      disambiguate_if_necessary(pieces, piece_type, @@disambiguated)
+      disambiguate_if_necessary(pieces, piece_type, duplicate)
     end
   end
 

@@ -24,3 +24,5 @@ require_relative '../lib/pieces/bishop'
 require_relative '../lib/pieces/king'
 require_relative '../lib/pieces/queen'
 require_relative '../lib/pieces/pawn'
+
+Board.ambiguate

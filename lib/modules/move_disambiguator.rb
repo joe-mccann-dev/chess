@@ -6,29 +6,24 @@ module MoveDisambiguator
   CHESS_ROWS = [8, 7, 6, 5, 4, 3, 2, 1].freeze
   CHESS_COLUMNS = %w[a b c d e f g h].freeze
 
-  def disambiguate_if_necessary(pieces, piece_type, disambiguated)
+  def disambiguate_if_necessary(pieces, piece_type, duplicate)
     if pieces.length > 1
-      decide_which_piece_to_move(pieces, piece_type, disambiguated)
+      decide_which_piece_to_move(pieces, piece_type, duplicate)
     else
-      @@disambiguated = false
+      Board.ambiguate
       assign_start_location(pieces[0]) unless pieces.empty?
       @piece_found = true
       pieces[0]
     end
   end
 
-  # d/t way code is structured,
-  # (@duplicate) in Game, this method gets called twice
-  # when checking for check, thereby prompting the user a second time unnecessarily.
-  # the use of @@disambiguated prevents this from happening.
-  def decide_which_piece_to_move(pieces, piece_type, disambiguated)
-    unless disambiguated || cpu_move_requires_disambiguation?(pieces)
-      request_disambiguation(pieces, piece_type)
-      response = gets.chomp.to_i
+  def decide_which_piece_to_move(pieces, piece_type, duplicate)
+    unless cpu_move_requires_disambiguation?(pieces)
+      response = request_disambiguation(pieces, piece_type, duplicate)
     end
-    # prevents a nil error when disambiguate_move gets called
-    # prevent getting prompted when cpu selects a move that requires disambiguation
-    response = 1 if disambiguated || cpu_move_requires_disambiguation?(pieces)
+    
+    # cpu simply uses first valid move
+    response = 1 if cpu_move_requires_disambiguation?(pieces)
     loop do
       break if response.between?(1, pieces.length)
 
@@ -37,7 +32,6 @@ module MoveDisambiguator
       request_disambiguation(pieces, piece_type)
       response = gets.chomp.to_i
     end
-    @@disambiguated = true
     disambiguate_move(response, pieces)
   end
 
@@ -45,7 +39,9 @@ module MoveDisambiguator
     (@cpu_mode && @cpu_color == pieces[0].symbolic_color)
   end
 
-  def request_disambiguation(pieces, piece_type)
+  def request_disambiguation(pieces, piece_type, duplicate)
+    return 1 if duplicate
+
     coordinates = []
     puts
     puts " ** #{pieces.length} #{piece_type}s can go to that location ** \n".colorize(:green)
@@ -56,6 +52,7 @@ module MoveDisambiguator
       puts " enter[#{index + 1}] to move the #{piece_type} at #{coordinates[index]}".colorize(:green)
     end
     print " #{piece_type} to move: ".colorize(:magenta)
+    gets.chomp.to_i
   end
 
   def translate_row_index_to_displayed_row(row)
@@ -67,6 +64,7 @@ module MoveDisambiguator
   end
 
   def disambiguate_move(response, pieces)
+    Board.disambiguate
     assign_start_location(pieces[response - 1])
     @piece_found = true
     pieces[response - 1]
