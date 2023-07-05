@@ -29,8 +29,7 @@ module MoveDisambiguator
 
       puts ' ** please select a piece to move by choosing a valid number **'.colorize(:red)
       print "#{piece_type} to move: ".colorize(:magenta)
-      request_disambiguation(pieces, piece_type)
-      response = gets.chomp.to_i
+      response = request_disambiguation(pieces, piece_type, duplicate)
     end
     disambiguate_move(response, pieces)
   end
