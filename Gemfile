@@ -12,4 +12,3 @@ gem 'rspec-expectations', '3.10.0'
 gem 'rspec-mocks', '3.10.0'
 gem 'rspec-support', '3.10.0'
 
-# gem "rails"
