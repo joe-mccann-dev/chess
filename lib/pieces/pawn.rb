@@ -5,7 +5,7 @@ class Pawn < Piece
   include EnPassantManager
   attr_reader :attack_mode, :en_passant, :just_moved_two, :num_moves
 
-  def initialize(color, location, unicode = '♟')
+  def initialize(color, location, unicode = "\u2659")
     super
     @num_moves = 0
     @attack_mode = false

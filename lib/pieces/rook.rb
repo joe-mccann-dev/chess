@@ -4,7 +4,7 @@
 class Rook < Piece
   attr_reader :num_moves
 
-  def initialize(color, location, unicode = '♜')
+  def initialize(color, location, unicode = "\u2656")
     super
     @num_moves = 0
     @prefix = 'R'

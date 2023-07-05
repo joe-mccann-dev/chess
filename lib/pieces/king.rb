@@ -4,7 +4,7 @@
 class King < Piece
   attr_reader :num_moves, :in_check
 
-  def initialize(color, location, unicode = '♚')
+  def initialize(color, location, unicode = "\u2654")
     super
     @in_check = false
     @num_moves = 0

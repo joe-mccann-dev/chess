@@ -2,7 +2,7 @@
 
 # contains code for legal Queen movements
 class Queen < Piece
-  def initialize(color, location, unicode = '♛')
+  def initialize(color, location, unicode = "\u2655")
     super
     @prefix = 'Q'
   end

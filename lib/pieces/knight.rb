@@ -2,7 +2,7 @@
 
 # contains code for legal knight movements
 class Knight < Piece
-  def initialize(color, location, unicode = '♞')
+  def initialize(color, location, unicode = "\u2658")
     super
     @prefix = 'N'
   end

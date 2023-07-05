@@ -2,7 +2,7 @@
 
 # contains code for legal Bishop movements
 class Bishop < Piece
-  def initialize(color, location, unicode = '♝')
+  def initialize(color, location, unicode = "\u2657")
     super
     @prefix = 'B'
   end
