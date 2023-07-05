@@ -66,7 +66,11 @@ module Serializer
   end
 
   def extract_yaml_data(file)
-    game_data = YAML.load(file)
+    game_data = YAML.load_file(
+      file,
+      permitted_classes: allowed_classes,
+      aliases: true
+    )
     @board = game_data['board']
     @player1 = game_data['player1']
     @player2 = game_data['player2']
@@ -74,5 +78,20 @@ module Serializer
     @cpu_mode = game_data['cpu_mode']
     @checkmate = game_data['checkmate']
     @stalemate = game_data['stalemate']
+  end
+
+  def allowed_classes
+    [
+      Player,
+      Board,
+      EmptySquare,
+      King,
+      Queen,
+      Pawn,
+      Bishop,
+      Knight,
+      Rook,
+      Symbol
+    ]
   end
 end
