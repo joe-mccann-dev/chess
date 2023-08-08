@@ -1,6 +1,6 @@
 # Ruby Chess Game
 
-This game is the [capstone project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project?ref=lnav) for the The Odin Project's Ruby Programming curriculum.
+This game is the [capstone project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project?ref=lnav) for The Odin Project's Ruby Programming curriculum.
 
 ## Demo
 
